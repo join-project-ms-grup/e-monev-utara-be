@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  fullname   String
+  avatar     String?
+  email      String    @unique
+  role_id    Int?
+  skpd_id    Int?
+  password   String
+  token      String?
+  session    DateTime?
+  created_at DateTime
+  updated_at DateTime  @updatedAt
+
+  userRole      role?  @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userSkpd      skpd?  @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  authoredRoles role[] @relation("AuthorRole") // user bisa create banyak role
+  authoredSkpd  skpd[] @relation("AuthorSkpd") // user bisa create banyak skpd
+}
+
+model role {
+  id         Int      @id @default(autoincrement())
+  kode       Int      @unique
+  name       String
+  author_id  Int?
+  created_at DateTime
+  updated_at DateTime
+  users      users[]
+
+  author users? @relation("AuthorRole", fields: [author_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+}
+
+model skpd {
+  id        Int     @id @default(autoincrement())
+  name      String
+  author_id Int?
+  users     users[]
+
+  author users? @relation("AuthorSkpd", fields: [author_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+}
