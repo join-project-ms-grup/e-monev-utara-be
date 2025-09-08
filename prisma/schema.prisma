@@ -21,7 +21,7 @@ model users {
   created_at DateTime
   updated_at DateTime  @updatedAt
 
-  userRole      role?  @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userRole      role?  @relation(fields: [role_id], references: [kode], onDelete: NoAction, onUpdate: NoAction)
   userSkpd      skpd?  @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   authoredRoles role[] @relation("AuthorRole") // user bisa create banyak role
   authoredSkpd  skpd[] @relation("AuthorSkpd") // user bisa create banyak skpd
