@@ -18,11 +18,12 @@ model users {
   password   String
   token      String?
   session    DateTime?
-  created_at DateTime
+  status     Boolean   @default(true)
+  created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
 
-  userRole      role?  @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userSkpd      skpd?  @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userRole      role?  @relation(fields: [role_id], references: [kode], onDelete: NoAction, onUpdate: NoAction)
+  userSkpd      skpd?  @relation(fields: [skpd_id], references: [kode], onDelete: NoAction, onUpdate: NoAction)
   authoredRoles role[] @relation("AuthorRole") // user bisa create banyak role
   authoredSkpd  skpd[] @relation("AuthorSkpd") // user bisa create banyak skpd
 }
@@ -32,18 +33,48 @@ model role {
   kode       Int      @unique
   name       String
   author_id  Int?
-  created_at DateTime
-  updated_at DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   users      users[]
 
   author users? @relation("AuthorRole", fields: [author_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
 }
 
+model periode {
+  id           Int            @id @default(autoincrement())
+  mulai        Int            @unique
+  akhir        Int            @unique
+  status       Boolean        @default(true)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  skpd_periode skpd_periode[]
+}
+
 model skpd {
-  id        Int     @id @default(autoincrement())
-  name      String
-  author_id Int?
-  users     users[]
+  id           Int            @id @default(autoincrement())
+  kode         Int            @unique
+  name         String
+  shortname    String
+  author_id    Int?
+  status       Boolean        @default(true)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  users        users[]
+  skpd_periode skpd_periode[]
 
   author users? @relation("AuthorSkpd", fields: [author_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+}
+
+model skpd_periode {
+  id         Int      @id @default(autoincrement())
+  skpd_id    Int
+  periode_id Int
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  skpd    skpd    @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  periode periode @relation(fields: [periode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([skpd_id, periode_id])
 }
