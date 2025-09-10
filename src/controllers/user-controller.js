@@ -5,7 +5,8 @@ import * as service from "../services/user-service.js";
 
 export const listUser = async (req, res, next) => {
        try {
-
+              const result = await service.listUser();
+              return response(res, 200, true, "List user", result);
        } catch (e) {
               next(e);
        }
@@ -61,8 +62,52 @@ export const updateUser = async (req, res, next) => {
        }
 }
 
+
+export const getUserById = async (req, res, next) => {
+       try {
+              const { id } = req.params;
+              if (!id || isNaN(id)) {
+                     return response(res, 400, false, "Invalid user ID");
+              }
+
+              // Further processing like fetching from database can be done here
+              const result = await service.getUserById(id);
+              return response(res, 200, true, "User details", result);
+              // return response(res, 200, true, "User details", { id: parseInt(id) });
+
+       } catch (e) {
+              next(e);
+       }
+}
+
+export const toggleStatusUser = async (req, res, next) => {
+       try {
+              const { id } = req.params;
+              if (!id || isNaN(id)) {
+                     return response(res, 400, false, "Invalid user ID");
+              }
+
+              // Further processing like toggling status in database can be done here
+              const result = await service.toggleStatusUser(req);
+              return response(res, 200, true, "User status toggled successfully", result);
+              // return response(res, 200, true, "User status toggled successfully", { id: parseInt(id) });
+
+       } catch (e) {
+              next(e);
+       }
+}
+
 export const deleteUser = async (req, res, next) => {
        try {
+              const { id } = req.params;
+              if (!id || isNaN(id)) {
+                     return response(res, 400, false, "Invalid user ID");
+              }
+
+              // Further processing like deleting from database can be done here
+              const result = await service.userDelete(req);
+              return response(res, 200, true, "User deleted successfully", result);
+              // return response(res, 200, true, "User deleted successfully", { id: parseInt(id) });     
 
        } catch (e) {
               next(e);
