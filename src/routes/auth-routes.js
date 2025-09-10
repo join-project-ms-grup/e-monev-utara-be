@@ -5,6 +5,10 @@ import { requestValidator } from "../middlewares/erros-handling.js";
 
 const routes = Router();
 
-routes.post("/login", body('username').notEmpty(), body('password').notEmpty(), requestValidator, controller.Login);
+routes.post("/login",
+       body('username').notEmpty(),
+       body('password').notEmpty(),
+       requestValidator,
+       controller.Login);
 
 export default routes;

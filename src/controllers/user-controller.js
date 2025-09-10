@@ -2,6 +2,15 @@ import Joi from "joi";
 import response from "../utility/response.js";
 import * as service from "../services/user-service.js";
 
+
+export const listUser = async (req, res, next) => {
+       try {
+
+       } catch (e) {
+              next(e);
+       }
+}
+
 export const userAdd = async (req, res, next) => {
        try {
               const schema = Joi.object({
@@ -53,14 +62,6 @@ export const updateUser = async (req, res, next) => {
 }
 
 export const deleteUser = async (req, res, next) => {
-       try {
-
-       } catch (e) {
-              next(e);
-       }
-}
-
-export const listUser = async (req, res, next) => {
        try {
 
        } catch (e) {
