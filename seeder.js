@@ -1,6 +1,33 @@
 import prisma from "./src/config/database.js";
 import bycrypt from "bcrypt"
 
+
+const createRole = async () => {
+       const createRole = await prisma.roles.createMany({
+              data: [
+                     {
+                            kode: 1,
+                            name: 'Developer',
+                     },
+                     {
+                            kode: 2,
+                            name: 'Administrator',
+                     },
+                     {
+                            kode: 3,
+                            name: 'RKPD',
+                     },
+                     {
+                            kode: 4,
+                            name: 'DAK',
+                     }
+              ],
+              skipDuplicates: true,
+       });
+       console.log(createRole);
+}
+
+
 const createMainUser = async () => {
        const password = await bycrypt.hash('admin123', 10);
        const createUser = await prisma.users.create({
@@ -18,4 +45,11 @@ const createMainUser = async () => {
        console.log(createUser);
 }
 
-createMainUser()
+
+const seeder = async () => {
+       await createRole()
+       await createMainUser()
+
+}
+
+seeder();

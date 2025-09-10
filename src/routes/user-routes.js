@@ -6,8 +6,24 @@ const router = Router();
 
 router.use(cekToken);
 
+router.get("/list",
+       devAdminAccess,
+       controller.listUser);
+
 router.post("/add",
        devAdminAccess,
        controller.userAdd);
+router.put("/update/:id",
+       devAdminAccess,
+       controller.updateUser);
+
+router.delete("/delete/:id",
+       devAdminAccess,
+       controller.deleteUser);
+
+router.patch("/status/:id",
+       devAdminAccess,
+       controller.toggleStatusUser);
+
 
 export default router;
