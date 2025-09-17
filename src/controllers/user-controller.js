@@ -55,7 +55,7 @@ export const updateUser = async (req, res, next) => {
               }
 
               // Further processing like updating in database can be done here
-              const result = await service.userUpdate(req);
+              const result = await service.updateUser(req);
               return response(res, 200, true, "User updated successfully", result);
        } catch (e) {
               next(e);
@@ -73,8 +73,6 @@ export const getUserById = async (req, res, next) => {
               // Further processing like fetching from database can be done here
               const result = await service.getUserById(id);
               return response(res, 200, true, "User details", result);
-              // return response(res, 200, true, "User details", { id: parseInt(id) });
-
        } catch (e) {
               next(e);
        }
@@ -90,8 +88,6 @@ export const toggleStatusUser = async (req, res, next) => {
               // Further processing like toggling status in database can be done here
               const result = await service.toggleStatusUser(req);
               return response(res, 200, true, "User status toggled successfully", result);
-              // return response(res, 200, true, "User status toggled successfully", { id: parseInt(id) });
-
        } catch (e) {
               next(e);
        }
@@ -107,8 +103,6 @@ export const deleteUser = async (req, res, next) => {
               // Further processing like deleting from database can be done here
               const result = await service.userDelete(req);
               return response(res, 200, true, "User deleted successfully", result);
-              // return response(res, 200, true, "User deleted successfully", { id: parseInt(id) });     
-
        } catch (e) {
               next(e);
        }

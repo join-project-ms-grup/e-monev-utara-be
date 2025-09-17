@@ -3,7 +3,7 @@ import bycrypt from "bcrypt"
 
 
 const createRole = async () => {
-       const createRole = await prisma.roles.createMany({
+       const createRole = await prisma.role.createMany({
               data: [
                      {
                             kode: 1,
@@ -24,7 +24,7 @@ const createRole = async () => {
               ],
               skipDuplicates: true,
        });
-       console.log(createRole);
+       console.table(createRole);
 }
 
 
@@ -42,7 +42,7 @@ const createMainUser = async () => {
                      updated_at: new Date(),
               }
        });
-       console.log(createUser);
+       console.table(createUser);
 }
 
 

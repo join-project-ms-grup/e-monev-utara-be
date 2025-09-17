@@ -14,6 +14,18 @@ export const listUser = async () => {
 
 export const userCreate = async (req) => {
        const { name, fullname, email, role_id, skpd_id, password } = req.body;
+
+       const existingUser = await prisma.users.findUnique({
+              where: { email: email }
+       });
+
+       if (existingUser) throw new errorHandling(400, "Email sudah terdaftar, gunakan email lain");
+       const existingUsername = await prisma.users.findUnique({
+              where: { name: name }
+       });
+
+       if (existingUsername) throw new errorHandling(400, "Username sudah terdaftar, gunakan username lain");
+
        const hashedPassword = await bycrypt.hash(password, 10);
        const newUser = await prisma.users.create({
               data: {
