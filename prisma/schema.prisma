@@ -78,3 +78,51 @@ model skpd_periode {
 
   @@unique([skpd_id, periode_id])
 }
+
+model master {
+  id         Int      @id @default(autoincrement())
+  parent_id  Int?
+  type       String
+  kode       String
+  name       String   @db.Text
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Self relation (tree)
+  parent   master?  @relation("MasterChildren", fields: [parent_id], references: [id])
+  children master[] @relation("MasterChildren")
+
+  indikator indikator[]
+}
+
+model indikator {
+  id         Int      @id @default(autoincrement())
+  master_id  Int
+  name       String
+  satuan     String
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  master master @relation(fields: [master_id], references: [id], onDelete: Cascade)
+}
+
+model logMaster {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  action    String // CREATE, UPDATE, DELETE
+  entity    EntityType
+  entityId  Int
+  oldValue  Json? // simpan data lama, contoh: { "kode": "PR001", "name": "Program Lama" }
+  newValue  Json? // simpan data baru, contoh: { "kode": "PR002", "name": "Program Baru" }
+  createdAt DateTime   @default(now())
+}
+
+enum EntityType {
+  urusan
+  bidang
+  program
+  kegiatan
+  subKegiatan
+}

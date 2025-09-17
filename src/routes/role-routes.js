@@ -22,7 +22,7 @@ router.post("/add",
        controller.RoleAdd);
 
 router.put("/update/:id",
-       devAdminAccess,
+       devAccess,
        param('id').notEmpty().isNumeric(),
        requestValidator,
        controller.RoleUpdate);

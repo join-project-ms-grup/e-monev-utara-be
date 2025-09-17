@@ -8,7 +8,7 @@ import { requestValidator } from "../middlewares/erros-handling.js";
 const router = Router();
 
 router.use(cekToken);
-router.get('/list', devAdminAccess, controller.listPeriode);
+router.get('/list', controller.listPeriode);
 router.post('/add', devAdminAccess, controller.addPeriode);
 router.put('/update/:id', devAdminAccess, param('id').isNumeric(), requestValidator, controller.updatePeriode);
 router.delete('/delete/:id', devAdminAccess, param('id').isNumeric(), requestValidator, controller.deletePeriode);
