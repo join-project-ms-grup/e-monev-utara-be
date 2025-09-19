@@ -97,15 +97,56 @@ model master {
 }
 
 model indikator {
-  id         Int      @id @default(autoincrement())
+  id         Int                  @id @default(autoincrement())
   master_id  Int
   name       String
   satuan     String
-  status     Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  status     Boolean              @default(true)
+  created_at DateTime             @default(now())
+  updated_at DateTime             @updatedAt
+  rincian    rincianIndikator[]
+  realisasi  realisasiIndikator[]
 
   master master @relation(fields: [master_id], references: [id], onDelete: Cascade)
+}
+
+model rincianIndikator {
+  id              Int      @id @default(autoincrement())
+  indikator_id    Int
+  skpd_periode_id Int
+  kondisi_awal    Float?
+  rasio_awal      Float?
+  tahun_1         Float?
+  tahun_2         Float?
+  tahun_3         Float?
+  tahun_4         Float?
+  tahun_5         Float?
+  kondisi_akhir   Float?
+  rasio_akhir     Float?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  indikator indikator @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
+}
+
+model realisasiIndikator {
+  id              Int      @id @default(autoincrement())
+  indikator_id    Int
+  skpd_periode_id Int
+  capaian_1       Float?
+  rasio_1         Float?
+  capaian_2       Float?
+  rasio_2         Float?
+  capaian_3       Float?
+  rasio_3         Float?
+  capaian_4       Float?
+  rasio_4         Float?
+  capaian_5       Float?
+  rasio_5         Float?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  indikator indikator @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
 }
 
 model logMaster {
