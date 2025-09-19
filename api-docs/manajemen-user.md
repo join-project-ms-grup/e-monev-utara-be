@@ -91,8 +91,7 @@ Authorization: Bearer {{ token }}
        "fullname": string,
        "email": string/format-email,
        "role_id": int,
-       "skpd_id": int/null,
-       "password": string/null
+       "skpd_id": int/null
 }
 ```
 
@@ -129,7 +128,62 @@ Authorization: Bearer {{ token }}
 
 ---
 
-## 3 - List User
+## 3 - Update Password
+Berikut merupakan panduan proses mengupdate data user pada sistem
+
+```
+Role : Dev dan Admin
+```
+
+endpoint : ```user/change-password```
+method   : PUT
+
+```
+Authorization: Bearer {{ token }}
+```
+
+#### Body Request
+```json
+{
+       "id": Int,
+       "password": string
+}
+```
+
+#### Response
+
+200 | OK
+```json
+{
+       "success": true,
+       "message": "User updated successfully",
+       "data": {
+              "id": 1,
+              "name": "dev_opt",
+              "fullname": "Developer",
+              "avatar": null,
+              "email": "dev@mail.com",
+              "role_id": 1,
+              "skpd_id": null,
+              "status": true,
+              "created_at": "2025-09-02T09:26:33.000Z",
+              "updated_at": "2025-09-17T07:04:44.342Z"
+       }
+}
+```
+
+404 | Not Found
+```json
+{
+       "success": false,
+       "message": "User tidak ditemukan...",
+       "data": {}
+}
+```
+
+---
+
+## 4 - List User
 Berikut merupakan panduan untuk mendapatkan daftar user
 
 ```
@@ -175,7 +229,7 @@ Authorization: Bearer {{ token }}
 
 ---
 
-## 4 - Delete User
+## 5 - Delete User
 Berikut merupakan panduan untuk menghapus user
 
 ```

@@ -48,7 +48,7 @@ export const userCreate = async (req) => {
 
 export const updateUser = async (req) => {
        const { id } = req.params;
-       const { name, fullname, email, role_id, skpd_id, password } = req.body;
+       const { name, fullname, email, role_id, skpd_id } = req.body;
 
        const existingUser = await prisma.users.findUnique({
               where: { id: parseInt(id) }
@@ -65,10 +65,6 @@ export const updateUser = async (req) => {
               updated_at: new Date(),
        };
 
-       if (password) {
-              updatedData.password = await bycrypt.hash(password, 10);
-       }
-
        const updatedUser = await prisma.users.update({
               where: { id: parseInt(id) },
               data: updatedData
@@ -78,6 +74,28 @@ export const updateUser = async (req) => {
 
        return await listUser();
 }
+
+export const changePassword = async (req) => {
+       const { id, password } = req.body;
+
+       const existingUser = await prisma.users.findUnique({
+              where: { id: parseInt(id) }
+       });
+       if (!existingUser) throw new errorHandling(404, "User tidak ditemukan");
+
+       const hashedPassword = await bycrypt.hash(password, 10);
+       const updatedUser = await prisma.users.update({
+              where: { id: parseInt(id) },
+              data: {
+                     password: hashedPassword,
+                     updated_at: new Date(),
+              }
+       });
+
+       if (!updatedUser) throw new errorHandling(500, "Gagal memperbarui password");
+       return await listUser();
+}
+
 
 export const deleteUser = async (req) => {
        const { id } = req.params;
