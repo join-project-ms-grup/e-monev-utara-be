@@ -106,7 +106,7 @@ export const toggleStatusUser = async (req, res, next) => {
               }
 
               // Further processing like toggling status in database can be done here
-              const result = await service.toggleStatusUser(req);
+              const result = await service.toggleUserStatus(req);
               return response(res, 200, true, "User status toggled successfully", result);
        } catch (e) {
               next(e);
@@ -121,7 +121,7 @@ export const deleteUser = async (req, res, next) => {
               }
 
               // Further processing like deleting from database can be done here
-              const result = await service.userDelete(req);
+              const result = await service.deleteUser(req);
               return response(res, 200, true, "User deleted successfully", result);
        } catch (e) {
               next(e);
