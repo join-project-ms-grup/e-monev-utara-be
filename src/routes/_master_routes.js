@@ -11,18 +11,26 @@ const router = Router();
 router.use(cekToken);
 router.post('/add',
        devAdminAccess,
-       controller.addMaster);
+       controller.addMaster
+);
 router.put('/update/:id',
        devAdminAccess,
        param('id').isNumeric().notEmpty(),
        requestValidator,
-       controller.updateMaster);
-
+       controller.updateMaster
+);
 router.get('/list/urusan',
-       controller.listUrusan);
+       controller.listUrusan
+);
 router.get('/list/children/:parentId',
        param('parentId').isNumeric().notEmpty(),
        requestValidator,
-       controller.listChildren);
-router.get('/list/all', controller.getAllMaster);
+       controller.listChildren
+);
+router.get('/list/all',
+       controller.getAllMaster
+);
+router.post('/children-from',
+       controller.getHierarchyByType
+);
 export default router;

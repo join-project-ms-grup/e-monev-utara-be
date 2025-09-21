@@ -1,4 +1,4 @@
-import response from "../utility/response,js";
+import response from "../utility/response.js";
 
 export const addIndikator = async (req, res, next) => {
        try {

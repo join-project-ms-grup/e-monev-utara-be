@@ -74,3 +74,30 @@ export const getAllMaster = async (req, res, next) => {
               next(e);
        }
 }
+
+export const getHierarchyByType = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     type: Joi.string()
+                            .valid("urusan", "bidang", "program", "kegiatan", "subKegiatan")
+                            .required(),
+                     id_urusan: Joi.number().integer().min(1).optional(),
+                     id_bidang: Joi.number().integer().min(1).optional(),
+                     id_program: Joi.number().integer().min(1).optional(),
+                     id_kegiatan: Joi.number().integer().min(1).optional(),
+              });
+
+              const { error, value } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Mohon maaf data belum sesuai format yang diminta", result);
+              }
+
+              const result = await service.getHierarchyByType(req);
+              return response(res, 200, true, "Hierarchy retrieved successfully", result);
+       } catch (e) {
+              next(e);
+       }
+};
