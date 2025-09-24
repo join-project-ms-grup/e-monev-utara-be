@@ -336,9 +336,11 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                             kode: bidang.parent?.kode ?? null,
                             name: bidang.parent?.name ?? null,
                             id: bidang.parent?.id ?? null,
-                            kode: bidang.kode,
-                            name: bidang.name,
-                            id: bidang.id,
+                            bidang: [{
+                                   kode: bidang.kode,
+                                   name: bidang.name,
+                                   id: bidang.id,
+                            }],
                             program: bidang.children.map(p => ({
                                    kode: p.kode,
                                    name: p.name,
