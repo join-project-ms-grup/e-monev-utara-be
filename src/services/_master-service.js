@@ -255,9 +255,9 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
               });
 
               return urusans.map(u => ({
-                     kode_urusan: u.kode,
-                     urusan: u.name,
-                     id_urusan: u.id
+                     kode: u.kode,
+                     name: u.name,
+                     id: u.id
               }));
        }
 
@@ -272,13 +272,13 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!urusan) return { message: "Urusan tidak ditemukan", data: [] };
 
                      return {
-                            kode_urusan: urusan.kode,
-                            urusan: urusan.name,
-                            id_urusan: urusan.id,
+                            kode: urusan.kode,
+                            name: urusan.name,
+                            id: urusan.id,
                             bidang: urusan.children.map(b => ({
-                                   kode_bidang: b.kode,
-                                   bidang: b.name,
-                                   id_bidang: b.id
+                                   kode: b.kode,
+                                   name: b.name,
+                                   id: b.id
                             }))
                      };
               }
@@ -292,12 +292,14 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!bidang) return { message: "Bidang tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: bidang.parent?.kode ?? null,
-                            urusan: bidang.parent?.name ?? null,
-                            id_urusan: bidang.parent?.id ?? null,
-                            kode_bidang: bidang.kode,
-                            bidang: bidang.name,
-                            id_bidang: bidang.id
+                            kode: bidang.parent?.kode ?? null,
+                            name: bidang.parent?.name ?? null,
+                            id: bidang.parent?.id ?? null,
+                            bidang: [{
+                                   kode: bidang.kode,
+                                   name: bidang.name,
+                                   id: bidang.id
+                            }]
                      };
               }
 
@@ -309,13 +311,13 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
               });
 
               return semuaUrusan.map(u => ({
-                     kode_urusan: u.kode,
-                     urusan: u.name,
-                     id_urusan: u.id,
+                     kode: u.kode,
+                     name: u.name,
+                     id: u.id,
                      bidang: u.children.map(b => ({
-                            kode_bidang: b.kode,
-                            bidang: b.name,
-                            id_bidang: b.id
+                            kode: b.kode,
+                            name: b.name,
+                            id: b.id
                      }))
               }));
        }
@@ -331,16 +333,18 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!bidang) return { message: "Bidang tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: bidang.parent?.kode ?? null,
-                            urusan: bidang.parent?.name ?? null,
-                            id_urusan: bidang.parent?.id ?? null,
-                            kode_bidang: bidang.kode,
-                            bidang: bidang.name,
-                            id_bidang: bidang.id,
+                            kode: bidang.parent?.kode ?? null,
+                            name: bidang.parent?.name ?? null,
+                            id: bidang.parent?.id ?? null,
+                            bidang: [{
+                                   kode: bidang.kode,
+                                   name: bidang.name,
+                                   id: bidang.id,
+                            }],
                             program: bidang.children.map(p => ({
-                                   kode_program: p.kode,
-                                   program: p.name,
-                                   id_program: p.id
+                                   kode: p.kode,
+                                   name: p.name,
+                                   id: p.id
                             }))
                      };
               }
@@ -359,17 +363,17 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!urusan) return { message: "Urusan tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: urusan.kode,
-                            urusan: urusan.name,
-                            id_urusan: urusan.id,
+                            kode: urusan.kode,
+                            name: urusan.name,
+                            id: urusan.id,
                             bidang: urusan.children.map(b => ({
-                                   kode_bidang: b.kode,
-                                   bidang: b.name,
-                                   id_bidang: b.id,
+                                   kode: b.kode,
+                                   name: b.name,
+                                   id: b.id,
                                    program: b.children.map(p => ({
-                                          kode_program: p.kode,
-                                          program: p.name,
-                                          id_program: p.id
+                                          kode: p.kode,
+                                          name: p.name,
+                                          id: p.id
                                    }))
                             }))
                      };
@@ -388,17 +392,17 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
               });
 
               return semua.map(u => ({
-                     kode_urusan: u.kode,
-                     urusan: u.name,
-                     id_urusan: u.id,
+                     kode: u.kode,
+                     name: u.name,
+                     id: u.id,
                      bidang: u.children.map(b => ({
-                            kode_bidang: b.kode,
-                            bidang: b.name,
-                            id_bidang: b.id,
+                            kode: b.kode,
+                            name: b.name,
+                            id: b.id,
                             program: b.children.map(p => ({
-                                   kode_program: p.kode,
-                                   program: p.name,
-                                   id_program: p.id
+                                   kode: p.kode,
+                                   name: p.name,
+                                   id: p.id
                             }))
                      }))
               }));
@@ -418,22 +422,24 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!program) return { message: "Program tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: program.parent?.parent?.kode ?? null,
-                            urusan: program.parent?.parent?.name ?? null,
-                            id_urusan: program.parent?.parent?.id ?? null,
-                            kode_bidang: program.parent?.kode ?? null,
-                            bidang: program.parent?.name ?? null,
-                            id_bidang: program.parent?.id ?? null,
-                            program: [{
-                                   kode_program: program.kode,
-                                   program: program.name,
-                                   id_program: program.id,
-                                   kegiatan: program.children.map(k => ({
-                                          kode_kegiatan: k.kode,
-                                          kegiatan: k.name,
-                                          id_kegiatan: k.id
-                                   }))
-                            }]
+                            kode: program.parent?.parent?.kode ?? null,
+                            name: program.parent?.parent?.name ?? null,
+                            id: program.parent?.parent?.id ?? null,
+                            bidang: [{
+                                   kode: program.parent?.kode ?? null,
+                                   name: program.parent?.name ?? null,
+                                   id: program.parent?.id ?? null,
+                                   program: [{
+                                          kode: program.kode,
+                                          name: program.name,
+                                          id: program.id,
+                                          kegiatan: program.children.map(k => ({
+                                                 kode: k.kode,
+                                                 name: k.name,
+                                                 id: k.id
+                                          }))
+                                   }]
+                            }],
                      };
               }
 
@@ -452,22 +458,24 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!bidang) return { message: "Bidang tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: bidang.parent?.kode ?? null,
-                            urusan: bidang.parent?.name ?? null,
-                            id_urusan: bidang.parent?.id ?? null,
-                            kode_bidang: bidang.kode,
-                            bidang: bidang.name,
-                            id_bidang: bidang.id,
-                            program: bidang.children.map(p => ({
-                                   kode_program: p.kode,
-                                   program: p.name,
-                                   id_program: p.id,
-                                   kegiatan: p.children.map(k => ({
-                                          kode_kegiatan: k.kode,
-                                          kegiatan: k.name,
-                                          id_kegiatan: k.id
+                            kode: bidang.parent?.kode ?? null,
+                            name: bidang.parent?.name ?? null,
+                            id: bidang.parent?.id ?? null,
+                            bidang: [{
+                                   kode: bidang.kode,
+                                   name: bidang.name,
+                                   id: bidang.id,
+                                   program: bidang.children.map(p => ({
+                                          kode: p.kode,
+                                          name: p.name,
+                                          id: p.id,
+                                          kegiatan: p.children.map(k => ({
+                                                 kode: k.kode,
+                                                 name: k.name,
+                                                 id: k.id
+                                          }))
                                    }))
-                            }))
+                            }]
                      };
               }
 
@@ -490,21 +498,21 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!urusan) return { message: "Urusan tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: urusan.kode,
-                            urusan: urusan.name,
-                            id_urusan: urusan.id,
+                            kode: urusan.kode,
+                            name: urusan.name,
+                            id: urusan.id,
                             bidang: urusan.children.map(b => ({
-                                   kode_bidang: b.kode,
-                                   bidang: b.name,
-                                   id_bidang: b.id,
+                                   kode: b.kode,
+                                   name: b.name,
+                                   id: b.id,
                                    program: b.children.map(p => ({
-                                          kode_program: p.kode,
-                                          program: p.name,
-                                          id_program: p.id,
+                                          kode: p.kode,
+                                          name: p.name,
+                                          id: p.id,
                                           kegiatan: p.children.map(k => ({
-                                                 kode_kegiatan: k.kode,
-                                                 kegiatan: k.name,
-                                                 id_kegiatan: k.id
+                                                 kode: k.kode,
+                                                 name: k.name,
+                                                 id: k.id
                                           }))
                                    }))
                             }))
@@ -529,21 +537,21 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
               });
 
               return all.map(u => ({
-                     kode_urusan: u.kode,
-                     urusan: u.name,
-                     id_urusan: u.id,
+                     kode: u.kode,
+                     name: u.name,
+                     id: u.id,
                      bidang: u.children.map(b => ({
-                            kode_bidang: b.kode,
-                            bidang: b.name,
-                            id_bidang: b.id,
+                            kode: b.kode,
+                            name: b.name,
+                            id: b.id,
                             program: b.children.map(p => ({
-                                   kode_program: p.kode,
-                                   program: p.name,
-                                   id_program: p.id,
+                                   kode: p.kode,
+                                   name: p.name,
+                                   id: p.id,
                                    kegiatan: p.children.map(k => ({
-                                          kode_kegiatan: k.kode,
-                                          kegiatan: k.name,
-                                          id_kegiatan: k.id
+                                          kode: k.kode,
+                                          name: k.name,
+                                          id: k.id
                                    }))
                             }))
                      }))
@@ -564,31 +572,34 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!kegiatan) return { message: "Kegiatan tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: kegiatan.parent?.parent?.parent?.kode ?? null,
-                            urusan: kegiatan.parent?.parent?.parent?.name ?? null,
-                            id_urusan: kegiatan.parent?.parent?.parent?.id ?? null,
-                            kode_bidang: kegiatan.parent?.parent?.kode ?? null,
-                            bidang: kegiatan.parent?.parent?.name ?? null,
-                            id_bidang: kegiatan.parent?.parent?.id ?? null,
-                            program: [{
-                                   kode_program: kegiatan.parent?.kode ?? null,
-                                   program: kegiatan.parent?.name ?? null,
-                                   id_program: kegiatan.parent?.id ?? null,
-                                   kegiatan: [{
-                                          kode_kegiatan: kegiatan.kode,
-                                          kegiatan: kegiatan.name,
-                                          id_kegiatan: kegiatan.id,
-                                          sub_kegiatan: kegiatan.children.map(s => ({
-                                                 kode_sub_kegiatan: s.kode,
-                                                 sub_kegiatan: s.name,
-                                                 id_sub_kegiatan: s.id
-                                          }))
+                            kode: kegiatan.parent?.parent?.parent?.kode ?? null,
+                            name: kegiatan.parent?.parent?.parent?.name ?? null,
+                            id: kegiatan.parent?.parent?.parent?.id ?? null,
+                            bidang: [{
+                                   kode: kegiatan.parent?.parent?.kode ?? null,
+                                   name: kegiatan.parent?.parent?.name ?? null,
+                                   id: kegiatan.parent?.parent?.id ?? null,
+                                   program: [{
+                                          kode: kegiatan.parent?.kode ?? null,
+                                          name: kegiatan.parent?.name ?? null,
+                                          id: kegiatan.parent?.id ?? null,
+                                          kegiatan: [{
+                                                 kode: kegiatan.kode,
+                                                 name: kegiatan.name,
+                                                 id: kegiatan.id,
+                                                 sub_kegiatan: kegiatan.children.map(s => ({
+                                                        kode: s.kode,
+                                                        name: s.name,
+                                                        id: s.id
+                                                 }))
+                                          }]
                                    }]
                             }]
+
                      };
               }
 
-              // id_program -> get program -> its kegiatan -> their sub
+              // id -> get program -> its kegiatan -> their sub
               if (filter.id_program) {
                      const program = await prisma.master.findUnique({
                             where: { id: filter.id_program },
@@ -603,26 +614,28 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!program) return { message: "Program tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: program.parent?.parent?.kode ?? null,
-                            urusan: program.parent?.parent?.name ?? null,
-                            id_urusan: program.parent?.parent?.id ?? null,
-                            kode_bidang: program.parent?.kode ?? null,
-                            bidang: program.parent?.name ?? null,
-                            id_bidang: program.parent?.id ?? null,
-                            program: [{
-                                   kode_program: program.kode,
-                                   program: program.name,
-                                   id_program: program.id,
-                                   kegiatan: program.children.map(k => ({
-                                          kode_kegiatan: k.kode,
-                                          kegiatan: k.name,
-                                          id_kegiatan: k.id,
-                                          sub_kegiatan: k.children.map(s => ({
-                                                 kode_sub_kegiatan: s.kode,
-                                                 sub_kegiatan: s.name,
-                                                 id_sub_kegiatan: s.id
+                            kode: program.parent?.parent?.kode ?? null,
+                            name: program.parent?.parent?.name ?? null,
+                            id: program.parent?.parent?.id ?? null,
+                            bidang: [{
+                                   kode: program.parent?.kode ?? null,
+                                   name: program.parent?.name ?? null,
+                                   id: program.parent?.id ?? null,
+                                   program: [{
+                                          kode: program.kode,
+                                          name: program.name,
+                                          id: program.id,
+                                          kegiatan: program.children.map(k => ({
+                                                 kode: k.kode,
+                                                 name: k.name,
+                                                 id: k.id,
+                                                 subKegiatan: k.children.map(s => ({
+                                                        kode: s.kode,
+                                                        name: s.name,
+                                                        id: s.id
+                                                 }))
                                           }))
-                                   }))
+                                   }]
                             }]
                      };
               }
@@ -647,27 +660,29 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!bidang) return { message: "Bidang tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: bidang.parent?.kode ?? null,
-                            urusan: bidang.parent?.name ?? null,
-                            id_urusan: bidang.parent?.id ?? null,
-                            kode_bidang: bidang.kode,
-                            bidang: bidang.name,
-                            id_bidang: bidang.id,
-                            program: bidang.children.map(p => ({
-                                   kode_program: p.kode,
-                                   program: p.name,
-                                   id_program: p.id,
-                                   kegiatan: p.children.map(k => ({
-                                          kode_kegiatan: k.kode,
-                                          kegiatan: k.name,
-                                          id_kegiatan: k.id,
-                                          sub_kegiatan: k.children.map(s => ({
-                                                 kode_sub_kegiatan: s.kode,
-                                                 sub_kegiatan: s.name,
-                                                 id_sub_kegiatan: s.id
+                            kode: bidang.parent?.kode ?? null,
+                            name: bidang.parent?.name ?? null,
+                            id: bidang.parent?.id ?? null,
+                            bidang: [{
+                                   kode: bidang.kode,
+                                   name: bidang.name,
+                                   id: bidang.id,
+                                   program: bidang.children.map(p => ({
+                                          kode: p.kode,
+                                          name: p.name,
+                                          id: p.id,
+                                          kegiatan: p.children.map(k => ({
+                                                 kode: k.kode,
+                                                 name: k.name,
+                                                 id: k.id,
+                                                 subKegiatan: k.children.map(s => ({
+                                                        kode: s.kode,
+                                                        name: s.name,
+                                                        id: s.id
+                                                 }))
                                           }))
                                    }))
-                            }))
+                            }]
                      };
               }
 
@@ -695,25 +710,25 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
                      if (!urusan) return { message: "Urusan tidak ditemukan", data: null };
 
                      return {
-                            kode_urusan: urusan.kode,
-                            urusan: urusan.name,
-                            id_urusan: urusan.id,
+                            kode: urusan.kode,
+                            name: urusan.name,
+                            id: urusan.id,
                             bidang: urusan.children.map(b => ({
-                                   kode_bidang: b.kode,
-                                   bidang: b.name,
-                                   id_bidang: b.id,
+                                   kode: b.kode,
+                                   name: b.name,
+                                   id: b.id,
                                    program: b.children.map(p => ({
-                                          kode_program: p.kode,
-                                          program: p.name,
-                                          id_program: p.id,
+                                          kode: p.kode,
+                                          name: p.name,
+                                          id: p.id,
                                           kegiatan: p.children.map(k => ({
-                                                 kode_kegiatan: k.kode,
-                                                 kegiatan: k.name,
-                                                 id_kegiatan: k.id,
-                                                 sub_kegiatan: k.children.map(s => ({
-                                                        kode_sub_kegiatan: s.kode,
-                                                        sub_kegiatan: s.name,
-                                                        id_sub_kegiatan: s.id
+                                                 kode: k.kode,
+                                                 name: k.name,
+                                                 id: k.id,
+                                                 subKegiatan: k.children.map(s => ({
+                                                        kode: s.kode,
+                                                        name: s.name,
+                                                        id: s.id
                                                  }))
                                           }))
                                    }))
@@ -744,25 +759,25 @@ export const getHierarchyByType = async (arg1, arg2 = {}) => {
               });
 
               return tree.map(u => ({
-                     kode_urusan: u.kode,
-                     urusan: u.name,
-                     id_urusan: u.id,
+                     kode: u.kode,
+                     name: u.name,
+                     id: u.id,
                      bidang: u.children.map(b => ({
-                            kode_bidang: b.kode,
-                            bidang: b.name,
-                            id_bidang: b.id,
+                            kode: b.kode,
+                            name: b.name,
+                            id: b.id,
                             program: b.children.map(p => ({
-                                   kode_program: p.kode,
-                                   program: p.name,
-                                   id_program: p.id,
+                                   kode: p.kode,
+                                   name: p.name,
+                                   id: p.id,
                                    kegiatan: p.children.map(k => ({
-                                          kode_kegiatan: k.kode,
-                                          kegiatan: k.name,
-                                          id_kegiatan: k.id,
-                                          sub_kegiatan: k.children.map(s => ({
-                                                 kode_sub_kegiatan: s.kode,
-                                                 sub_kegiatan: s.name,
-                                                 id_sub_kegiatan: s.id
+                                          kode: k.kode,
+                                          name: k.name,
+                                          id: k.id,
+                                          subKegiatan: k.children.map(s => ({
+                                                 kode: s.kode,
+                                                 name: s.name,
+                                                 id: s.id
                                           }))
                                    }))
                             }))
