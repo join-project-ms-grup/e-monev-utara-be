@@ -4,6 +4,16 @@ import Joi from "joi";
 
 export const Login = async (req, res, next) => {
        try {
+              console.log('User Agent:', req.headers['user-agent']);
+              const device = req.useragent?.isDesktop ? "Desktop" : req.useragent?.isMobile ? "Mobile" : "Unknown";
+              const os = req.useragent?.os || "Unknown";
+              const browser = req.useragent?.browser || "Unknown";
+              console.log(`Device: ${device}, OS: ${os}, Browser: ${browser}`);
+              const ip =
+                     req.headers['x-forwarded-for']?.split(',').shift() ||
+                     req.socket?.remoteAddress;
+
+              console.log('IP Address:', ip);
               const schema = Joi.object({
                      username: Joi.string().required(),
                      password: Joi.string().required()

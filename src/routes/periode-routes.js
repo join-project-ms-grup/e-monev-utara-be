@@ -12,5 +12,6 @@ router.get('/list', controller.listPeriode);
 router.post('/add', devAdminAccess, controller.addPeriode);
 router.put('/update/:id', devAdminAccess, param('id').isNumeric(), requestValidator, controller.updatePeriode);
 router.delete('/delete/:id', devAdminAccess, param('id').isNumeric(), requestValidator, controller.deletePeriode);
+router.get('/skpd/:id', devAdminAccess, param('id').isNumeric(), requestValidator, controller.getSKPDByPeriodeId);
 
 export default router;
