@@ -8,6 +8,7 @@ import skpdRoutes from "./routes/skpd-routes.js";
 import periodeRoutes from "./routes/periode-routes.js";
 import masterRoutes from "./routes/_master-routes.js";
 import indikatorRoutes from "./routes/_indikator-routes.js";
+import paguRoutes from "./routes/_pagu-routes.js";
 const router = Router();
 
 router.use('/auth', authRoutes);
@@ -17,6 +18,7 @@ router.use('/skpd', skpdRoutes);
 router.use('/periode', periodeRoutes);
 router.use('/master', masterRoutes);
 router.use('/indikator', indikatorRoutes);
+router.use('/pagu', paguRoutes);
 
 
 router.use((req, res) => {

@@ -154,6 +154,7 @@ model paguIndikatif {
   id              Int                 @id @default(autoincrement())
   skpd_periode_id Int
   id_master       Int
+  tahun_ke        Int
   pagu            Decimal?
   status          Boolean             @default(true)
   created_at      DateTime            @default(now())
