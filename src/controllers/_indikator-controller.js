@@ -15,7 +15,6 @@ export const addIndikator = async (req, res, next) => {
                                    Joi.object({
                                           tahun_ke: Joi.number().integer().min(1).required(),
                                           target: Joi.number().required(),
-                                          pagu: Joi.number().required(),
                                    })
                             )
                             .min(1)
@@ -54,8 +53,7 @@ export const updateIndikator = async (req, res, next) => {
                             .items(
                                    Joi.object({
                                           tahun_ke: Joi.number().integer().min(1).required(),
-                                          target: Joi.number().required(),
-                                          pagu: Joi.number().required(),
+                                          target: Joi.number().required()
                                    })
                             )
                             .min(1)

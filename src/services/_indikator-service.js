@@ -31,7 +31,6 @@ export const addIndikator = async (req) => {
                      indikator_id: indikator.id,
                      tahun_ke: item.tahun_ke,
                      target: item.target,
-                     pagu_indikator: new Prisma.Decimal(item.pagu),
               }));
 
               // 🧾 Simpan rincian indikator (gunakan createManyAndReturn jika pakai Prisma v6+)
@@ -154,7 +153,6 @@ export const updateIndikator = async (req) => {
                                    where: { id: existing.id },
                                    data: {
                                           target: item.target,
-                                          pagu_indikator: new Prisma.Decimal(item.pagu),
                                    },
                             });
 
@@ -172,7 +170,6 @@ export const updateIndikator = async (req) => {
                                           indikator_id: indikator.id,
                                           tahun_ke: item.tahun_ke,
                                           target: item.target,
-                                          pagu_indikator: new Prisma.Decimal(item.pagu),
                                    },
                             });
 
@@ -271,7 +268,6 @@ export async function listIndikator(req) {
                             select: {
                                    tahun_ke: true,
                                    target: true,
-                                   pagu_indikator: true,
                             },
                      },
               },
@@ -344,7 +340,6 @@ export async function listIndikator(req) {
                      target: item.rincian.map((r) => ({
                             tahun_ke: r.tahun_ke,
                             target: r.target,
-                            pagu: Number(r.pagu_indikator),
                      })),
               });
        });

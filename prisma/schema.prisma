@@ -150,6 +150,55 @@ model logMaster {
   master master @relation(fields: [entityId], references: [id], onDelete: Cascade)
 }
 
+model paguIndikatif {
+  id              Int                 @id @default(autoincrement())
+  skpd_periode_id Int
+  id_master       Int
+  pagu            Decimal?
+  status          Boolean             @default(true)
+  created_at      DateTime            @default(now())
+  updated_at      DateTime            @updatedAt
+  logs            logPaguIndikatif[]
+  realisasi       realisasiAnggaran[]
+}
+
+model logPaguIndikatif {
+  id         Int      @id @default(autoincrement())
+  pagu_id    Int?
+  user_id    Int?
+  action     String
+  old_data   Json?
+  new_data   Json?
+  created_at DateTime @default(now())
+
+  pagu paguIndikatif? @relation(fields: [pagu_id], references: [id], onDelete: Cascade)
+}
+
+model realisasiAnggaran {
+  id               Int                    @id @default(autoincrement())
+  paguIndikatif_id Int
+  triwulan         Int
+  realisasi        Decimal?
+  status           Boolean                @default(true)
+  created_at       DateTime               @default(now())
+  updated_at       DateTime               @updatedAt
+  logs             realisasiAnggaranLog[]
+
+  pagu paguIndikatif @relation(fields: [paguIndikatif_id], references: [id], onDelete: Cascade)
+}
+
+model realisasiAnggaranLog {
+  id           Int      @id @default(autoincrement())
+  realisasi_id Int?
+  user_id      Int?
+  action       String
+  old_data     Json?
+  new_data     Json?
+  created_at   DateTime @default(now())
+
+  realisasi realisasiAnggaran? @relation(fields: [realisasi_id], references: [id], onDelete: Cascade)
+}
+
 enum SatuanAkumulasi {
   akumulatif
   tetap
@@ -184,17 +233,15 @@ model indikatorLog {
 }
 
 model rincianIndikator {
-  id             Int                   @id @default(autoincrement())
-  indikator_id   Int
-  tahun_ke       Int
-  target         Float
-  pagu_indikator Decimal
-  status         Boolean               @default(true)
-  created_at     DateTime              @default(now())
-  updated_at     DateTime              @updatedAt
-  capaian        capaianTriwulan[]
-  realisai       realisasiAnggaran[]
-  logs           rincianIndikatorLog[]
+  id           Int                   @id @default(autoincrement())
+  indikator_id Int
+  tahun_ke     Int
+  target       Float
+  status       Boolean               @default(true)
+  created_at   DateTime              @default(now())
+  updated_at   DateTime              @updatedAt
+  capaian      capaianTriwulan[]
+  logs         rincianIndikatorLog[]
 
   indikator indikator @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
 
@@ -236,29 +283,4 @@ model capaianTriwulanLog {
   created_at DateTime @default(now())
 
   capaian capaianTriwulan? @relation(fields: [capaian_id], references: [id], onDelete: Cascade)
-}
-
-model realisasiAnggaran {
-  id                  Int                    @id @default(autoincrement())
-  rincianIndikator_id Int
-  triwulan            Int
-  realisasi           Decimal?
-  status              Boolean                @default(true)
-  created_at          DateTime               @default(now())
-  updated_at          DateTime               @updatedAt
-  logs                realisasiAnggaranLog[]
-
-  rincian rincianIndikator @relation(fields: [rincianIndikator_id], references: [id], onDelete: Cascade)
-}
-
-model realisasiAnggaranLog {
-  id           Int      @id @default(autoincrement())
-  realisasi_id Int?
-  user_id      Int?
-  action       String
-  old_data     Json?
-  new_data     Json?
-  created_at   DateTime @default(now())
-
-  realisasi realisasiAnggaran? @relation(fields: [realisasi_id], references: [id], onDelete: Cascade)
 }
