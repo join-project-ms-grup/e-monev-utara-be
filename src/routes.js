@@ -6,8 +6,8 @@ import userRoutes from "./routes/user-routes.js";
 import roleRoutes from "./routes/role-routes.js";
 import skpdRoutes from "./routes/skpd-routes.js";
 import periodeRoutes from "./routes/periode-routes.js";
-import masterRoutes from "./routes/_master_routes.js";
-import indikatorRoutes from "./routes/_indikator_routes.js";
+import masterRoutes from "./routes/_master-routes.js";
+import indikatorRoutes from "./routes/_indikator-routes.js";
 const router = Router();
 
 router.use('/auth', authRoutes);

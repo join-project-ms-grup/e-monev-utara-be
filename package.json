@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon --legacy-watch index.js",
     "migrate": "npx prisma migrate dev",
     "generate": "npx prisma generate",
     "seed": "node seeder.js",

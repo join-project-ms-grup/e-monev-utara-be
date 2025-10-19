@@ -133,6 +133,8 @@ model master {
   children master[] @relation("MasterChildren")
 
   indikator indikator[]
+
+  @@unique([parent_id, kode, type])
 }
 
 model logMaster {
@@ -148,12 +150,18 @@ model logMaster {
   master master @relation(fields: [entityId], references: [id], onDelete: Cascade)
 }
 
+enum SatuanAkumulasi {
+  akumulatif
+  tetap
+}
+
 model indikator {
   id              Int                @id @default(autoincrement())
   skpd_periode_id Int
   master_id       Int
   name            String
   satuan          String
+  jenis_satuan    SatuanAkumulasi    @default(akumulatif)
   status          Boolean            @default(true)
   created_at      DateTime           @default(now())
   updated_at      DateTime           @updatedAt
@@ -176,17 +184,17 @@ model indikatorLog {
 }
 
 model rincianIndikator {
-  id            Int                   @id @default(autoincrement())
-  indikator_id  Int
-  tahun_ke      Int
-  target        Float
-  pagu_anggaran Decimal
-  status        Boolean               @default(true)
-  created_at    DateTime              @default(now())
-  updated_at    DateTime              @updatedAt
-  capaian       capaianTriwulan[]
-  realisai      realisasiAnggaran[]
-  logs          rincianIndikatorLog[]
+  id             Int                   @id @default(autoincrement())
+  indikator_id   Int
+  tahun_ke       Int
+  target         Float
+  pagu_indikator Decimal
+  status         Boolean               @default(true)
+  created_at     DateTime              @default(now())
+  updated_at     DateTime              @updatedAt
+  capaian        capaianTriwulan[]
+  realisai       realisasiAnggaran[]
+  logs           rincianIndikatorLog[]
 
   indikator indikator @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
 

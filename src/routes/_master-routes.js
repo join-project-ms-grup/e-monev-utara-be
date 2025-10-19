@@ -33,4 +33,5 @@ router.get('/list/all',
 router.post('/children-from',
        controller.getHierarchyByType
 );
+
 export default router;

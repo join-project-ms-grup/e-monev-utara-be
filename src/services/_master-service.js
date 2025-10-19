@@ -1,6 +1,5 @@
 import { errorHandling } from "../middlewares/erros-handling.js";
 import prisma from "../config/database.js";
-import response from "../utility/response.js";
 
 export const addMaster = async (req) => {
        const { kode, name, type, parent } = req.body;
