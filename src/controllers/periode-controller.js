@@ -37,7 +37,8 @@ export const updatePeriode = async (req, res, next) => {
               const schema = Joi.object({
                      mulai: Joi.date().required(),
                      akhir: Joi.date().required(),
-                     status: Joi.boolean().required()
+                     status: Joi.boolean().required(),
+                     skpds: Joi.array().items(Joi.number().integer()).required().allow("all")
               });
 
               const { error } = schema.validate(req.body);

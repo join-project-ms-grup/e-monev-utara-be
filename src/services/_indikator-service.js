@@ -311,6 +311,7 @@ export async function listIndikator(req) {
                      type: true,
               },
        });
+       console.debug(masters);
 
        // 5️⃣ Bentuk map master
        const masterMap = {};
@@ -354,25 +355,32 @@ export async function listIndikator(req) {
        const roots = Object.values(masterMap).filter((m) => !m.parent_id);
 
        // 8️⃣ Format hasil akhir sesuai format kamu
-       const result = roots.map((bidang) => ({
-              kode_bidang: bidang.kode,
-              nama_bidang: bidang.name,
-              program: bidang.children.map((program) => ({
-                     kode: program.kode,
-                     name: program.name,
-                     indikator: program.indikator,
-                     kegiatan: program.children.map((kegiatan) => ({
-                            kode: kegiatan.kode,
-                            name: kegiatan.name,
-                            indikator: kegiatan.indikator,
-                            subKegiatan: kegiatan.children.map((sub) => ({
-                                   kode: sub.kode,
-                                   name: sub.name,
-                                   indikator: sub.indikator,
+       const result = roots.map((urusan) => ({
+              kode: urusan.kode,
+              nama: urusan.name,
+              type: "urusan",
+              bidang: urusan.children.map((bidang) => ({
+                     kode: bidang.kode,
+                     name: bidang.name,
+                     type: "bidang",
+                     program: bidang.children.map((program) => ({
+                            kode: program.kode,
+                            name: program.name,
+                            indikator: program.indikator,
+                            kegiatan: program.children.map((kegiatan) => ({
+                                   kode: kegiatan.kode,
+                                   name: kegiatan.name,
+                                   indikator: kegiatan.indikator,
+                                   subKegiatan: kegiatan.children.map((sub) => ({
+                                          kode: sub.kode,
+                                          name: sub.name,
+                                          indikator: sub.indikator,
+                                   })),
                             })),
                      })),
               })),
        }));
+
 
        return result;
 }

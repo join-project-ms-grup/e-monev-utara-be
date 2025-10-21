@@ -84,8 +84,6 @@ export const listPagu = async (req) => {
               },
        });
 
-       console.debug("paguRows sample:", paguRows.slice(0, 3));
-
        // 2️⃣ Kumpulkan master_id yang terkait dengan pagu
        const relatedMasterIds = new Set(
               paguRows
