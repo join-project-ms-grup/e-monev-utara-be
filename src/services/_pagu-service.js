@@ -216,6 +216,37 @@ export const listPagu = async (req) => {
               })),
        }));
 
+        const result = tree.map((urusan) => ({
+              id: urusan.id,
+              kode: urusan.kode,
+              name: urusan.name,
+              type: "urusan",
+              bidang: urusan.children.map((bidang) => ({
+                     id: bidang.id,
+                     kode: bidang.kode,
+                     name: bidang.name,
+                     type: "bidang",
+                     program: bidang.children.map((program) => ({
+                            id: program.id,
+                            kode: program.kode,
+                            name: program.name,
+                            pagu: program.pagu,
+                            kegiatan: program.children.map((kegiatan) => ({
+                                   id: kegiatan.id,
+                                   kode: kegiatan.kode,
+                                   name: kegiatan.name,
+                                   pagu: kegiatan.pagu,
+                                   subKegiatan: kegiatan.children.map((sub) => ({
+                                          id: sub.id,
+                                          kode: sub.kode,
+                                          name: sub.name,
+                                          pagu: sub.pagu,
+                            })),
+                     })),
+              })),
+              })),
+       }));
+
        return result;
 };
 
