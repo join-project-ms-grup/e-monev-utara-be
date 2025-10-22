@@ -268,7 +268,7 @@ export async function listIndikator(req) {
                             select: {
                                    tahun_ke: true,
                                    target: true,
-                            },
+                            }
                      },
               },
        });

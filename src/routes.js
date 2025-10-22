@@ -9,6 +9,8 @@ import periodeRoutes from "./routes/periode-routes.js";
 import masterRoutes from "./routes/_master-routes.js";
 import indikatorRoutes from "./routes/_indikator-routes.js";
 import paguRoutes from "./routes/_pagu-routes.js";
+import capaianRoutes from "./routes/_capaian-routes.js";
+
 const router = Router();
 
 router.use('/auth', authRoutes);
@@ -19,7 +21,7 @@ router.use('/periode', periodeRoutes);
 router.use('/master', masterRoutes);
 router.use('/indikator', indikatorRoutes);
 router.use('/pagu', paguRoutes);
-
+router.use('/capaian', capaianRoutes);
 
 router.use((req, res) => {
        response(res, 404, false, "path tidak ditemukan, coba lagi");
