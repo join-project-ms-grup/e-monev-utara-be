@@ -174,7 +174,7 @@ export const getSKPDByPeriode = async (req) => {
                      skpd: {
                             select: {
                                    id: true,
-                                   name: true
+                                   id: true, name: true
                             }, // hanya id dan nama dari tabel skpd
                      },
               },
@@ -188,6 +188,7 @@ export const getSKPDByPeriode = async (req) => {
        // Kembalikan format yang diminta: [{ id, nama }]
        return getSkpd.map((sp) => ({
               id: sp.id,
+              skpd_id: sp.skpd?.id ?? null,
               skpd_id: sp.skpd?.id ?? null,
               name: sp.skpd?.name ?? null,
        }));

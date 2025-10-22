@@ -192,30 +192,6 @@ export const listPagu = async (req) => {
        }
 
        // 8️⃣ Format akhir: bidang → program → kegiatan → subKegiatan
-       const result = tree.map((bidang) => ({
-              id: bidang.id,
-              kode_bidang: bidang.kode,
-              nama_bidang: bidang.name,
-              program: bidang.children.map((program) => ({
-                     id: program.id,
-                     kode: program.kode,
-                     name: program.name,
-                     pagu: program.pagu,
-                     kegiatan: program.children.map((kegiatan) => ({
-                            id: kegiatan.id,
-                            kode: kegiatan.kode,
-                            name: kegiatan.name,
-                            pagu: kegiatan.pagu,
-                            subKegiatan: kegiatan.children.map((sub) => ({
-                                   id: sub.id,
-                                   kode: sub.kode,
-                                   name: sub.name,
-                                   pagu: sub.pagu,
-                            })),
-                     })),
-              })),
-       }));
-
         const result = tree.map((urusan) => ({
               id: urusan.id,
               kode: urusan.kode,

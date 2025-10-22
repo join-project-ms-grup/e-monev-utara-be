@@ -356,22 +356,27 @@ export async function listIndikator(req) {
 
        // 8️⃣ Format hasil akhir sesuai format kamu
        const result = roots.map((urusan) => ({
+              id: urusan.id,
               kode: urusan.kode,
               nama: urusan.name,
               type: "urusan",
               bidang: urusan.children.map((bidang) => ({
+                     id: bidang.id,
                      kode: bidang.kode,
                      name: bidang.name,
                      type: "bidang",
                      program: bidang.children.map((program) => ({
+                            id: program.id,
                             kode: program.kode,
                             name: program.name,
                             indikator: program.indikator,
                             kegiatan: program.children.map((kegiatan) => ({
+                                   id: kegiatan.id,
                                    kode: kegiatan.kode,
                                    name: kegiatan.name,
                                    indikator: kegiatan.indikator,
                                    subKegiatan: kegiatan.children.map((sub) => ({
+                                          id: sub.id,
                                           kode: sub.kode,
                                           name: sub.name,
                                           indikator: sub.indikator,
