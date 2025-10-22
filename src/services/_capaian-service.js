@@ -127,13 +127,6 @@ export const updateCapaian = async (req) => {
               where: {
                      rincianIndikator_id: parseInt(id_rincian)
 
-              },
-              include: {
-                     rincian: {
-                            include: {
-                                   indikator: true
-                            }
-                     }
               }
        });
        for (const item of capaian) {

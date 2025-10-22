@@ -118,15 +118,16 @@ enum EntityType {
 }
 
 model master {
-  id         Int         @id @default(autoincrement())
+  id         Int             @id @default(autoincrement())
   parent_id  Int?
   type       String
   kode       String
-  name       String      @db.Text
-  status     Boolean     @default(true)
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
+  name       String          @db.Text
+  status     Boolean         @default(true)
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
   logs       logMaster[]
+  pagu       paguIndikatif[]
 
   // Self relation (tree)
   parent   master?  @relation("MasterChildren", fields: [parent_id], references: [id])
@@ -160,6 +161,7 @@ model paguIndikatif {
   created_at      DateTime            @default(now())
   updated_at      DateTime            @updatedAt
   logs            logPaguIndikatif[]
+  master          master              @relation(fields: [id_master], references: [id], onDelete: Cascade)
   realisasi       realisasiAnggaran[]
 }
 

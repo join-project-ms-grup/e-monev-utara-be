@@ -1,0 +1,341 @@
+{
+       "skpd_periode_id": 1,
+       "master_id": 1,
+       "name" : "Indikator Baru",
+       "satuan": "Satuan Baru",
+       "target": [
+              {
+                     "tahun_ke": 1,
+                     "target": 100,
+                     "pagu": 1000000
+              },
+              {
+                     "tahun_ke": 2,
+                     "target": 200,
+                     "pagu": 2000000
+              },
+              {
+                     "tahun_ke": 3,
+                     "target": 300,
+                     "pagu": 3000000
+              },
+              {
+                     "tahun_ke": 4,
+                     "target": 400,
+                     "pagu": 4000000
+              },
+              {
+                     "tahun_ke": 5,
+                     "target": 500,
+                     "pagu": 5000000
+              }
+       ]
+}
+
+// Type Realisasi
+{
+       "rincian_id": 1,
+       "triwulan": 1,
+       "realiasi" : {
+              "capaian": 100,
+              "pagu": 1000000
+       }
+}
+
+[
+       {
+              // bidang 
+             "kode_bidang" : "1",
+             "nama_bidang" : "Bidang A",
+       //       program
+              "program" : [
+                     {
+                            "kode" : "1",
+                            "name" : "Program A",
+                            "indikator":[
+                                   {
+                                          "id": 1,
+                                          "name": "Indikator A",
+                                          "satuan": "Satuan A",
+                                          "target": [
+                                                 {
+                                                        "tahun_ke": 1,
+                                                        "target": 100,
+                                                        "pagu": 1000000
+                                                 },
+                                                 {
+                                                        "tahun_ke": 2,
+                                                        "target": 200,
+                                                        "pagu": 2000000
+                                                 }
+                                          ]
+                                   }
+                            ],
+                            "kegiatan": [
+                                   {
+                                          "kode": "1",
+                                          "name": "Kegiatan A",
+                                          "indikator": [
+                                                 {
+                                                        "id": 2,
+                                                        "name": "Indikator B",
+                                                        "satuan": "Satuan B",
+                                                        "target": [
+                                                               {
+                                                                      "tahun_ke": 1,
+                                                                      "target": 150,
+                                                                      "pagu": 1500000
+                                                               },
+                                                               {
+                                                                      "tahun_ke": 2,
+                                                                      "target": 250,
+                                                                      "pagu": 2500000
+                                                               }
+                                                        ]
+                                                 }
+                                          ],
+                                          "subKegiatan": [
+                                                 {
+                                                        "kode": "1",
+                                                        "name": "Sub Kegiatan A",
+                                                        "indikator": [
+                                                               {
+                                                                      "id": 3,
+                                                                      "name": "Indikator C",
+                                                                      "satuan": "Satuan C",
+                                                                      "target": [
+                                                                             {
+                                                                                    "tahun_ke": 1,
+                                                                                    "target": 120,
+                                                                                    "pagu": 1200000
+                                                                             },
+                                                                             {
+                                                                                    "tahun_ke": 2,
+                                                                                    "target": 220,
+                                                                                    "pagu": 2200000
+                                                                             }
+                                                                      ]
+                                                               }
+                                                        ]
+                                                 }
+                                          ]
+                                   }
+                            ]
+                     }
+               ]
+       }
+]
+
+
+// response capaian lengkap
+[
+       {
+              "kode": Int,
+              "name": String,
+              "type": "Urusan",
+              "bidang": [
+                     {
+                            "kode": Int,
+                            "name": String,
+                            "type": "Bidang",
+                            "program": [
+                                   {
+                                          "kode": Int,
+                                          "name": String,
+                                          "type": "Program",
+                                          "indikator":[
+                                                 {
+                                                        "id": Int,
+                                                        "name": String,
+                                                        "satuan": String,
+                                                        "target": [
+                                                               {
+                                                                      "tahun_ke": Int,
+                                                                      "target": Float,
+                                                               }
+                                                        ],
+                                                        "capaian": {
+                                                               "capaianTotal": Float,
+                                                               "perseCapaian": Float,
+                                                               "capaianTriwulan": [
+                                                                      {
+                                                                             "triwulan": 1,
+                                                                             "capaian": Float //0 jika tidak ada didatabase
+                                                                      },
+                                                                      {
+                                                                             "triwulan": 2,
+                                                                             "capaian": Float //0 jika tidak ada didatabase
+                                                                      },
+                                                                      {
+                                                                             "triwulan": 3, 
+                                                                             "capaian": Float //0 jika tidak ada didatabase
+                                                                       },
+                                                                      {
+                                                                             "triwulan": 4,
+                                                                             "capaian": Float //0 jika tidak ada didatabase
+                                                                      }
+                                                               ]
+                                                        }
+                                                 }
+                                          ],
+                                          "kegiatan": [
+                                                 {
+                                                        "kode": Int,
+                                                        "name": String,
+                                                        "type": "Kegiatan",
+                                                        "indikator":[
+                                                               {
+                                                                      "id": Int,
+                                                                      "name": String,
+                                                                      "satuan": String,
+                                                                      "target": [
+                                                                             {
+                                                                                    "tahun_ke": Int,
+                                                                                    "target": Float,
+                                                                             }
+                                                                      ],
+                                                                      "capaian": {
+                                                                             "capaianTotal": Float,
+                                                                             "perseCapaian": Float,
+                                                                             "capaianTriwulan": [
+                                                                                    {
+                                                                                           "triwulan": 1,
+                                                                                           "capaian": Float //0 jika tidak ada didatabase
+                                                                                    },
+                                                                                    {
+                                                                                           "triwulan": 2,
+                                                                                           "capaian": Float //0 jika tidak ada didatabase
+                                                                                    },
+                                                                                    {
+                                                                                           "triwulan": 3, 
+                                                                                           "capaian": Float //0 jika tidak ada didatabase
+                                                                                     },
+                                                                                    {
+                                                                                           "triwulan": 4,
+                                                                                           "capaian": Float //0 jika tidak ada didatabase
+                                                                                    }
+                                                                             ]
+                                                                      }
+                                                               }
+                                                        ],
+                                                        "subKegiatan": [
+                                                               {
+                                                                      "kode": Int,
+                                                                      "name": String,
+                                                                      "type": "Sub Kegiatan",
+                                                                      "indikator":[
+                                                                             {
+                                                                                    "id": Int,
+                                                                                    "name": String,
+                                                                                    "satuan": String,
+                                                                                    "target": [
+                                                                                           {
+                                                                                                  "tahun_ke": Int,
+                                                                                                  "target": Float,
+                                                                                           }
+                                                                                    ],
+                                                                                    "capaian": {
+                                                                                           "capaianTotal": Float,
+                                                                                           "perseCapaian": Float,
+                                                                                           "capaianTriwulan": [
+                                                                                                  {
+                                                                                                         "triwulan": 1,
+                                                                                                         "capaian": Float //0 jika tidak ada didatabase
+                                                                                                  },
+                                                                                                  {
+                                                                                                         "triwulan": 2,
+                                                                                                         "capaian": Float //0 jika tidak ada didatabase
+                                                                                                  },
+                                                                                                  {
+                                                                                                         "triwulan": 3, 
+                                                                                                         "capaian": Float //0 jika tidak ada didatabase
+                                                                                                   },
+                                                                                                  {
+                                                                                                         "triwulan": 4,
+                                                                                                         "capaian": Float //0 jika tidak ada didatabase
+                                                                                                  }
+                                                                                           ]
+                                                                                    }
+                                                                             }
+                                                                      ]
+                                                               }
+                                                        ]
+                                                 }
+                                          ]
+                                   }
+                            ]
+                     }
+              ]
+       }
+]
+
+//response realisasi anggaran lengkap
+[
+       {
+              "kode": Int,
+              "name": String,
+              "type": "Urusan",
+              "bidang": [
+                     {
+                            "kode": Int,
+                            "name": String,
+                            "type": "Bidang",
+                            "program": [
+                                   {
+                                          "kode": Int,
+                                          "name": String,
+                                          "type": "Program",
+                                          "realisasiAnggaran": {
+                                                 "pagu": Float,
+                                                 "realisasiTotal": Float,
+                                                 "persenRealisasi": Float,
+                                          },
+                                          "kegiatan": [
+                                                 {
+                                                        "kode": Int,
+                                                        "name": String,
+                                                        "type": "Kegiatan",
+                                                        "realisasiAnggaran": {
+                                                               "pagu": Float,
+                                                               "realisasiTotal": Float,
+                                                               "persenRealisasi": Float,
+                                                        },
+                                                        "subKegiatan": [
+                                                               {
+                                                                      "kode": Int,
+                                                                      "name": String,
+                                                                      "type": "Sub Kegiatan",
+                                                                      "realisasiAnggaran": {
+                                                                             "id_pagu": Int,
+                                                                             "pagu": Float,
+                                                                             "realisasiTotal": Float,
+                                                                             "persenRealisasi": Float,
+                                                                             "realisasiTriwulan": [
+                                                                                    {
+                                                                                           "triwulan": 1,
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                    },
+                                                                                    {
+                                                                                           "triwulan": 2,
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                    },
+                                                                                    {
+                                                                                           "triwulan": 3, 
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                     },
+                                                                                    {
+                                                                                           "triwulan": 4,
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                    }
+                                                                             ]
+                                                                      }
+                                                               }
+                                                        ]
+                                                 }
+                                          ]
+                                   }
+                            ]
+                     }
+              ]
+       }
+]

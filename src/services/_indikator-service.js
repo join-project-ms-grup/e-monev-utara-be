@@ -311,7 +311,6 @@ export async function listIndikator(req) {
                      type: true,
               },
        });
-       console.debug(masters);
 
        // 5️⃣ Bentuk map master
        const masterMap = {};
