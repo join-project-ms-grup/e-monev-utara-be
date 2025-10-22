@@ -358,7 +358,7 @@ export async function listIndikator(req) {
        const result = roots.map((urusan) => ({
               id: urusan.id,
               kode: urusan.kode,
-              nama: urusan.name,
+              name: urusan.name,
               type: "urusan",
               bidang: urusan.children.map((bidang) => ({
                      id: bidang.id,
