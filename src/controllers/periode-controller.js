@@ -2,6 +2,15 @@ import Joi from 'joi';
 import * as service from '../services/periode-service.js';
 import response from '../utility/response.js';
 
+export const getSKPDByPeriodeId = async (req, res, next) => {
+       try {
+              const result = await service.getSKPDByPeriode(req);
+              return response(res, 200, true, "SKPD Periode berhasil diambil...", result);
+       } catch (e) {
+              next(e);
+       }
+}
+
 export const listPeriode = async (req, res, next) => {
        try {
               const result = await service.listPeriode();
@@ -11,13 +20,14 @@ export const listPeriode = async (req, res, next) => {
        }
 }
 
+
 export const addPeriode = async (req, res, next) => {
        try {
               const schema = Joi.object({
                      mulai: Joi.date().required(),
                      akhir: Joi.date().required(),
                      status: Joi.boolean().required(),
-                     skpds: Joi.array().items(Joi.number().integer()).required().allow("all")
+                     skpds: Joi.array().items(Joi.number().integer()).required().allow("all"),
               });
 
               const { error } = schema.validate(req.body);
@@ -57,15 +67,6 @@ export const deletePeriode = async (req, res, next) => {
        try {
               const result = await service.deletePeriode(req);
               return response(res, 200, true, "Periode berhasil dihapus...", result);
-       } catch (e) {
-              next(e);
-       }
-}
-
-export const getSKPDByPeriodeId = async (req, res, next) => {
-       try {
-              const result = await service.getSKPDByPeriode(req);
-              return response(res, 200, true, "SKPD Periode berhasil diambil...", result);
        } catch (e) {
               next(e);
        }
