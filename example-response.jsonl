@@ -289,6 +289,24 @@
                                                  "pagu": Float,
                                                  "realisasiTotal": Float,
                                                  "persenRealisasi": Float,
+                                                  "realisasiTriwulan": [
+                                                                                    {
+                                                                                           "triwulan": 1,
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                    },
+                                                                                    {
+                                                                                           "triwulan": 2,
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                    },
+                                                                                    {
+                                                                                           "triwulan": 3, 
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                     },
+                                                                                    {
+                                                                                           "triwulan": 4,
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                    }
+                                                                             ]
                                           },
                                           "kegiatan": [
                                                  {
@@ -299,6 +317,24 @@
                                                                "pagu": Float,
                                                                "realisasiTotal": Float,
                                                                "persenRealisasi": Float,
+                                                                "realisasiTriwulan": [
+                                                                                    {
+                                                                                           "triwulan": 1,
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                    },
+                                                                                    {
+                                                                                           "triwulan": 2,
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                    },
+                                                                                    {
+                                                                                           "triwulan": 3, 
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                     },
+                                                                                    {
+                                                                                           "triwulan": 4,
+                                                                                           "realisasi": Float //0 jika tidak ada didatabase
+                                                                                    }
+                                                                             ]
                                                         },
                                                         "subKegiatan": [
                                                                {
