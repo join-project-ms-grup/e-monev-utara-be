@@ -3,7 +3,7 @@ import { errorHandling } from "../middlewares/erros-handling.js";
 
 export const getRealisasiAnggaranList = async (req) => {
        const skpd_periode_id = Number(req.params.skpd_periode_id);
-       const tahun_ke = Number(req.params.tahun_ke || 1);
+       const tahun_ke = Number(req.params.tahun_ke);
 
        // 1) Ambil semua pagu indikatif
        const paguRows = await prisma.paguIndikatif.findMany({
@@ -17,7 +17,7 @@ export const getRealisasiAnggaranList = async (req) => {
        });
 
        if (!paguRows.length) {
-              throw new errorHandling(404, false, "Data pagu indikatif tidak ditemukan untuk SKPD Periode dan Tahun Ke tersebut");
+              throw new errorHandling(404, "Data pagu indikatif tidak ditemukan untuk SKPD Periode dan Tahun Ke tersebut");
        }
 
        // 2) Ambil semua master untuk memetakan urusan & bidang juga

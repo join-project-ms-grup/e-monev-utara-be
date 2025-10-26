@@ -4,6 +4,15 @@ import Joi from "joi";
 
 export const getRealisasiAnggaranList = async (req, res, next) => {
        try {
+              const schemaParams = Joi.object({
+                     skpd_periode_id: Joi.number().integer().required(),
+                     tahun_ke: Joi.number().integer().required(),
+              });
+
+              const { error: errorParams } = schemaParams.validate(req.params);
+              if (errorParams) {
+                     return response(res, 400, false, errorParams.details[0].message);
+              }
               const result = await service.getRealisasiAnggaranList(req);
               return response(res, 200, true, "Berhasil mengambil data realisasi anggaran", result);
        } catch (error) {
