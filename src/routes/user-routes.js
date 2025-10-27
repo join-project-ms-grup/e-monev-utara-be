@@ -17,6 +17,10 @@ router.put("/update/:id",
        devAdminAccess,
        controller.updateUser);
 
+router.put("/change-password",
+       devAdminAccess,
+       controller.changePassword);
+
 router.delete("/delete/:id",
        devAdminAccess,
        controller.deleteUser);

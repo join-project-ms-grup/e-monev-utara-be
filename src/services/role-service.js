@@ -1,4 +1,5 @@
 import prisma from "../config/database.js"
+import { errorHandling } from "../middlewares/erros-handling.js";
 
 export const getListDev = async () => {
        const roles = await prisma.role.findMany();
@@ -8,8 +9,8 @@ export const getListDev = async () => {
 export const getList = async () => {
        const roles = await prisma.role.findMany({
               where: {
-                     name: {
-                            not: "developer"
+                     kode: {
+                            not: 1
                      }
               },
               select: {
@@ -32,9 +33,7 @@ export const addRole = async (req) => {
               }
        });
        if (existingRole) {
-              const error = new Error("Role dengan kode, nama, atau singkatan tersebut sudah ada");
-              error.statusCode = 400;
-              throw error;
+              throw new errorHandling(400, "Role dengan kode, nama, atau singkatan tersebut sudah ada");
        }
 
        await prisma.role.create({
@@ -58,15 +57,11 @@ export const updateRole = async (req) => {
        });
 
        if (!role) {
-              const error = new Error("Role tidak ditemukan");
-              error.statusCode = 404;
-              throw error;
+              throw new errorHandling(404, "Role tidak ditemukan");
        }
 
        if (role.name === "developer") {
-              const error = new Error("Role developer tidak dapat diubah");
-              error.statusCode = 403;
-              throw error;
+              throw new errorHandling(403, "Role developer tidak dapat diubah");
        }
 
        const existingRole = await prisma.role.findFirst({
@@ -83,9 +78,7 @@ export const updateRole = async (req) => {
               }
        });
        if (existingRole) {
-              const error = new Error("Role dengan kode, nama, atau singkatan tersebut sudah ada");
-              error.statusCode = 400;
-              throw error;
+              throw new errorHandling(400, "Role dengan kode, nama, atau singkatan tersebut sudah ada");
        }
 
        await prisma.role.update({
@@ -111,15 +104,11 @@ export const deleteRole = async (req) => {
        });
 
        if (!role) {
-              const error = new Error("Role tidak ditemukan");
-              error.statusCode = 404;
-              throw error;
+              throw new errorHandling(404, "Role tidak ditemukan");
        }
 
        if (role.name === "developer") {
-              const error = new Error("Role developer tidak dapat dihapus");
-              error.statusCode = 403;
-              throw error;
+              throw new errorHandling(403, "Role developer tidak dapat dihapus");
        }
        await prisma.role.delete({
               where: {

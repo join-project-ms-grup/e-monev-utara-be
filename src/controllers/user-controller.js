@@ -44,8 +44,7 @@ export const updateUser = async (req, res, next) => {
                      fullname: Joi.string().min(3).max(100).optional(),
                      email: Joi.string().email().optional(),
                      role_id: Joi.number().integer().optional(),
-                     skpd_id: Joi.number().integer().allow(null).optional(),
-                     password: Joi.string().min(6).optional(),
+                     skpd_id: Joi.number().integer().allow(null).optional()
               });
 
               const { error } = schema.validate(req.body);
@@ -57,6 +56,27 @@ export const updateUser = async (req, res, next) => {
               // Further processing like updating in database can be done here
               const result = await service.updateUser(req);
               return response(res, 200, true, "User updated successfully", result);
+       } catch (e) {
+              next(e);
+       }
+}
+
+export const changePassword = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     id: Joi.number().integer().required(),
+                     password: Joi.string().min(6).required(),
+              });
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => { return { [item.path]: item.message } });
+                     return response(res, 400, false, "Mohon maaf data belum sesuai format yang diminta", result);
+              }
+
+              // Further processing like updating password in database can be done here
+              const result = await service.changePassword(req);
+              return response(res, 200, true, "Password changed successfully", result);
        } catch (e) {
               next(e);
        }
@@ -86,7 +106,7 @@ export const toggleStatusUser = async (req, res, next) => {
               }
 
               // Further processing like toggling status in database can be done here
-              const result = await service.toggleStatusUser(req);
+              const result = await service.toggleUserStatus(req);
               return response(res, 200, true, "User status toggled successfully", result);
        } catch (e) {
               next(e);
@@ -101,7 +121,7 @@ export const deleteUser = async (req, res, next) => {
               }
 
               // Further processing like deleting from database can be done here
-              const result = await service.userDelete(req);
+              const result = await service.deleteUser(req);
               return response(res, 200, true, "User deleted successfully", result);
        } catch (e) {
               next(e);

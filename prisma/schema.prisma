@@ -8,24 +8,52 @@ datasource db {
 }
 
 model users {
-  id         Int       @id @default(autoincrement())
-  name       String    @unique
+  id         Int             @id @default(autoincrement())
+  name       String          @unique
   fullname   String
   avatar     String?
-  email      String    @unique
+  email      String          @unique
   role_id    Int?
   skpd_id    Int?
   password   String
   token      String?
   session    DateTime?
-  status     Boolean   @default(true)
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  status     Boolean         @default(true)
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+  loginLogs  userLoginLog[]
+  changeLogs userChangeLog[] @relation("UserChanged")
+  changeBy   userChangeLog[] @relation("UserChangedBy")
 
   userRole      role?  @relation(fields: [role_id], references: [kode], onDelete: NoAction, onUpdate: NoAction)
   userSkpd      skpd?  @relation(fields: [skpd_id], references: [kode], onDelete: NoAction, onUpdate: NoAction)
   authoredRoles role[] @relation("AuthorRole") // user bisa create banyak role
   authoredSkpd  skpd[] @relation("AuthorSkpd") // user bisa create banyak skpd
+}
+
+model userLoginLog {
+  id         Int      @id @default(autoincrement())
+  user_id    Int?
+  ip_address String?
+  user_agent String?
+  action     String // LOGIN | LOGOUT | FAILED
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+
+  user users? @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model userChangeLog {
+  id         Int      @id @default(autoincrement())
+  user_id    Int? // user yang diubah
+  changed_by Int? // siapa yang mengubah (admin atau diri sendiri)
+  action     String // CREATE | UPDATE | DELETE
+  old_data   Json?
+  new_data   Json?
+  created_at DateTime @default(now())
+
+  user      users? @relation("UserChanged", fields: [user_id], references: [id], onDelete: Cascade)
+  changedBy users? @relation("UserChangedBy", fields: [changed_by], references: [id], onDelete: SetNull)
 }
 
 model role {
@@ -42,12 +70,14 @@ model role {
 
 model periode {
   id           Int            @id @default(autoincrement())
-  mulai        Int            @unique
-  akhir        Int            @unique
+  mulai        Int
+  akhir        Int
   status       Boolean        @default(true)
   created_at   DateTime       @default(now())
   updated_at   DateTime       @updatedAt
   skpd_periode skpd_periode[]
+
+  @@unique([mulai, akhir])
 }
 
 model skpd {
@@ -79,33 +109,33 @@ model skpd_periode {
   @@unique([skpd_id, periode_id])
 }
 
+enum EntityType {
+  urusan
+  bidang
+  program
+  kegiatan
+  subKegiatan
+}
+
 model master {
-  id         Int      @id @default(autoincrement())
+  id         Int             @id @default(autoincrement())
   parent_id  Int?
   type       String
   kode       String
-  name       String   @db.Text
-  status     Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  name       String          @db.Text
+  status     Boolean         @default(true)
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+  logs       logMaster[]
+  pagu       paguIndikatif[]
 
   // Self relation (tree)
   parent   master?  @relation("MasterChildren", fields: [parent_id], references: [id])
   children master[] @relation("MasterChildren")
 
   indikator indikator[]
-}
 
-model indikator {
-  id         Int      @id @default(autoincrement())
-  master_id  Int
-  name       String
-  satuan     String
-  status     Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  master master @relation(fields: [master_id], references: [id], onDelete: Cascade)
+  @@unique([parent_id, kode, type])
 }
 
 model logMaster {
@@ -117,12 +147,143 @@ model logMaster {
   oldValue  Json? // simpan data lama, contoh: { "kode": "PR001", "name": "Program Lama" }
   newValue  Json? // simpan data baru, contoh: { "kode": "PR002", "name": "Program Baru" }
   createdAt DateTime   @default(now())
+
+  master master @relation(fields: [entityId], references: [id], onDelete: Cascade)
 }
 
-enum EntityType {
-  urusan
-  bidang
-  program
-  kegiatan
-  subKegiatan
+model paguIndikatif {
+  id              Int                 @id @default(autoincrement())
+  skpd_periode_id Int
+  id_master       Int
+  tahun_ke        Int
+  pagu            Decimal?
+  status          Boolean             @default(true)
+  created_at      DateTime            @default(now())
+  updated_at      DateTime            @updatedAt
+  logs            logPaguIndikatif[]
+  master          master              @relation(fields: [id_master], references: [id], onDelete: Cascade)
+  realisasi       realisasiAnggaran[]
+}
+
+model logPaguIndikatif {
+  id         Int      @id @default(autoincrement())
+  pagu_id    Int?
+  user_id    Int?
+  action     String
+  old_data   Json?
+  new_data   Json?
+  created_at DateTime @default(now())
+
+  pagu paguIndikatif? @relation(fields: [pagu_id], references: [id], onDelete: Cascade)
+}
+
+model realisasiAnggaran {
+  id               Int                    @id @default(autoincrement())
+  paguIndikatif_id Int
+  triwulan         Int
+  realisasi        Decimal?
+  status           Boolean                @default(true)
+  created_at       DateTime               @default(now())
+  updated_at       DateTime               @updatedAt
+  logs             realisasiAnggaranLog[]
+
+  pagu paguIndikatif @relation(fields: [paguIndikatif_id], references: [id], onDelete: Cascade)
+}
+
+model realisasiAnggaranLog {
+  id           Int      @id @default(autoincrement())
+  realisasi_id Int?
+  user_id      Int?
+  action       String
+  old_data     Json?
+  new_data     Json?
+  created_at   DateTime @default(now())
+
+  realisasi realisasiAnggaran? @relation(fields: [realisasi_id], references: [id], onDelete: Cascade)
+}
+
+enum SatuanAkumulasi {
+  akumulatif
+  tetap
+}
+
+model indikator {
+  id              Int                @id @default(autoincrement())
+  skpd_periode_id Int
+  master_id       Int
+  name            String
+  satuan          String
+  jenis_satuan    SatuanAkumulasi    @default(akumulatif)
+  status          Boolean            @default(true)
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @updatedAt
+  rincian         rincianIndikator[]
+  logs            indikatorLog[]
+
+  master master @relation(fields: [master_id], references: [id], onDelete: Cascade)
+}
+
+model indikatorLog {
+  id           Int      @id @default(autoincrement())
+  indikator_id Int?
+  user_id      Int?
+  action       String // CREATE | UPDATE | DELETE
+  old_data     Json?
+  new_data     Json?
+  created_at   DateTime @default(now())
+
+  indikator indikator? @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
+}
+
+model rincianIndikator {
+  id           Int                   @id @default(autoincrement())
+  indikator_id Int
+  tahun_ke     Int
+  target       Float
+  status       Boolean               @default(true)
+  created_at   DateTime              @default(now())
+  updated_at   DateTime              @updatedAt
+  capaian      capaianTriwulan[]
+  logs         rincianIndikatorLog[]
+
+  indikator indikator @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
+
+  @@unique([indikator_id, tahun_ke])
+}
+
+model rincianIndikatorLog {
+  id         Int      @id @default(autoincrement())
+  rincian_id Int?
+  user_id    Int?
+  action     String
+  old_data   Json?
+  new_data   Json?
+  created_at DateTime @default(now())
+
+  rincian rincianIndikator? @relation(fields: [rincian_id], references: [id], onDelete: Cascade)
+}
+
+model capaianTriwulan {
+  id                  Int                  @id @default(autoincrement())
+  rincianIndikator_id Int
+  triwulan            Int
+  capaian             Float?
+  status              Boolean              @default(true)
+  created_at          DateTime             @default(now())
+  updated_at          DateTime             @updatedAt
+  logs                capaianTriwulanLog[]
+
+  rincian rincianIndikator @relation(fields: [rincianIndikator_id], references: [id], onDelete: Cascade)
+}
+
+model capaianTriwulanLog {
+  id         Int      @id @default(autoincrement())
+  capaian_id Int?
+  user_id    Int?
+  action     String
+  old_data   Json?
+  new_data   Json?
+  created_at DateTime @default(now())
+
+  capaian capaianTriwulan? @relation(fields: [capaian_id], references: [id], onDelete: Cascade)
 }
