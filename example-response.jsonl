@@ -150,6 +150,7 @@
                                                         "satuan": String,
                                                         "target": [
                                                                {
+                                                                      "id_rincian": Int,
                                                                       "tahun_ke": Int,
                                                                       "target": Float,
                                                                }
@@ -190,6 +191,7 @@
                                                                       "satuan": String,
                                                                       "target": [
                                                                              {
+                                                                                    "id_rincian": Int,
                                                                                     "tahun_ke": Int,
                                                                                     "target": Float,
                                                                              }
@@ -230,6 +232,7 @@
                                                                                     "satuan": String,
                                                                                     "target": [
                                                                                            {
+                                                                                                  "id_rincian": Int,
                                                                                                   "tahun_ke": Int,
                                                                                                   "target": Float,
                                                                                            }

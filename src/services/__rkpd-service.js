@@ -9,18 +9,13 @@ export const listLaporanTahunan = async (req) => {
               where: {
                      type: 'program',
                      status: true,
-                     pagu: {
-                            some: {
-                                   skpd_periode_id: skpd_periode_id
-                            }
-                     }
+                     pagu: { some: { skpd_periode_id } },
+                     indikator: { some: { skpd_periode_id } }
               },
               include: {
                      parent: { include: { parent: true } }, //ambil urusan dan bidang
                      pagu: {
-                            where: {
-                                   skpd_periode_id: skpd_periode_id
-                            }
+                            where: { skpd_periode_id }
                      },
                      indikator: {
                             include: {
@@ -31,17 +26,11 @@ export const listLaporanTahunan = async (req) => {
                      },
                      children: { // ambil kegiatan
                             where: {
-                                   pagu: {
-                                          some: {
-                                                 skpd_periode_id: skpd_periode_id
-                                          }
-                                   }
+                                   pagu: { some: { skpd_periode_id } }
                             },
                             include: {
                                    pagu: {
-                                          where: {
-                                                 skpd_periode_id: skpd_periode_id
-                                          }
+                                          where: { skpd_periode_id }
                                    },
                                    indikator: {
                                           include: {
@@ -52,17 +41,11 @@ export const listLaporanTahunan = async (req) => {
                                    },
                                    children: {
                                           where: {
-                                                 pagu: {
-                                                        some: {
-                                                               skpd_periode_id: skpd_periode_id
-                                                        }
-                                                 }
+                                                 pagu: { some: { skpd_periode_id } }
                                           },
                                           include: {
                                                  pagu: {
-                                                        where: {
-                                                               skpd_periode_id: skpd_periode_id
-                                                        },
+                                                        where: { skpd_periode_id },
                                                         include: { realisasi: true }
                                                  },
                                                  indikator: {
@@ -139,7 +122,7 @@ export const listLaporanTahunan = async (req) => {
        return groupHierarchy(result);
 }
 
-function groupHierarchy(rows) {
+export function groupHierarchy(rows) {
        const urusanMap = new Map();
 
        for (const row of rows) {
@@ -344,18 +327,13 @@ export const listLaporan = async (req) => {
               where: {
                      type: 'program',
                      status: true,
-                     pagu: {
-                            some: {
-                                   skpd_periode_id: skpd_periode_id
-                            }
-                     }
+                     pagu: { some: { skpd_periode_id } },
+                     indikator: { some: { skpd_periode_id } }
               },
               include: {
                      parent: { include: { parent: true } }, //ambil urusan dan bidang
                      pagu: {
-                            where: {
-                                   skpd_periode_id: skpd_periode_id
-                            }
+                            where: { skpd_periode_id }
                      },
                      indikator: {
                             include: {
@@ -367,16 +345,12 @@ export const listLaporan = async (req) => {
                      children: { // ambil kegiatan
                             where: {
                                    pagu: {
-                                          some: {
-                                                 skpd_periode_id: skpd_periode_id
-                                          }
+                                          some: { skpd_periode_id }
                                    }
                             },
                             include: {
                                    pagu: {
-                                          where: {
-                                                 skpd_periode_id: skpd_periode_id
-                                          }
+                                          where: { skpd_periode_id }
                                    },
                                    indikator: {
                                           include: {
@@ -388,16 +362,12 @@ export const listLaporan = async (req) => {
                                    children: {
                                           where: {
                                                  pagu: {
-                                                        some: {
-                                                               skpd_periode_id: skpd_periode_id
-                                                        }
+                                                        some: { skpd_periode_id }
                                                  }
                                           },
                                           include: {
                                                  pagu: {
-                                                        where: {
-                                                               skpd_periode_id: skpd_periode_id
-                                                        },
+                                                        where: { skpd_periode_id },
                                                         include: { realisasi: true }
                                                  },
                                                  indikator: {

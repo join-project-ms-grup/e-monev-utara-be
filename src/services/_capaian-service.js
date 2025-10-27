@@ -1,125 +1,141 @@
 import prisma from "../config/database.js";
+import { errorHandling } from "../middlewares/erros-handling.js";
+import { groupHierarchy } from "./__rkpd-service.js";
 
 export const getCapaianList = async (req) => {
        const skpd_periode_id = parseInt(req.params.skpd_periode_id);
        const tahun_ke = parseInt(req.params.tahun_ke);
 
-       // 1️⃣ Ambil semua indikator berdasarkan SKPD periode
-       const indikatorList = await prisma.indikator.findMany({
-              where: { skpd_periode_id },
-              include: {
-                     master: {
-                            select: { id: true, parent_id: true, kode: true, name: true, type: true },
-                     },
-                     rincian: {
-                            where: { tahun_ke },
-                            include: {
-                                   capaian: {
-                                          orderBy: { triwulan: "asc" },
-                                   },
-                            },
-                     },
+       const getProgram = await prisma.master.findMany({
+              where: {
+                     type: "program",
+                     indikator: { some: { skpd_periode_id } }
               },
-       });
+              include: {
+                     indikator: {
+                            where: { skpd_periode_id },
+                            include: { rincian: { where: { tahun_ke }, include: { capaian: true } } }
+                     },
+                     parent: { include: { parent: true } },
+                     children: {
+                            where: { indikator: { some: { skpd_periode_id } } },
+                            include: {
+                                   indikator: {
+                                          where: { skpd_periode_id },
+                                          include: { rincian: { where: { tahun_ke }, include: { capaian: true } } }
+                                   },
+                                   children: {
+                                          where: { indikator: { some: { skpd_periode_id } } },
+                                          include: {
+                                                 indikator: {
+                                                        where: { skpd_periode_id },
+                                                        include: { rincian: { where: { tahun_ke }, include: { capaian: true } } }
+                                                 },
+                                          }
 
-       if (indikatorList.length === 0) return [];
+                                   }
+                            }
 
-       // 2️⃣ Ambil semua master id yang terlibat
-       const masterIds = indikatorList.map((i) => i.master.id);
-       const collectedIds = new Set(masterIds);
+                     }
 
-       // 3️⃣ Ambil semua parent master sampai root
-       let newParentsFound = true;
-       while (newParentsFound) {
-              const parents = await prisma.master.findMany({
-                     where: { id: { in: Array.from(collectedIds) } },
-                     select: { parent_id: true },
-              });
-
-              const newParents = parents
-                     .map((p) => p.parent_id)
-                     .filter((pid) => pid && !collectedIds.has(pid));
-
-              if (newParents.length > 0) {
-                     newParents.forEach((pid) => collectedIds.add(pid));
-              } else {
-                     newParentsFound = false;
               }
+       });
+       if (getProgram.length === 0) {
+              throw new errorHandling(400, "Data capaian tidak ditemukan");
        }
 
-       // 4️⃣ Ambil semua master terkait
-       const masters = await prisma.master.findMany({
-              where: { id: { in: Array.from(collectedIds) } },
-              orderBy: { id: "asc" },
-              select: {
-                     id: true,
-                     parent_id: true,
-                     kode: true,
-                     name: true,
-                     type: true,
-              },
-       });
+       const result = [];
+       for (const p of getProgram) {
+              const kegiatan = [];
+              for (const k of p.children) {
+                     const subKegiatan = [];
+                     for (const sk of k.children) {
+                            subKegiatan.push({
+                                   id: sk.id,
+                                   parent: sk.parent_id,
+                                   kode: sk.kode,
+                                   name: sk.name,
+                                   indikator: mappingIndikator(sk.indikator)
+                            })
+                     }
+                     kegiatan.push({
+                            id: k.id,
+                            parent: k.parent_id,
+                            kode: k.kode,
+                            name: k.name,
+                            type: "kegiatan",
+                            indikator: mappingIndikator(k.indikator),
+                            subKegiatan
+                     })
+              }
+              const program = {
+                     id: p.id,
+                     parent: p.parent_id,
+                     kode: p.kode,
+                     name: p.name,
+                     type: "program",
+                     indikator: mappingIndikator(p.indikator),
+                     kegiatan
 
-       // 5️⃣ Buat map master → children
-       const masterMap = {};
-       masters.forEach((m) => {
-              masterMap[m.id] = {
-                     kode: m.kode,
-                     name: m.name,
-                     type: m.type,
-                     indikator: [],
-                     children: [],
-              };
-       });
+              }
 
-       // 6️⃣ Kaitkan indikator ke master
-       indikatorList.forEach((ind) => {
-              const m = ind.master;
-              if (!m || !masterMap[m.id]) return;
+              const bidang = {
+                     id: p.parent.id,
+                     parent: p.parent.parent_id,
+                     kode: p.parent.kode,
+                     name: p.parent.name,
+                     type: "bidang",
+                     program
+              }
+              result.push({
+                     id: p.parent.parent.id,
+                     kode: p.parent.parent.kode,
+                     name: p.parent.parent.name,
+                     type: "urusan",
+                     bidang
+              })
+       }
+       return groupHierarchy(result);
+}
+const mappingIndikator = (indikator) => {
+       const result = [];
 
-              // Hitung capaian per triwulan (1–4), isi 0 jika tidak ada
-              const capaianTriwulan = [1, 2, 3, 4].map((triwulan) => {
-                     const data = ind.rincian?.[0]?.capaian?.find((c) => c.triwulan === triwulan);
-                     return { triwulan, capaian: data ? parseFloat(data.capaian) : 0 };
-              });
+       for (const ind of indikator) {
+              const target = {
+                     id_rincian: ind.rincian[0].id,
+                     tahun_ke: ind.rincian[0].tahun_ke,
+                     target: ind.rincian[0].target
+              }
+              let capaian = null
 
-              // Hitung total & persentase capaian
-              const capaianTotal = capaianTriwulan.reduce((a, b) => a + b.capaian, 0);
-              const targetTotal = ind.rincian.reduce((a, r) => a + parseFloat(r.target || 0), 0);
-              const perseCapaian = targetTotal > 0 ? (capaianTotal / targetTotal) * 100 : 0;
+              if (ind.rincian[0].capaian.length === 0) {
+                     capaian = {
+                            capaianTotal: 0,
+                            persenCapaian: 0,
+                            capaianTriwulan: [1, 2, 3, 4].map(item => ({
+                                   triwulan: item,
+                                   capaian: 0
+                            }))
+                     }
+              } else {
+                     const capaianTotal = ind.rincian[0].capaian.reduce((sum, item) => sum + (item.capaian), 0);
+                     const persenCapaian = ((capaianTotal / target.target) * 100).toFixed(2);
+                     const capaianTriwulan = ind.rincian[0].capaian.map(item => ({ triwulan: item.triwulan, capaian: item.capaian }));
+                     capaian = { capaianTotal, persenCapaian, capaianTriwulan }
+              }
 
-              masterMap[m.id].indikator.push({
+              result.push({
                      id: ind.id,
                      name: ind.name,
                      satuan: ind.satuan,
-                     target: ind.rincian.map((r) => ({
-                            id_rincian: r.id,
-                            tahun_ke: r.tahun_ke,
-                            target: parseFloat(r.target || 0),
-                     })),
-                     capaian: {
-                            capaianTotal,
-                            perseCapaian,
-                            capaianTriwulan,
-                     },
-              });
-       });
+                     target: [{ ...target }],
+                     capaian
+              })
+       }
 
-       // 7️⃣ Bangun struktur tree
-       Object.values(masterMap).forEach((m) => {
-              const master = masters.find((x) => x.kode === m.kode);
-              if (master.parent_id && masterMap[master.parent_id]) {
-                     masterMap[master.parent_id].children.push(m);
-              }
-       });
+       return result;
+}
 
-       // 8️⃣ Ambil root (tanpa parent)
-       const roots = masters
-              .filter((m) => !m.parent_id)
-              .map((m) => masterMap[m.id]);
-
-       return roots;
-};
 
 export const updateCapaian = async (req) => {
        const { id_rincian, capaian } = req.body;

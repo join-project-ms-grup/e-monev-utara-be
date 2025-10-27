@@ -1,5 +1,4 @@
 import prisma from "../config/database.js";
-import { Prisma } from "@prisma/client";
 
 export const addIndikator = async (req) => {
        const { skpd_periode_id, master_id, name, satuan, target } = req.body;
@@ -388,4 +387,3 @@ export async function listIndikator(req) {
 
        return result;
 }
-
