@@ -22,7 +22,6 @@ router.delete('/delete',
        controller.deleteIndikator);
 
 router.get('/list/:skpd_periode_id',
-       devAdminAccess,
        param('skpd_periode_id').isNumeric().notEmpty(),
        requestValidator,
        controller.listIndikator

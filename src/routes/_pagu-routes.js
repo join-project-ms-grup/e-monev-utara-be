@@ -23,7 +23,6 @@ router.delete("/delete",
 );
 
 router.get("/list/:skpd_periode_id",
-       devAdminAccess,
        param("skpd_periode_id").isNumeric().notEmpty(),
        requestValidator,
        controller.getPaguList
