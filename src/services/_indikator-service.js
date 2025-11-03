@@ -372,7 +372,7 @@ export async function listIndikator(req) {
                                    id: kegiatan.id,
                                    kode: kegiatan.kode,
                                    name: kegiatan.name,
-                                   indikator: kegiatan.indikator,
+                                   // indikator: kegiatan.indikator,
                                    subKegiatan: kegiatan.children.map((sub) => ({
                                           id: sub.id,
                                           kode: sub.kode,

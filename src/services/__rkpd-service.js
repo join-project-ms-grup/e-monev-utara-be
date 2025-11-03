@@ -86,7 +86,7 @@ export const listLaporanTahunan = async (req) => {
                             kode: k.kode,
                             name: k.name,
                             type: 'kegiatan',
-                            indikator: mappingIndikatorTahunan(k.indikator, tahun_ke),
+                            // indikator: mappingIndikatorTahunan(k.indikator, tahun_ke),
                             pagu: aggregatePaguFromChildrenTahunan(k.pagu, subKegiatan, tahun_ke),
                             subKegiatan
                      });
@@ -259,7 +259,7 @@ const aggregatePaguFromChildrenTahunan = (selfPagu, subKegiatanList, tahun_ke) =
               totalRealisasiPeriode,
               persenRealisasiPeriode: totalRealisasiPeriode !== 0 ? ((totalRealisasiPeriode / paguPeriode) * 100).toFixed(2) : 0
        };
-};
+}
 
 const mappingIndikatorTahunan = (indicators, tahun_ke) => {
        const result = [];
@@ -409,7 +409,7 @@ export const listLaporan = async (req) => {
                             kode: k.kode,
                             name: k.name,
                             type: 'kegiatan',
-                            indikator: mappingIndikator(k.indikator),
+                            // indikator: mappingIndikator(k.indikator),
                             pagu: aggregatePaguFromChildren(k.pagu, subKegiatan),
                             subKegiatan
                      });
@@ -441,7 +441,6 @@ export const listLaporan = async (req) => {
                      bidang
               });
        }
-
        return groupHierarchy(result);
 }
 
@@ -516,7 +515,7 @@ const aggregatePaguFromChildren = (parentPaguRaw, children) => {
               realisasi_per_tahun,
               rasio_per_tahun,
        };
-};
+}
 
 const mappingIndikator = (indikator) => {
        const result = [];

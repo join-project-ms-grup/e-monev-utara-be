@@ -60,12 +60,12 @@ export const updatePeriode = async (req) => {
        const id = parseInt(req.params.id);
 
        // Pastikan periode ada
-       const existing = await prisma.periode.findUnique({
+       const exist = await prisma.periode.findUnique({
               where: { id },
               include: { skpd_periode: true },
        });
 
-       if (!existing) {
+       if (!exist) {
               throw new errorHandling(404, "Periode tidak ditemukan");
        }
 
@@ -83,39 +83,49 @@ export const updatePeriode = async (req) => {
               throw new errorHandling(500, "Gagal memperbarui periode");
        }
 
-       // Hapus semua relasi SKPD lama
-       await prisma.skpd_periode.deleteMany({
+       // Ambil semua SKPD periode yang sudah ada
+       const existing = await prisma.skpd_periode.findMany({
               where: { periode_id: id },
+              select: { id: true, skpd_id: true },
        });
 
-       // Tambahkan SKPD baru
-       if (data.skpds !== "all") {
-              const skpdData = data.skpds.map((skpdId) => ({
+       // Daftar SKPD baru (semua atau pilihan)
+       const newSkpds =
+              data.skpds === "all"
+                     ? (await prisma.skpd.findMany({ select: { id: true } })).map(s => s.id)
+                     : data.skpds;
+
+       const existingIds = existing.map(e => e.skpd_id);
+
+       // 1️⃣ Nonaktifkan yang tidak ada di daftar baru
+       await prisma.skpd_periode.updateMany({
+              where: {
                      periode_id: id,
-                     skpd_id: skpdId,
-              }));
+                     skpd_id: { notIn: newSkpds },
+              },
+              data: { status: false },
+       });
 
-              const skpdPeriode = await prisma.skpd_periode.createMany({
-                     data: skpdData,
-              });
-
-              if (!skpdPeriode) {
-                     throw new errorHandling(500, "Gagal memperbarui SKPD periode");
-              }
-       } else {
-              const skpds = await prisma.skpd.findMany({ select: { id: true } });
-              const skpdData = skpds.map((skpd) => ({
+       // 2️⃣ Aktifkan yang masih ada di daftar baru
+       await prisma.skpd_periode.updateMany({
+              where: {
                      periode_id: id,
-                     skpd_id: skpd.id,
-              }));
+                     skpd_id: { in: newSkpds },
+              },
+              data: { status: true },
+       });
 
-              const skpdPeriode = await prisma.skpd_periode.createMany({
-                     data: skpdData,
+       // 3️⃣ Tambahkan yang belum ada sama sekali
+       const toAdd = newSkpds.filter(skpdId => !existingIds.includes(skpdId));
+
+       if (toAdd.length > 0) {
+              await prisma.skpd_periode.createMany({
+                     data: toAdd.map(skpdId => ({
+                            periode_id: id,
+                            skpd_id: skpdId,
+                            status: true,
+                     })),
               });
-
-              if (!skpdPeriode) {
-                     throw new errorHandling(500, "Gagal memperbarui SKPD periode");
-              }
        }
 
        return await listPeriode();
@@ -190,5 +200,6 @@ export const getSKPDByPeriode = async (req) => {
               id: sp.id,
               skpd_id: sp.skpd?.id ?? null,
               name: sp.skpd?.name ?? null,
+              kode: sp.skpd?.kode ?? null,
        }));
 };

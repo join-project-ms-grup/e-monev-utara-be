@@ -64,7 +64,7 @@ export const getCapaianList = async (req) => {
                             kode: k.kode,
                             name: k.name,
                             type: "kegiatan",
-                            indikator: mappingIndikator(k.indikator),
+                            // indikator: mappingIndikator(k.indikator),
                             subKegiatan
                      })
               }

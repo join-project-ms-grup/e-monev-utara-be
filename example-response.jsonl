@@ -378,3 +378,1153 @@
               ]
        }
 ]
+
+[
+       {
+              "kode": Int,
+              "name": String,
+              "type": "Urusan",
+              "bidang": [
+                     {
+                            "kode": Int,
+                            "name": String,
+                            "type": "Bidang",
+                            "program": [
+                                   {
+                                          "kode": Int,
+                                          "name": String,
+                                          "type": "Program",
+                                          "indikator":[
+                                                 {
+                                                        "nama": string,
+                                                        "satuan": string, //persen, dokumen dll,
+                                                        "target":{
+                                                               "sebelum": data,
+                                                               "sesudah": data,
+                                                        }
+                                                 }
+                                          ],
+                                          "paguIndikatid":{...},
+                                          "kegiatan":[
+                                                 {...mengikuti format program
+                                                 "subKegiatan": {...mengikuti format program}}
+                                          ],
+                                   }
+                            ]
+                     }
+              ]
+       }
+]
+
+[
+    {
+        "no": "1",
+        "id": "11",
+        "kode": "1",
+        "nama": "URUSAN PEMERINTAHAN WAJIB YANG BERKAITAN DENGAN PELAYANAN DASAR"
+    },
+    {
+        "no": "2",
+        "id": "12",
+        "kode": "2",
+        "nama": "URUSAN PEMERINTAHAN WAJIB YANG TIDAK BERKAITAN DENGAN PELAYANAN DASAR"
+    },
+    {
+        "no": "3",
+        "id": "13",
+        "kode": "3",
+        "nama": "URUSAN PEMERINTAHAN PILIHAN"
+    },
+    {
+        "no": "4",
+        "id": "14",
+        "kode": "4",
+        "nama": "UNSUR PENDUKUNG URUSAN PEMERINTAHAN"
+    },
+    {
+        "no": "5",
+        "id": "15",
+        "kode": "5",
+        "nama": "UNSUR PENUNJANG URUSAN PEMERINTAHAN"
+    },
+    {
+        "no": "6",
+        "id": "16",
+        "kode": "6",
+        "nama": "UNSUR PENGAWASAN URUSAN PEMERINTAHAN"
+    },
+    {
+        "no": "7",
+        "id": "17",
+        "kode": "7",
+        "nama": "UNSUR KEWILAYAHAN"
+    },
+    {
+        "no": "8",
+        "id": "18",
+        "kode": "8",
+        "nama": "UNSUR PEMERINTAHAN UMUM"
+    },
+    {
+        "no": "9",
+        "id": "19",
+        "kode": "9",
+        "nama": "UNSUR KEKHUSUSAN DAN KEISTIMEWAAN"
+    },
+    {
+        "no": "10",
+        "id": "20",
+        "kode": "X",
+        "nama": "NON URUSAN"
+    }
+]
+
+[
+    {
+        "no": "1",
+        "id": "699",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "1.01.2.22.0.00.01.0000",
+        "nama": "Dinas Pendidikan",
+        "bidang": "1.01 URUSAN PEMERINTAHAN BIDANG PENDIDIKAN#,2.22 URUSAN PEMERINTAHAN BIDANG KEBUDAYAAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "2",
+        "id": "701",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "1.02.0.00.0.00.01.0000",
+        "nama": "Dinas Kesehatan",
+        "bidang": "1.02 URUSAN PEMERINTAHAN BIDANG KESEHATAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "967",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0001",
+                "nama": "UPTD Laboratorium Kesehatan Daerah KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "964",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0002",
+                "nama": "UPTD RSUD ARGA MAKMUR",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "966",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0003",
+                "nama": "UPTD RSUD LAGITA",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14806",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0004",
+                "nama": "Puskesmas Enggano",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14807",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0005",
+                "nama": "Puskesmas Lubuk Durian",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14808",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0006",
+                "nama": "Puskesmas Tanjung Agung Palik",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14809",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0007",
+                "nama": "Puskesmas Kerkap",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14810",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0008",
+                "nama": "Puskesmas Dusun Curup",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14811",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0009",
+                "nama": "Puskesmas Hulu Palik",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14812",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0010",
+                "nama": "Puskesmas Arga Makmur",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14813",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0011",
+                "nama": "Puskesmas Kemumu",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14814",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0012",
+                "nama": "Puskesmas Perumnas",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14815",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0013",
+                "nama": "Puskesmas Lais",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14816",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0014",
+                "nama": "Puskesmas Air Padang",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14817",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0015",
+                "nama": "Puskesmas Batiknau",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14818",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0016",
+                "nama": "Puskesmas Air Bintunan",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14819",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0017",
+                "nama": "Puskesmas Air Lais",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14820",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0018",
+                "nama": "Puskesmas Ketahun",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14821",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0019",
+                "nama": "Puskesmas D6 Ketahun",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14822",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0020",
+                "nama": "Puskesmas Bukit Harapan",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14823",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0021",
+                "nama": "Puskesmas Napal Putih",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14824",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0022",
+                "nama": "Puskesmas Tanjung Harapan",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14825",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0023",
+                "nama": "Puskesmas Sebelat",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14826",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0024",
+                "nama": "Puskesmas Karang Pulau",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "14827",
+                "idaerah": "473",
+                "kode": "1.02.0.00.0.00.01.0025",
+                "nama": "Puskesmas Suka Makmur",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "3",
+        "id": "668",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "1.03.0.00.0.00.01.0000",
+        "nama": "Dinas Pekerjaan Umum dan Penataan Ruang",
+        "bidang": "1.03 URUSAN PEMERINTAHAN BIDANG PEKERJAAN UMUM DAN PENATAAN RUANG#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "979",
+                "idaerah": "473",
+                "kode": "1.03.0.00.0.00.01.0001",
+                "nama": "UPTD PERALATAN KELAS A",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "4",
+        "id": "694",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "1.04.2.10.1.03.01.0000",
+        "nama": "Dinas Perumahan Rakyat dan Kawasan Permukiman",
+        "bidang": "1.03 URUSAN PEMERINTAHAN BIDANG PEKERJAAN UMUM DAN PENATAAN RUANG#,1.04 URUSAN PEMERINTAHAN BIDANG PERUMAHAN DAN KAWASAN PERMUKIMAN#,2.10 URUSAN PEMERINTAHAN BIDANG PERTANAHAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "5",
+        "id": "683",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "1.05.0.00.0.00.01.0000",
+        "nama": "Satuan Polisi Pamong Praja dan Pemadam Kebakaran",
+        "bidang": "1.05 URUSAN PEMERINTAHAN BIDANG KETENTERAMAN DAN KETERTIBAN UMUM SERTA PERLINDUNGAN MASYARAKAT#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "6",
+        "id": "953",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "1.05.0.00.0.00.02.0000",
+        "nama": "Badan Penanggulangan Bencana Daerah",
+        "bidang": "1.05 URUSAN PEMERINTAHAN BIDANG KETENTERAMAN DAN KETERTIBAN UMUM SERTA PERLINDUNGAN MASYARAKAT#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "7",
+        "id": "672",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "1.06.0.00.0.00.01.0000",
+        "nama": "Dinas Sosial",
+        "bidang": "1.06 URUSAN PEMERINTAHAN BIDANG SOSIAL#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "8",
+        "id": "669",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.07.3.32.0.00.01.0000",
+        "nama": "Dinas Ketenagakerjaan dan Transmigrasi",
+        "bidang": "2.07 URUSAN PEMERINTAHAN BIDANG TENAGA KERJA#,3.32 URUSAN PEMERINTAHAN BIDANG TRANSMIGRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "1068",
+                "idaerah": "473",
+                "kode": "2.07.3.32.0.00.01.0001",
+                "nama": "UPTD BALAI LATIHAN KERJA KELAS A",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "9",
+        "id": "996",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.08.0.00.0.00.01.0000",
+        "nama": "Dinas Pemberdayaan Perempuan dan Perlindungan Anak",
+        "bidang": "2.08 URUSAN PEMERINTAHAN BIDANG PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "14868",
+                "idaerah": "473",
+                "kode": "2.08.0.00.0.00.01.0001",
+                "nama": "UPTD Perlindungan Perempuan dan Anak",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "10",
+        "id": "698",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.09.0.00.0.00.01.0000",
+        "nama": "Dinas Ketahanan Pangan",
+        "bidang": "2.09 URUSAN PEMERINTAHAN BIDANG PANGAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "11",
+        "id": "695",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.11.0.00.0.00.01.0000",
+        "nama": "Dinas Lingkungan Hidup",
+        "bidang": "2.11 URUSAN PEMERINTAHAN BIDANG LINGKUNGAN HIDUP#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "1005",
+                "idaerah": "473",
+                "kode": "2.11.0.00.0.00.01.0001",
+                "nama": "UPTD LABORATORIUM LINGKUNGAN KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1006",
+                "idaerah": "473",
+                "kode": "2.11.0.00.0.00.01.0002",
+                "nama": "UPTD PENGELOLAAN SAMPAH KELAS A",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "12",
+        "id": "700",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.12.0.00.0.00.01.0000",
+        "nama": "Dinas Kependudukan dan Pencatatan Sipil",
+        "bidang": "2.12 URUSAN PEMERINTAHAN BIDANG ADMINISTRASI KEPENDUDUKAN DAN PENCATATAN SIPIL#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "13",
+        "id": "971",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.13.0.00.0.00.01.0000",
+        "nama": "Dinas Pemberdayaan Masyarakat dan Desa",
+        "bidang": "2.13 URUSAN PEMERINTAHAN BIDANG PEMBERDAYAAN MASYARAKAT DAN DESA#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "14",
+        "id": "718",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.14.0.00.0.00.01.0000",
+        "nama": "Dinas Pengendalian Penduduk dan Keluarga Berencana",
+        "bidang": "2.14 URUSAN PEMERINTAHAN BIDANG PENGENDALIAN PENDUDUK DAN KELUARGA BERENCANA#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "15",
+        "id": "682",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.15.0.00.0.00.01.0000",
+        "nama": "Dinas Perhubungan",
+        "bidang": "2.15 URUSAN PEMERINTAHAN BIDANG PERHUBUNGAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "1222",
+                "idaerah": "473",
+                "kode": "2.15.0.00.0.00.01.0001",
+                "nama": "UPTD PENGUJIAN KENDARAAN BERMOTOR KELAS A",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "16",
+        "id": "689",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.16.2.20.2.21.01.0000",
+        "nama": "Dinas Komunikasi dan Informatika",
+        "bidang": "2.16 URUSAN PEMERINTAHAN BIDANG KOMUNIKASI DAN INFORMATIKA#,2.20 URUSAN PEMERINTAHAN BIDANG STATISTIK#,2.21 URUSAN PEMERINTAHAN BIDANG PERSANDIAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "17",
+        "id": "693",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.17.0.00.0.00.01.0000",
+        "nama": "Dinas Koperasi, Usaha Kecil dan Menengah",
+        "bidang": "2.17 URUSAN PEMERINTAHAN BIDANG KOPERASI, USAHA KECIL, DAN MENENGAH#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "18",
+        "id": "690",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.18.0.00.0.00.01.0000",
+        "nama": "Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu",
+        "bidang": "2.18 URUSAN PEMERINTAHAN BIDANG PENANAMAN MODAL#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "19",
+        "id": "644",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.19.0.00.0.00.01.0000",
+        "nama": "Dinas Kepemudaan dan Olahraga",
+        "bidang": "2.19 URUSAN PEMERINTAHAN BIDANG KEPEMUDAAN DAN OLAHRAGA#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "20",
+        "id": "957",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "2.23.2.24.0.00.01.0000",
+        "nama": "Dinas Kearsipan dan Perpustakaan",
+        "bidang": "2.23 URUSAN PEMERINTAHAN BIDANG PERPUSTAKAAN#,2.24 URUSAN PEMERINTAHAN BIDANG KEARSIPAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "21",
+        "id": "951",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "3.25.0.00.0.00.01.0000",
+        "nama": "Dinas Perikanan",
+        "bidang": "3.25 URUSAN PEMERINTAHAN BIDANG KELAUTAN  DAN PERIKANAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "968",
+                "idaerah": "473",
+                "kode": "3.25.0.00.0.00.01.0001",
+                "nama": "UPTD BALAI BENIH IKAN LUBUK DURIAN KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "969",
+                "idaerah": "473",
+                "kode": "3.25.0.00.0.00.01.0002",
+                "nama": "UPTD BALAI BENIH IKAN PAGAR MAS KURO TIDUR KELAS A",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "22",
+        "id": "696",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "3.26.0.00.0.00.01.0000",
+        "nama": "Dinas Pariwisata",
+        "bidang": "3.26 URUSAN PEMERINTAHAN BIDANG PARIWISATA#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "23",
+        "id": "692",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "3.27.0.00.0.00.01.0000",
+        "nama": "Dinas Tanaman Pangan, Hortikultura dan Peternakan",
+        "bidang": "3.27 URUSAN PEMERINTAHAN BIDANG PERTANIAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "999",
+                "idaerah": "473",
+                "kode": "3.27.0.00.0.00.01.0001",
+                "nama": "UPTD PUSKESWAN ARGA MAKMUR KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1000",
+                "idaerah": "473",
+                "kode": "3.27.0.00.0.00.01.0002",
+                "nama": "UPTD PUSKESWAN KERKAP KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1001",
+                "idaerah": "473",
+                "kode": "3.27.0.00.0.00.01.0003",
+                "nama": "UPTD PUSKESWAN PUTRI HIJAU KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1002",
+                "idaerah": "473",
+                "kode": "3.27.0.00.0.00.01.0004",
+                "nama": "UPTD RPH ARGA MAKMUR KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1003",
+                "idaerah": "473",
+                "kode": "3.27.0.00.0.00.01.0005",
+                "nama": "UPTD RPH KETAHUN KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1004",
+                "idaerah": "473",
+                "kode": "3.27.0.00.0.00.01.0006",
+                "nama": "UPTD PEMBIBITAN HORTIKULTURA DAN ANEKA TANAMAN KELAS A",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "24",
+        "id": "995",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "3.27.0.00.0.00.02.0000",
+        "nama": "Dinas Perkebunan",
+        "bidang": "3.27 URUSAN PEMERINTAHAN BIDANG PERTANIAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "25",
+        "id": "697",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "3.30.3.31.0.00.02.0000",
+        "nama": "Dinas Perdagangan",
+        "bidang": "3.30 URUSAN PEMERINTAHAN BIDANG PERDAGANGAN#,3.31 URUSAN PEMERINTAHAN BIDANG PERINDUSTRIAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "1017",
+                "idaerah": "473",
+                "kode": "3.30.3.31.0.00.02.0001",
+                "nama": "UPTD PASAR PURWODADI  KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1019",
+                "idaerah": "473",
+                "kode": "3.30.3.31.0.00.02.0002",
+                "nama": "UPTD PASAR KETAHUN KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1021",
+                "idaerah": "473",
+                "kode": "3.30.3.31.0.00.02.0003",
+                "nama": "UPTD INDUSTRI KECIL DAN MENENGAH KELAS A",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1022",
+                "idaerah": "473",
+                "kode": "3.30.3.31.0.00.02.0004",
+                "nama": "UPTD METROLOGI LEGAL KELAS A",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "26",
+        "id": "716",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "4.01.0.00.0.00.01.0000",
+        "nama": "Sekretariat Daerah",
+        "bidang": "4.01 SEKRETARIAT DAERAH#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "27",
+        "id": "691",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "4.02.0.00.0.00.01.0000",
+        "nama": "Sekretariat DPRD",
+        "bidang": "4.02 SEKRETARIAT DPRD#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "28",
+        "id": "30",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "5.01.5.05.0.00.01.0000",
+        "nama": "Badan Perencanaan Pembangunan, Penelitian, dan Pengembangan Daerah",
+        "bidang": "5.01 PERENCANAAN#,5.05 PENELITIAN DAN PENGEMBANGAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "29",
+        "id": "54",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "5.02.0.00.0.00.01.0000",
+        "nama": "Badan Keuangan dan Aset Daerah",
+        "bidang": "5.02 KEUANGAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "30",
+        "id": "646",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "5.02.0.00.0.00.02.0000",
+        "nama": "Badan Pendapatan Daerah",
+        "bidang": "5.02 KEUANGAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "31",
+        "id": "676",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "5.03.5.04.0.00.01.0000",
+        "nama": "Badan Kepegawaian dan Pengembangan Sumber Daya Manusia",
+        "bidang": "5.03 KEPEGAWAIAN#,5.04 PENDIDIKAN DAN PELATIHAN#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "32",
+        "id": "103",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "6.01.0.00.0.00.01.0000",
+        "nama": "Inspektorat",
+        "bidang": "6.01 INSPEKTORAT DAERAH#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "33",
+        "id": "673",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.01.0000",
+        "nama": "Kecamatan Arga Makmur",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "1027",
+                "idaerah": "473",
+                "kode": "7.01.0.00.0.00.01.0001",
+                "nama": "Kelurahan Gunung Alam",
+                "lock": false,
+                "stt": true
+            },
+            {
+                "id": "1028",
+                "idaerah": "473",
+                "kode": "7.01.0.00.0.00.01.0002",
+                "nama": "Kelurahan Purwodadi",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "34",
+        "id": "974",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.02.0000",
+        "nama": "Kecamatan Arma Jaya",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "1029",
+                "idaerah": "473",
+                "kode": "7.01.0.00.0.00.02.0001",
+                "nama": "Kelurahan Kemumu",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "35",
+        "id": "973",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.03.0000",
+        "nama": "Kecamatan Air Besi",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "36",
+        "id": "663",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.04.0000",
+        "nama": "Kecamatan Air Napal",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "37",
+        "id": "687",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.05.0000",
+        "nama": "Kecamatan Air Padang",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "38",
+        "id": "1106",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.06.0000",
+        "nama": "Kecamatan Batik Nau",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "39",
+        "id": "688",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.07.0000",
+        "nama": "Kecamatan Enggano",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "40",
+        "id": "647",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.08.0000",
+        "nama": "Kecamatan Giri Mulya",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "41",
+        "id": "975",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.09.0000",
+        "nama": "Kecamatan Hulu Palik",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "42",
+        "id": "705",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.10.0000",
+        "nama": "Kecamatan Kerkap",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "1058",
+                "idaerah": "473",
+                "kode": "7.01.0.00.0.00.10.0001",
+                "nama": "Kelurahan Lubuk Durian",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "43",
+        "id": "977",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.11.0000",
+        "nama": "Kecamatan Ketahun",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "44",
+        "id": "978",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.12.0000",
+        "nama": "Kecamatan Lais",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": [
+            {
+                "id": "1030",
+                "idaerah": "473",
+                "kode": "7.01.0.00.0.00.12.0001",
+                "nama": "Kelurahan Pasar Lais",
+                "lock": false,
+                "stt": true
+            }
+        ]
+    },
+    {
+        "no": "45",
+        "id": "704",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.13.0000",
+        "nama": "Kecamatan Marga Sakti Sebelat",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "46",
+        "id": "665",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.14.0000",
+        "nama": "Kecamatan Napal Putih",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "47",
+        "id": "645",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.15.0000",
+        "nama": "Kecamatan Padang Jaya",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "48",
+        "id": "976",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.16.0000",
+        "nama": "Kecamatan Pinang Raya",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "49",
+        "id": "703",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.17.0000",
+        "nama": "Kecamatan Putri Hijau",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    },
+    {
+        "no": "50",
+        "id": "677",
+        "idaerah": "473",
+        "daerah": "Kabupaten Bengkulu Utara",
+        "tahun": "2025",
+        "kode": "7.01.0.00.0.00.18.0000",
+        "nama": "Kecamatan Tanjung Agung Palik",
+        "bidang": "7.01 KECAMATAN ADMINISTRASI#,",
+        "lock": false,
+        "stt": true,
+        "unit": null
+    }
+]
