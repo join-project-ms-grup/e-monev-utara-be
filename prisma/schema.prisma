@@ -156,7 +156,6 @@ model outcome {
   id              Int      @id @default(autoincrement())
   skpd_periode_id Int
   id_master       Int
-  tahun_ke        Int
   outcome         String   @db.Text
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
@@ -225,7 +224,7 @@ model indikator {
   id              Int                @id @default(autoincrement())
   skpd_periode_id Int
   master_id       Int
-  name            String
+  name            String             @db.Text
   satuan          String
   jenis_satuan    SatuanAkumulasi    @default(akumulatif)
   status          Boolean            @default(true)
@@ -253,7 +252,7 @@ model rincianIndikator {
   id           Int                   @id @default(autoincrement())
   indikator_id Int
   tahun_ke     Int
-  target       Float
+  target       String?
   status       Boolean               @default(true)
   created_at   DateTime              @default(now())
   updated_at   DateTime              @updatedAt

@@ -15,11 +15,11 @@ const createRole = async () => {
                      },
                      {
                             kode: 3,
-                            name: 'RKPD',
+                            name: 'SKPD-RKPD',
                      },
                      {
                             kode: 4,
-                            name: 'DAK',
+                            name: 'SKPD-DAK',
                      }
               ],
               skipDuplicates: true,
@@ -32,11 +32,11 @@ const createMainUser = async () => {
        const password = await bycrypt.hash('admin123', 10);
        const createUser = await prisma.users.create({
               data: {
-                     name: 'admin',
+                     name: 'admin1',
                      fullname: 'Administrator',
-                     email: 'admin@mail.com',
+                     email: 'admin1@gmail.com',
                      role_id: 1,
-                     skpd_id: null,
+                     skpd_id: 1,
                      password: password,
                      created_at: new Date(),
                      updated_at: new Date(),
@@ -47,7 +47,7 @@ const createMainUser = async () => {
 
 
 const seeder = async () => {
-       await createRole()
+       // await createRole()
        await createMainUser()
 
 }

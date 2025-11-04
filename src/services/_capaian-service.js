@@ -18,12 +18,8 @@ export const getCapaianList = async (req) => {
                      },
                      parent: { include: { parent: true } },
                      children: {
-                            where: { indikator: { some: { skpd_periode_id } } },
+                            where: { pagu: { some: { skpd_periode_id } } },
                             include: {
-                                   indikator: {
-                                          where: { skpd_periode_id },
-                                          include: { rincian: { where: { tahun_ke }, include: { capaian: true } } }
-                                   },
                                    children: {
                                           where: { indikator: { some: { skpd_periode_id } } },
                                           include: {

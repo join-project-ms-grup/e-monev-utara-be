@@ -448,7 +448,7 @@ const mappingPagu = (pagu) => {
        const totalPagu = pagu.reduce((sum, item) => sum + (Number(item.pagu) || 0), 0);
        const pagu_per_tahun = [1, 2, 3, 4, 5].map(tahun_ke => ({
               tahun_ke,
-              pagu: pagu.find(p => p.tahun_ke === tahun_ke).pagu || 0
+              pagu: pagu.find(p => p.tahun_ke === tahun_ke)?.pagu || 0
        }));
        const realisasi_per_tahun = [1, 2, 3, 4, 5].map(tahun_ke => {
               const getRealisasi = pagu.find(p => p.tahun_ke === tahun_ke);

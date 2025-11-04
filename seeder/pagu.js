@@ -159,7 +159,7 @@ const prosesData = async (tahun_ke, skpd_periode_id, getFile) => {
        // return response(res, 200, true, "berhasil", grouped);
 }
 
-const setpaGU = async (skpd_periode_id, tahun_ke, id_master, pagu) => {
+export const setpaGU = async (skpd_periode_id, tahun_ke, id_master, pagu) => {
        const exist = await prisma.paguIndikatif.findFirst({ where: { skpd_periode_id, id_master, tahun_ke } });
 
        if (exist) {
