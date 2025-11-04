@@ -36,7 +36,7 @@ const createMainUser = async () => {
                      fullname: 'Administrator',
                      email: 'admin1@gmail.com',
                      role_id: 1,
-                     skpd_id: 1,
+                     skpd_id: null,
                      password: password,
                      created_at: new Date(),
                      updated_at: new Date(),
@@ -47,7 +47,7 @@ const createMainUser = async () => {
 
 
 const seeder = async () => {
-       // await createRole()
+       await createRole()
        await createMainUser()
 
 }

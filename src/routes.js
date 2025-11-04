@@ -12,6 +12,7 @@ import paguRoutes from "./routes/_pagu-routes.js";
 import capaianRoutes from "./routes/_capaian-routes.js";
 import realisasiAnggaranRoutes from "./routes/_realisasi-pagu-routes.js";
 import rkpdRoutes from "./routes/__rkpd-routes.js";
+import infoRoutes from "./routes/_info-routes.js";
 import seederRoutes from "../seeder/routes-seeder.js"
 
 const router = Router();
@@ -27,6 +28,7 @@ router.use('/pagu', paguRoutes);
 router.use('/capaian', capaianRoutes);
 router.use('/realisasi-anggaran', realisasiAnggaranRoutes);
 router.use('/rkpd', rkpdRoutes);
+router.use('/info', infoRoutes);
 router.use('/seed', seederRoutes);
 
 router.use((req, res) => {
