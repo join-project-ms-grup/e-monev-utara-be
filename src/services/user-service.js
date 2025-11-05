@@ -9,7 +9,31 @@ export const listUser = async () => {
                      userSkpd: true,
               }
        });
-       return users;
+       if (!users) throw new errorHandling(500, "Gagal mengambil data user");
+       const result = [];
+       for (const user of users) {
+              result.push({
+                     id: user.id,
+                     name: user.name,
+                     fullname: user.fullname,
+                     email: user.email,
+                     status: user.status,
+                     role_id: user.role_id,
+                     skpd_id: user.skpd_id,
+                     userRole: {
+                            id: user.userRole.id,
+                            kode: user.userRole.kode,
+                            name: user.userRole.name,
+                     },
+                     userSkpd: {
+                            id: user.userSkpd.id,
+                            kode: user.userSkpd.kode,
+                            name: user.userSkpd.name,
+                            shortname: user.userSkpd.shortname,
+                     }
+              });
+       }
+       return result;
 }
 
 export const userCreate = async (req) => {

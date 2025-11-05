@@ -1,8 +1,7 @@
 import fs from "fs"
-import response from "../src/utility/response.js";
 import prisma from "../src/config/database.js";
 
-export const seedSkpd = async (req, res, next) => {
+const seedSkpd = async () => {
        try {
               const skpd = JSON.parse(fs.readFileSync('./seeder/skpd.json', 'utf8'));
               const result = [];
@@ -16,9 +15,10 @@ export const seedSkpd = async (req, res, next) => {
                      });
                      result.push(set);
               }
-              return response(res, 200, true, "berhasil", result);
-
+              console.table(result);
        } catch (error) {
               next(error);
        }
 }
+
+seedSkpd();

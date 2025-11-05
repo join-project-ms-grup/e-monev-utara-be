@@ -13,7 +13,9 @@ import capaianRoutes from "./routes/_capaian-routes.js";
 import realisasiAnggaranRoutes from "./routes/_realisasi-pagu-routes.js";
 import rkpdRoutes from "./routes/__rkpd-routes.js";
 import infoRoutes from "./routes/_info-routes.js";
-import seederRoutes from "../seeder/routes-seeder.js"
+import ikuRoutes from "./routes/_iku-routes.js";
+import renjaRoutes from "./routes/_renja-routes.js";
+import { seedPerencanaan } from "../seeder/perencanaan.js";
 
 const router = Router();
 
@@ -28,8 +30,10 @@ router.use('/pagu', paguRoutes);
 router.use('/capaian', capaianRoutes);
 router.use('/realisasi-anggaran', realisasiAnggaranRoutes);
 router.use('/rkpd', rkpdRoutes);
+router.use('/iku', ikuRoutes);
 router.use('/info', infoRoutes);
-router.use('/seed', seederRoutes);
+router.use('/renja', renjaRoutes);
+router.get('/seeder', seedPerencanaan);
 
 router.use((req, res) => {
        response(res, 404, false, "path tidak ditemukan, coba lagi");

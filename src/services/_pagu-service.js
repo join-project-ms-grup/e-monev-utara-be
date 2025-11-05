@@ -76,6 +76,40 @@ export const updatePagu = async (req) => {
 
 
 export const listPagu = async (req) => {
+
+
+       const result1 = tree.map((urusan) => ({
+              id: urusan.id,
+              kode: urusan.kode,
+              name: urusan.name,
+              type: "urusan",
+              bidang: urusan.children.map((bidang) => ({
+                     id: bidang.id,
+                     kode: bidang.kode,
+                     name: bidang.name,
+                     type: "bidang",
+                     program: bidang.children.map((program) => ({
+                            id: program.id,
+                            kode: program.kode,
+                            name: program.name,
+                            pagu: program.pagu,
+                            kegiatan: program.children.map((kegiatan) => ({
+                                   id: kegiatan.id,
+                                   kode: kegiatan.kode,
+                                   name: kegiatan.name,
+                                   pagu: kegiatan.pagu,
+                                   subKegiatan: kegiatan.children.map((sub) => ({
+                                          id: sub.id,
+                                          kode: sub.kode,
+                                          name: sub.name,
+                                          pagu: sub.pagu,
+                                   })),
+                            })),
+                     })),
+              })),
+       }));
+
+       return result1;
        // 1️⃣ Ambil semua data pagu milik skpd_periode_id
        const paguRows = await prisma.paguIndikatif.findMany({
               where: { skpd_periode_id: Number(req.params.skpd_periode_id) },

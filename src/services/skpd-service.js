@@ -3,17 +3,47 @@ import { errorHandling } from "../middlewares/erros-handling.js";
 
 export const listSKPD = async () => {
        const result = await prisma.skpd.findMany({
-              select: {
-                     id: true,
-                     kode: true,
-                     name: true,
-                     shortname: true,
-                     status: true,
-                     created_at: true,
-                     updated_at: true
+              orderBy: { kode: 'asc' },
+              include: {
+                     skpd_periode: { select: { id: true } }
               }
        });
-       return result;
+       if (!result) throw new errorHandling(500, "Gagal mengambil data SKPD");
+       const finalResult = [];
+       for (const skpd of result) {
+              const bidang = [];
+              if (skpd.skpd_periode.length > 0) {
+                     for (const sp of skpd.skpd_periode) {
+                            const skpd_periode_id = sp.id;
+                            const master = await prisma.master.findMany({
+                                   where: {
+                                          type: 'program',
+                                          outcome: {
+                                                 some: { skpd_periode_id }
+                                          }
+                                   },
+                                   include: {
+                                          parent: true
+                                   }
+                            });
+                            for (const m of master) {
+                                   bidang.push({
+                                          kode: m.parent.kode,
+                                          name: m.parent.name
+                                   })
+                            }
+                     }
+                     finalResult.push({
+                            id: skpd.id,
+                            kode: skpd.kode,
+                            name: skpd.name,
+                            shortname: skpd.shortname,
+                            status: skpd.status,
+                            bidang: [...new Map(bidang.map(item => [item.kode, item])).values(),]
+                     });
+              }
+       }
+       return finalResult;
 }
 
 export const createSKPD = async (req) => {

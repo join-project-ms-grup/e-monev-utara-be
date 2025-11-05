@@ -8,7 +8,8 @@
     "migrate": "npx prisma migrate dev",
     "generate": "npx prisma generate",
     "seed": "node seeder.js",
-    "seed-master": "node ./seeder/master.js",
+    "seed-skpd": "node ./seeder/skpd.js",
+    "seed-perencanaan": "node ./seeder/perencanaan.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

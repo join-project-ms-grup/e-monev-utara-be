@@ -5,11 +5,28 @@ export const listPeriode = async (req) => {
        const list = await prisma.periode.findMany({
               orderBy: {
                      mulai: 'desc'
+              },
+              include: {
+                     _count: {
+                            select: { skpd_periode: true }
+                     }
               }
        });
-       if (!list) throw new errorHandling(500, "Gagal mengambil data periode");
 
-       return list;
+
+       if (!list) throw new errorHandling(500, "Gagal mengambil data periode");
+       const result = [];
+       for (const periode of list) {
+              result.push({
+                     id: periode.id,
+                     mulai: periode.mulai,
+                     akhir: periode.akhir,
+                     status: periode.status,
+                     skpd: periode._count.skpd_periode
+              });
+       }
+
+       return result;
 }
 
 export const addPeriode = async (req) => {
@@ -184,7 +201,8 @@ export const getSKPDByPeriode = async (req) => {
                      skpd: {
                             select: {
                                    id: true,
-                                   name: true
+                                   name: true,
+                                   kode: true
                             }, // hanya id dan nama dari tabel skpd
                      },
               },
