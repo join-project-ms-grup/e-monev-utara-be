@@ -92,14 +92,14 @@ function strukturkanData(data) {
                                    indikatorSub.push({ name: item.tolak_ukur_output.trim(), target: item.target_teks_output.trim().split(" ")[0] });
                             }
                      }
-                     const kode_dana_split = item.kode_data ? item.kode_dana.split(",") : [null];
-                     const nama_data_split = item.nama_dana ? item.nama_dana.split(",") : [null];
+                     const kode_dana_split = item.kode_dana ? item.kode_dana.split(",") : [null];
+                     const nama_dana_split = item.nama_dana ? item.nama_dana.split(",") : [null];
                      const sumber_data = [];
                      if (kode_dana_split.length > 1) {
                             for (let i = 0; i < kode_dana_split.length; i++) {
                                    sumber_data.push({
                                           kode_dana: kode_dana_split[i].trim(),
-                                          nama_dana: nama_data_split[i]?.trim() || ""
+                                          nama_dana: nama_dana_split[i]?.trim() || ""
                                    });
                             }
                      } else {

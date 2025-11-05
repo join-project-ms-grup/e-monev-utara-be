@@ -9,42 +9,42 @@ export const listLaporanTahunan = async (req) => {
               where: {
                      type: 'program',
                      status: true,
-                     pagu: { some: { skpd_periode_id } },
-                     indikator: { some: { skpd_periode_id } }
+                     paguProgram: { some: { skpd_periode_id } },
+                     outcome: { some: { skpd_periode_id } }
               },
               include: {
                      parent: { include: { parent: true } }, //ambil urusan dan bidang
-                     pagu: {
+                     paguProgram: {
                             where: { skpd_periode_id }
                      },
-                     indikator: {
-                            include: {
-                                   rincian: {
-                                          include: { capaian: true }
-                                   }
-                            }
-                     },
+                     // indikator: {
+                     //        include: {
+                     //               rincian: {
+                     //                      include: { capaian: true }
+                     //               }
+                     //        }
+                     // },
                      children: { // ambil kegiatan
                             where: {
-                                   pagu: { some: { skpd_periode_id } }
+                                   paguKegiatan: { some: { skpd_periode_id } }
                             },
                             include: {
-                                   pagu: {
+                                   paguKegiatan: {
                                           where: { skpd_periode_id }
                                    },
-                                   indikator: {
-                                          include: {
-                                                 rincian: {
-                                                        include: { capaian: true }
-                                                 }
-                                          }
-                                   },
+                                   // indikator: {
+                                   //        include: {
+                                   //               rincian: {
+                                   //                      include: { capaian: true }
+                                   //               }
+                                   //        }
+                                   // },
                                    children: {
                                           where: {
-                                                 pagu: { some: { skpd_periode_id } }
+                                                 paguIndikatif: { some: { skpd_periode_id } }
                                           },
                                           include: {
-                                                 pagu: {
+                                                 paguIndikatif: {
                                                         where: { skpd_periode_id },
                                                         include: { realisasi: true }
                                                  },
@@ -76,7 +76,7 @@ export const listLaporanTahunan = async (req) => {
                                    name: sk.name,
                                    type: 'sub_kegiatan',
                                    indikator: mappingIndikatorTahunan(sk.indikator, tahun_ke),
-                                   pagu: mappingPaguTahunan(sk.pagu, tahun_ke)
+                                   pagu: mappingPaguTahunan(sk.paguIndikatif, tahun_ke)
                             });
                      }
                      if (subKegiatan.length === 0) continue;
@@ -87,7 +87,7 @@ export const listLaporanTahunan = async (req) => {
                             name: k.name,
                             type: 'kegiatan',
                             // indikator: mappingIndikatorTahunan(k.indikator, tahun_ke),
-                            pagu: aggregatePaguFromChildrenTahunan(k.pagu, subKegiatan, tahun_ke),
+                            pagu: aggregatePaguFromChildrenTahunan(k.paguKegiatan, subKegiatan, tahun_ke),
                             subKegiatan
                      });
               }
@@ -97,8 +97,8 @@ export const listLaporanTahunan = async (req) => {
                      kode: p.kode,
                      name: p.name,
                      type: 'program',
-                     indikator: mappingIndikatorTahunan(p.indikator, tahun_ke),
-                     pagu: aggregatePaguFromChildrenTahunan(p.pagu, kegiatan, tahun_ke),
+                     // indikator: mappingIndikatorTahunan(p.indikator, tahun_ke),
+                     pagu: aggregatePaguFromChildrenTahunan(p.paguProgram, kegiatan, tahun_ke),
                      kegiatan
               }
 
@@ -327,46 +327,46 @@ export const listLaporan = async (req) => {
               where: {
                      type: 'program',
                      status: true,
-                     pagu: { some: { skpd_periode_id } },
-                     indikator: { some: { skpd_periode_id } }
+                     paguProgram: { some: { skpd_periode_id } },
+                     outcome: { some: { skpd_periode_id } }
               },
               include: {
                      parent: { include: { parent: true } }, //ambil urusan dan bidang
-                     pagu: {
+                     paguProgram: {
                             where: { skpd_periode_id }
                      },
-                     indikator: {
-                            include: {
-                                   rincian: {
-                                          include: { capaian: true }
-                                   }
-                            }
-                     },
+                     // indikator: {
+                     //        include: {
+                     //               rincian: {
+                     //                      include: { capaian: true }
+                     //               }
+                     //        }
+                     // },
                      children: { // ambil kegiatan
                             where: {
-                                   pagu: {
+                                   paguKegiatan: {
                                           some: { skpd_periode_id }
                                    }
                             },
                             include: {
-                                   pagu: {
+                                   paguKegiatan: {
                                           where: { skpd_periode_id }
                                    },
-                                   indikator: {
-                                          include: {
-                                                 rincian: {
-                                                        include: { capaian: true }
-                                                 }
-                                          }
-                                   },
+                                   // indikator: {
+                                   //        include: {
+                                   //               rincian: {
+                                   //                      include: { capaian: true }
+                                   //               }
+                                   //        }
+                                   // },
                                    children: {
                                           where: {
-                                                 pagu: {
+                                                 paguIndikatif: {
                                                         some: { skpd_periode_id }
                                                  }
                                           },
                                           include: {
-                                                 pagu: {
+                                                 paguIndikatif: {
                                                         where: { skpd_periode_id },
                                                         include: { realisasi: true }
                                                  },
@@ -399,7 +399,7 @@ export const listLaporan = async (req) => {
                                    name: sk.name,
                                    type: 'sub_kegiatan',
                                    indikator: mappingIndikator(sk.indikator),
-                                   pagu: mappingPagu(sk.pagu)
+                                   pagu: mappingPagu(sk.paguIndikatif)
                             });
                      }
                      if (subKegiatan.length === 0) continue;
@@ -410,7 +410,7 @@ export const listLaporan = async (req) => {
                             name: k.name,
                             type: 'kegiatan',
                             // indikator: mappingIndikator(k.indikator),
-                            pagu: aggregatePaguFromChildren(k.pagu, subKegiatan),
+                            pagu: aggregatePaguFromChildren(k.paguKegiatan, subKegiatan),
                             subKegiatan
                      });
               }
@@ -420,8 +420,8 @@ export const listLaporan = async (req) => {
                      kode: p.kode,
                      name: p.name,
                      type: 'program',
-                     indikator: mappingIndikator(p.indikator),
-                     pagu: aggregatePaguFromChildren(p.pagu, kegiatan),
+                     // indikator: mappingIndikator(p.indikator),
+                     pagu: aggregatePaguFromChildren(p.paguProgram, kegiatan),
                      kegiatan
               }
 

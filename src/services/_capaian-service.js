@@ -9,16 +9,20 @@ export const getCapaianList = async (req) => {
        const getProgram = await prisma.master.findMany({
               where: {
                      type: "program",
-                     indikator: { some: { skpd_periode_id } }
+                     outcome: { some: { skpd_periode_id } }
               },
               include: {
-                     indikator: {
+                     outcome: {
                             where: { skpd_periode_id },
-                            include: { rincian: { where: { tahun_ke }, include: { capaian: true } } }
+                            include: {
+                                   indikatorOutcome: {
+                                          where: { targetIndikatorOutcome: { some: { tahun_ke } } },
+                                   }
+                            }
                      },
                      parent: { include: { parent: true } },
                      children: {
-                            where: { pagu: { some: { skpd_periode_id } } },
+                            where: { paguKegiatan: { some: { skpd_periode_id } } },
                             include: {
                                    children: {
                                           where: { indikator: { some: { skpd_periode_id } } },
@@ -70,7 +74,8 @@ export const getCapaianList = async (req) => {
                      kode: p.kode,
                      name: p.name,
                      type: "program",
-                     indikator: mappingIndikator(p.indikator),
+                     // indikator: mappingIndikator(p.outcome.indikatorOutcome),
+                     // indikator: mappingIndikator(p.outcome.indikatorOutcome),
                      kegiatan
 
               }

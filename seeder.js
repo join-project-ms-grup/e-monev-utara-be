@@ -56,7 +56,7 @@ const createMainUser = async () => {
 
 
 const seeder = async () => {
-       // await createRole()
+       await createRole()
        await createMainUser()
 
 }
