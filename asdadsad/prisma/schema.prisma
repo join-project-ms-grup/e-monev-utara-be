@@ -69,32 +69,43 @@ model role {
 }
 
 model periode {
-  id             Int              @id @default(autoincrement())
-  mulai          Int
-  akhir          Int
-  status         Boolean          @default(true)
-  created_at     DateTime         @default(now())
-  updated_at     DateTime         @updatedAt
-  skpd_periode   skpd_periode[]
-  x_skpd_periode x_skpd_periode[]
+  id           Int            @id @default(autoincrement())
+  mulai        Int
+  akhir        Int
+  status       Boolean        @default(true)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  skpd_periode skpd_periode[]
 
   @@unique([mulai, akhir])
 }
 
 model skpd {
-  id             Int              @id @default(autoincrement())
-  kode           String           @unique
-  name           String
-  shortname      String?
-  author_id      Int?
-  status         Boolean          @default(true)
-  created_at     DateTime         @default(now())
-  updated_at     DateTime         @updatedAt
-  users          users[]
-  skpd_periode   skpd_periode[]
-  x_skpd_periode x_skpd_periode[]
+  id           Int            @id @default(autoincrement())
+  kode         String         @unique
+  name         String
+  shortname    String?
+  author_id    Int?
+  status       Boolean        @default(true)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  users        users[]
+  skpd_periode skpd_periode[]
 
   author users? @relation("AuthorSkpd", fields: [author_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+}
+
+model pagu_skpd {
+  id              Int      @id @default(autoincrement())
+  skpd_periode_id Int
+  tahun           Int
+  tahun_ke        Int
+  pagu            Decimal?
+  status          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  skpdPeriode skpd_periode @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
 }
 
 model skpd_periode {
@@ -113,20 +124,6 @@ model skpd_periode {
   paguIndikatif paguIndikatif[]
 
   @@unique([skpd_id, periode_id])
-}
-
-// RENJA RKPD AREA ============================================================================================================================================
-model pagu_skpd {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  tahun           Int
-  tahun_ke        Int
-  pagu            Decimal?
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-
-  skpdPeriode skpd_periode @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
 }
 
 enum EntityType {
@@ -357,6 +354,7 @@ model paguIndikatif {
   sumberDanaRelasi paguIndikatifSumberDana[]
 }
 
+// tabel pivot untuk many-to-many
 model paguIndikatifSumberDana {
   id                Int @id @default(autoincrement())
   pagu_indikatif_id Int
@@ -418,327 +416,4 @@ model capaianTriwulanLog {
   created_at DateTime @default(now())
 
   capaian capaianTriwulan? @relation(fields: [capaian_id], references: [id], onDelete: Cascade)
-}
-
-// RRPJMD RENSTRA AREA ============================================================================================================================================
-model x_skpd_periode {
-  id         Int      @id @default(autoincrement())
-  skpd_id    Int
-  periode_id Int
-  status     Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  skpd          skpd              @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  periode       periode           @relation(fields: [periode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  paguSkpd      x_pagu_skpd[]
-  indikator     x_indikator[]
-  outcome       x_outcome[]
-  paguIndikatif x_paguIndikatif[]
-
-  @@unique([skpd_id, periode_id])
-}
-
-model x_pagu_skpd {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  tahun           Int
-  tahun_ke        Int
-  pagu            Decimal?
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-
-  skpdPeriode x_skpd_periode @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
-}
-
-enum x_EntityType {
-  urusan
-  bidang
-  program
-  kegiatan
-  subKegiatan
-}
-
-model x_master {
-  id         Int           @id @default(autoincrement())
-  parent_id  Int?
-  type       String
-  kode       String
-  name       String        @db.Text
-  status     Boolean       @default(true)
-  created_at DateTime      @default(now())
-  updated_at DateTime      @updatedAt
-  logs       x_logMaster[]
-
-  // Self relation (tree)
-  parent   x_master?  @relation("MasterChildren", fields: [parent_id], references: [id])
-  children x_master[] @relation("MasterChildren")
-
-  // Relations to pagu programs and outcomes
-  outcome     x_outcome[]
-  paguProgram x_paguProgram[]
-
-  // Relations to pagu Kegiatan
-  paguKegiatan x_paguKegiatan[]
-
-  //Relation to indikator sub dan target
-  indikator     x_indikator[]
-  paguIndikatif x_paguIndikatif[]
-
-  @@unique([parent_id, kode, type])
-}
-
-model x_logMaster {
-  id        Int        @id @default(autoincrement())
-  userId    Int
-  action    String // CREATE, UPDATE, DELETE
-  entity    EntityType
-  entityId  Int
-  oldValue  Json? // simpan data lama, contoh: { "kode": "PR001", "name": "Program Lama" }
-  newValue  Json? // simpan data baru, contoh: { "kode": "PR002", "name": "Program Baru" }
-  createdAt DateTime   @default(now())
-
-  master x_master @relation(fields: [entityId], references: [id], onDelete: Cascade)
-}
-
-model x_outcome {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  id_master       Int
-  outcome         String   @db.Text
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-
-  skpdPeriode      x_skpd_periode      @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
-  master           x_master            @relation(fields: [id_master], references: [id], onDelete: Cascade)
-  indikatorOutcome x_indikatorOutcome?
-}
-
-model x_indikatorOutcome {
-  id                     Int                        @id @default(autoincrement())
-  outcome_id             Int
-  nama                   String                     @db.Text
-  satuan                 String?
-  status                 Boolean                    @default(true)
-  created_at             DateTime                   @default(now())
-  updated_at             DateTime                   @updatedAt
-  targetIndikatorOutcome x_targetIndikatorOutcome[]
-
-  outcome x_outcome @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
-
-  @@unique([outcome_id])
-}
-
-model x_targetIndikatorOutcome {
-  id                   Int      @id @default(autoincrement())
-  indikator_outcome_id Int
-  tahun                Int
-  tahun_ke             Int
-  target               Float?
-  status               Boolean  @default(true)
-  created_at           DateTime @default(now())
-  updated_at           DateTime @updatedAt
-
-  indikatorOutcome x_indikatorOutcome @relation(fields: [indikator_outcome_id], references: [id], onDelete: Cascade)
-
-  @@unique([indikator_outcome_id, tahun_ke], name: "indikator_outcome_id_tahun_ke_unique")
-}
-
-model x_paguProgram {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  id_master       Int
-  tahun           Int
-  tahun_ke        Int
-  pagu            Decimal?
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-  master          x_master @relation(fields: [id_master], references: [id], onDelete: Cascade)
-}
-
-model x_paguKegiatan {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  id_master       Int
-  tahun           Int
-  tahun_ke        Int
-  pagu            Decimal?
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-  master          x_master @relation(fields: [id_master], references: [id], onDelete: Cascade)
-}
-
-model x_labelNasional {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  poin            Int
-  nama            String   @db.Text
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-}
-
-model x_labelProv {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  poin            Int
-  nama            String   @db.Text
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-}
-
-model x_labelKab {
-  id              Int           @id @default(autoincrement())
-  skpd_periode_id Int
-  poin            Int
-  nama            String        @db.Text
-  status          Boolean       @default(true)
-  created_at      DateTime      @default(now())
-  updated_at      DateTime      @updatedAt
-  indikator       x_indikator[]
-}
-
-enum x_SatuanAkumulasi {
-  akumulatif
-  tetap
-}
-
-model x_indikator {
-  id                Int                  @id @default(autoincrement())
-  skpd_periode_id   Int
-  master_id         Int
-  label_nasional_id Int?
-  label_prov_id     Int?
-  label_kab_id      Int?
-  name              String               @db.Text
-  satuan            String
-  lokasi            String?
-  jenis_satuan      SatuanAkumulasi      @default(akumulatif)
-  status            Boolean              @default(true)
-  created_at        DateTime             @default(now())
-  updated_at        DateTime             @updatedAt
-  rincian           x_rincianIndikator[]
-
-  skpdPeriode x_skpd_periode @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
-  master      x_master       @relation(fields: [master_id], references: [id], onDelete: Cascade)
-  labelKab    x_labelKab?    @relation(fields: [labelKabId], references: [id])
-  labelKabId  Int?
-
-  @@unique([skpd_periode_id, master_id]) // contoh unique gabungan
-}
-
-model x_rincianIndikator {
-  id           Int                 @id @default(autoincrement())
-  indikator_id Int
-  tahun        Int
-  tahun_ke     Int
-  target       Float?
-  status       Boolean             @default(true)
-  created_at   DateTime            @default(now())
-  updated_at   DateTime            @updatedAt
-  capaian      x_capaianTriwulan[]
-
-  indikator x_indikator @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
-
-  @@unique([indikator_id, tahun_ke], name: "indikator_id_tahun_ke")
-}
-
-model x_sumberDana {
-  id         Int      @id @default(autoincrement())
-  kode       String   @unique
-  nama       String   @db.Text
-  keterangan String?
-  status     Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  // relasi ke pivot
-  paguIndikatifSumberDana x_paguIndikatifSumberDana[]
-}
-
-model x_paguIndikatif {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  id_master       Int
-  tahun           Int
-  tahun_ke        Int
-  pagu            Decimal?
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-
-  master      x_master              @relation(fields: [id_master], references: [id], onDelete: Cascade)
-  skpdPeriode x_skpd_periode        @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
-  realisasi   x_realisasiAnggaran[]
-
-  // relasi ke pivot
-  sumberDanaRelasi x_paguIndikatifSumberDana[]
-}
-
-model x_paguIndikatifSumberDana {
-  id                Int @id @default(autoincrement())
-  pagu_indikatif_id Int
-  sumber_dana_id    Int
-
-  created_at DateTime @default(now())
-
-  paguIndikatif x_paguIndikatif @relation(fields: [pagu_indikatif_id], references: [id], onDelete: Cascade)
-  sumberDana    x_sumberDana    @relation(fields: [sumber_dana_id], references: [id], onDelete: Cascade)
-
-  @@unique([pagu_indikatif_id, sumber_dana_id]) // supaya tidak duplikat
-}
-
-model x_realisasiAnggaran {
-  id               Int                      @id @default(autoincrement())
-  paguIndikatif_id Int
-  triwulan         Int
-  realisasi        Decimal?
-  status           Boolean                  @default(true)
-  created_at       DateTime                 @default(now())
-  updated_at       DateTime                 @updatedAt
-  logs             x_realisasiAnggaranLog[]
-
-  pagu x_paguIndikatif @relation(fields: [paguIndikatif_id], references: [id], onDelete: Cascade)
-}
-
-model x_realisasiAnggaranLog {
-  id           Int      @id @default(autoincrement())
-  realisasi_id Int?
-  user_id      Int?
-  action       String
-  old_data     Json?
-  new_data     Json?
-  created_at   DateTime @default(now())
-
-  realisasi x_realisasiAnggaran? @relation(fields: [realisasi_id], references: [id], onDelete: Cascade)
-}
-
-model x_capaianTriwulan {
-  id                  Int                    @id @default(autoincrement())
-  rincianIndikator_id Int
-  triwulan            Int
-  capaian             Float?
-  status              Boolean                @default(true)
-  created_at          DateTime               @default(now())
-  updated_at          DateTime               @updatedAt
-  logs                x_capaianTriwulanLog[]
-
-  rincian x_rincianIndikator @relation(fields: [rincianIndikator_id], references: [id], onDelete: Cascade)
-}
-
-model x_capaianTriwulanLog {
-  id         Int      @id @default(autoincrement())
-  capaian_id Int?
-  user_id    Int?
-  action     String
-  old_data   Json?
-  new_data   Json?
-  created_at DateTime @default(now())
-
-  capaian x_capaianTriwulan? @relation(fields: [capaian_id], references: [id], onDelete: Cascade)
 }

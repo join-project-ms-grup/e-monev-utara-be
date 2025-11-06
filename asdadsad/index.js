@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { errorMidleware } from "./src/middlewares/erros-handling.js";
-import router from "./src/router.js";
+import router from "./src/routes.js";
 
 dotenv.config();
 
