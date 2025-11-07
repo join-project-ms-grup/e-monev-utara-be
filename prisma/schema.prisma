@@ -446,14 +446,15 @@ model w_master {
 }
 
 model w_uraian {
-  id        Int                       @id @default(autoincrement())
-  master_id Int
-  name      String                    @db.Text
-  satuan    String
-  base_line String
-  is_iku    Boolean
-  master    w_master                  @relation(fields: [master_id], references: [id], onDelete: Cascade)
-  target    w_targetRealisasiUraian[]
+  id          Int                       @id @default(autoincrement())
+  master_id   Int
+  name        String                    @db.Text
+  satuan      String
+  base_line   String
+  perhitungan String                    @default("akumulatif")
+  is_iku      Boolean
+  master      w_master                  @relation(fields: [master_id], references: [id], onDelete: Cascade)
+  target      w_targetRealisasiUraian[]
 }
 
 model w_targetRealisasiUraian {

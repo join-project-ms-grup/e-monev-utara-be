@@ -8,6 +8,8 @@ const router = Router();
 router.post("/list-target", controller.listTarget);
 router.post("/list-target-iku", controller.listTargetIKU);
 router.post("/list-target-ikd", controller.listTargetIKD);
+router.post("/realisasi", controller.setRealisasi);
+router.post("/get-hasil", controller.getHasilIKUIKD);
 
 router.patch("/toggle-iku-ikd/:id",
        param("id").isNumeric(),

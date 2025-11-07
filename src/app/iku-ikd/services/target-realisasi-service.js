@@ -18,6 +18,7 @@ export const listTarget = async (req) => {
                                                         name: true,
                                                         satuan: true,
                                                         base_line: true,
+                                                        perhitungan: true,
                                                         is_iku: true,
                                                         target: true
                                                  }
@@ -43,6 +44,7 @@ export const listTarget = async (req) => {
                                                         name: true,
                                                         satuan: true,
                                                         base_line: true,
+                                                        perhitungan: true,
                                                         is_iku: true,
                                                         target: true
                                                  }
@@ -80,6 +82,7 @@ export const listTargetIKU = async (req) => {
                                                         name: true,
                                                         satuan: true,
                                                         base_line: true,
+                                                        perhitungan: true,
                                                         is_iku: true,
                                                         target: true
                                                  }
@@ -113,6 +116,7 @@ export const listTargetIKU = async (req) => {
                                                         name: true,
                                                         satuan: true,
                                                         base_line: true,
+                                                        perhitungan: true,
                                                         is_iku: true,
                                                         target: true
                                                  }
@@ -150,6 +154,7 @@ export const listTargetIKD = async (req) => {
                                                         name: true,
                                                         satuan: true,
                                                         base_line: true,
+                                                        perhitungan: true,
                                                         is_iku: true,
                                                         target: true
                                                  }
@@ -184,6 +189,7 @@ export const listTargetIKD = async (req) => {
                                                         satuan: true,
                                                         base_line: true,
                                                         is_iku: true,
+                                                        perhitungan: true,
                                                         target: true
                                                  }
                                           }
@@ -208,4 +214,113 @@ export const IKUtoggleIKD = async (req) => {
               data: { is_iku: !exist.is_iku }
        });
 
+       return null
+
+}
+
+export const setRealisasi = async (req) => {
+       const { id_target, realisasi } = req.body;
+       await prisma.w_targetRealisasiUraian.update({
+              where: { id: parseInt(id_target) },
+              data: {
+                     realisasi: parseFloat(realisasi)
+              }
+       });
+       return null
+}
+
+export const getHasilIKUIKD = async (req) => {
+       const { type, skpd_id, periodeId } = req.body;
+       if (type === "iku") {
+              const dataIKu = await listTargetIKU({ body: { skpd_id, periodeId } });
+              return mappingFormatHasil(dataIKu);
+       } else {
+              const dataIKD = await listTargetIKD({ body: { skpd_id, periodeId } });
+              return mappingFormatHasil(dataIKD);
+       }
+}
+
+const mappingFormatHasil = (data) => {
+       const result = [];
+       for (const skpd of data) {
+              const urusan = [];
+              for (const ur of skpd.wMasters) {
+                     const uraian = [];
+                     for (const urai of ur.uraian) {
+                            const target_realisasi = [];
+                            for (const t of urai.target) {
+                                   const target = t.target;
+                                   const capaian = t.realisasi || 0;
+                                   const persetase = calculateAchievementPercentage(target, capaian, urai.perhitungan);
+                                   target_realisasi.push({
+                                          tahun: t.tahun,
+                                          tahun_ke: t.tahun_ke,
+                                          target,
+                                          capaian,
+                                          persetase
+                                   });
+                            }
+                            uraian.push({
+                                   name: urai.name,
+                                   satuan: urai.satuan,
+                                   base_line: urai.base_line,
+                                   target_realisasi
+                            })
+                     }
+                     urusan.push({
+                            kode: ur.kode,
+                            name: ur.name,
+                            uraian
+                     })
+              }
+              result.push({
+                     pd: skpd.name,
+                     urusan
+              })
+       }
+       return result;
+}
+
+// utils/achievement.js
+export function calculateAchievementPercentage(targetStr, capaian, perhitungan = 'standar') {
+       if (!targetStr || capaian == null) return null;
+
+       const normalized = targetStr.replace(",", ".");
+       const capaianVal = parseFloat(String(capaian).replace(",", "."));
+       if (isNaN(capaianVal)) return null;
+
+       let targetValue;
+
+       // Jika target adalah rentang, gunakan nilai tengahnya
+       if (normalized.includes("-")) {
+              const [min, max] = normalized.split("-").map(parseFloat);
+              if (isNaN(min) || isNaN(max)) return null;
+              targetValue = (min + max) / 2;
+       } else {
+              targetValue = parseFloat(normalized);
+              if (isNaN(targetValue)) return null;
+       }
+
+       let percentage;
+
+       switch (perhitungan.toLowerCase()) {
+              case 'akumulatif':
+              case 'naik':
+                     // Makin tinggi capaian makin bagus
+                     percentage = (capaianVal / targetValue) * 100;
+                     break;
+
+              case 'turun':
+              case 'menurun':
+                     // Makin rendah capaian makin bagus (misal angka kemiskinan)
+                     percentage = (targetValue / capaianVal) * 100;
+                     break;
+
+              case 'standar':
+              default:
+                     percentage = (capaianVal / targetValue) * 100;
+                     break;
+       }
+
+       return Number(percentage.toFixed(2));
 }

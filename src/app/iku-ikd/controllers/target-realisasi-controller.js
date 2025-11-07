@@ -62,3 +62,38 @@ export const IKUtoggleIKD = async (req, res, next) => {
               next(error)
        }
 }
+
+export const setRealisasi = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     id_target: Joi.number().required(),
+                     realisasi: Joi.required()
+              });
+
+              const { error: errorParams } = schema.validate(req.body);
+              if (errorParams) {
+                     return response(res, 400, false, errorParams.details[0].message);
+              }
+              return response(res, 200, true, "Berhasil menambahkan realisasi", await service.setRealisasi(req));
+       } catch (error) {
+              next(error);
+       }
+}
+
+export const getHasilIKUIKD = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     type: Joi.string().required(),
+                     skpd_id: Joi.number().required().allow("all"),
+                     periodeId: Joi.number().required()
+              });
+
+              const { error: errorParams } = schema.validate(req.body);
+              if (errorParams) {
+                     return response(res, 400, false, errorParams.details[0].message);
+              }
+              return response(res, 200, true, "Berhasil mengambil list", await service.getHasilIKUIKD(req));
+       } catch (error) {
+              next(error)
+       }
+}
