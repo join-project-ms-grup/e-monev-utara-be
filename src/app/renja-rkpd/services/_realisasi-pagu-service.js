@@ -2,8 +2,8 @@ import prisma from "../../../config/database.js";
 import { errorHandling } from "../../../middlewares/erros-handling.js";
 
 export const getRealisasiAnggaranList = async (req) => {
-       const skpd_periode_id = Number(req.params.skpd_periode_id);
-       const tahun_ke = Number(req.params.tahun_ke);
+       const skpd_periode_id = Number(req.body.skpd_periode_id);
+       const tahun_ke = Number(req.body.tahun_ke);
 
        // 1) Ambil semua pagu indikatif
        const paguRows = await prisma.paguIndikatif.findMany({
@@ -151,37 +151,5 @@ export const getRealisasiAnggaranList = async (req) => {
        return result;
 };
 
-export const updateRealisasi = async (req) => {
-       const id = parseInt(req.body.id_pagu);
-       const cekCapaian = await prisma.realisasiAnggaran.findMany({
-              where: { paguIndikatif_id: id }
-       });
 
-       for (const item of req.body.realisasi) {
-              const existing = cekCapaian.find(
-                     (c) => c.triwulan === item.triwulan
-              );
-              if (existing) {
-                     // Update existing record
-                     await prisma.realisasiAnggaran.update({
-                            where: { id: existing.id },
-                            data: { realisasi: item.realisasi },
-                     });
-              } else {
-                     // Create new record
-                     await prisma.realisasiAnggaran.create({
-                            data: {
-                                   paguIndikatif_id: id,
-                                   triwulan: item.triwulan,
-                                   realisasi: item.realisasi,
-                            },
-                     });
-              }
-       }
-       const getPagu = await prisma.paguIndikatif.findFirst({
-              where: { id }
-       });
-       const params = { skpd_periode_id: getPagu.skpd_periode_id, tahun_ke: getPagu.tahun_ke }
-       return await getRealisasiAnggaranList({ params });
-}
 

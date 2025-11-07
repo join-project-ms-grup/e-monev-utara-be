@@ -12,16 +12,15 @@ import seedSkpd from "./app/konfigurasi/seeder/skpd.js";
 
 
 // import router renja-rjkpd
-import { seedPerencanaan } from "./app/renja-rkpd/seeder/perencanaan.js";
 import infoRKPD from "./app/renja-rkpd/routes/_info-routes.js";
 import skpdPeriodeRKPD from "./app/renja-rkpd/routes/skpd_periode_routes.js";
 import masterRKPD from "./app/renja-rkpd/routes/_master-routes.js";
 import renjaRKPD from "./app/renja-rkpd/routes/_renja-routes.js";
 import paguRKPD from "./app/renja-rkpd/routes/_pagu-routes.js";
 import indikatorRKPD from "./app/renja-rkpd/routes/_indikator-routes.js";
-import capaianRKPD from "./app/renja-rkpd/routes/_capaian-routes.js";
-import realisasiRKPD from "./app/renja-rkpd/routes/_realisasi-pagu-routes.js";
+import realisasiRKPD from "./app/renja-rkpd/routes/_realisasi-routes.js";
 import hasilRKPD from "./app/renja-rkpd/routes/__rkpd-routes.js";
+import { seedPerencanaan } from "./app/renja-rkpd/seeder/perencanaan.js";
 
 const router = Router();
 
@@ -41,8 +40,7 @@ router.use("/rkpd/master", cekToken, masterRKPD);
 router.use("/rkpd/renja", cekToken, renjaRKPD);
 router.use("/rkpd/pagu", cekToken, paguRKPD);
 router.use("/rkpd/indikator", cekToken, indikatorRKPD);
-router.use("/rkpd/capaian", cekToken, capaianRKPD);
-router.use("/rkpd/realisasi-anggaran", cekToken, realisasiRKPD);
+router.use("/rkpd/realisasi", cekToken, realisasiRKPD);
 router.use("/rkpd/hasil", cekToken, hasilRKPD);
 router.get("/rkpd/seed-perencanaan/:mulai/:akhir/:tahun_ke/:ren", cekToken, seedPerencanaan);
 
