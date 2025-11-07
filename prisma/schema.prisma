@@ -283,6 +283,7 @@ model labelKab {
 
 enum SatuanAkumulasi {
   akumulatif
+  negatif
   tetap
 }
 
@@ -584,13 +585,14 @@ model x_targetIndikatorOutcome {
   tahun                Int
   tahun_ke             Int
   target               Float?
+  capaian              Float?
   status               Boolean  @default(true)
   created_at           DateTime @default(now())
   updated_at           DateTime @updatedAt
 
   indikatorOutcome x_indikatorOutcome @relation(fields: [indikator_outcome_id], references: [id], onDelete: Cascade)
 
-  @@unique([indikator_outcome_id, tahun_ke], name: "indikator_outcome_id_tahun_ke_unique")
+  @@unique([indikator_outcome_id, tahun_ke], name: "x_indikator_outcome_id_tahun_ke_unique")
 }
 
 model x_paguProgram {
@@ -680,15 +682,15 @@ model x_indikator {
 }
 
 model x_rincianIndikator {
-  id           Int                 @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   indikator_id Int
   tahun        Int
   tahun_ke     Int
   target       Float?
-  status       Boolean             @default(true)
-  created_at   DateTime            @default(now())
-  updated_at   DateTime            @updatedAt
-  capaian      x_capaianTriwulan[]
+  capaian      Float?
+  status       Boolean  @default(true)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 
   indikator x_indikator @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
 
@@ -715,13 +717,13 @@ model x_paguIndikatif {
   tahun           Int
   tahun_ke        Int
   pagu            Decimal?
+  realisasi       Decimal?
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
 
-  master      x_master              @relation(fields: [id_master], references: [id], onDelete: Cascade)
-  skpdPeriode x_skpd_periode        @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
-  realisasi   x_realisasiAnggaran[]
+  master      x_master       @relation(fields: [id_master], references: [id], onDelete: Cascade)
+  skpdPeriode x_skpd_periode @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
 
   // relasi ke pivot
   sumberDanaRelasi x_paguIndikatifSumberDana[]
@@ -738,54 +740,4 @@ model x_paguIndikatifSumberDana {
   sumberDana    x_sumberDana    @relation(fields: [sumber_dana_id], references: [id], onDelete: Cascade)
 
   @@unique([pagu_indikatif_id, sumber_dana_id]) // supaya tidak duplikat
-}
-
-model x_realisasiAnggaran {
-  id               Int                      @id @default(autoincrement())
-  paguIndikatif_id Int
-  triwulan         Int
-  realisasi        Decimal?
-  status           Boolean                  @default(true)
-  created_at       DateTime                 @default(now())
-  updated_at       DateTime                 @updatedAt
-  logs             x_realisasiAnggaranLog[]
-
-  pagu x_paguIndikatif @relation(fields: [paguIndikatif_id], references: [id], onDelete: Cascade)
-}
-
-model x_realisasiAnggaranLog {
-  id           Int      @id @default(autoincrement())
-  realisasi_id Int?
-  user_id      Int?
-  action       String
-  old_data     Json?
-  new_data     Json?
-  created_at   DateTime @default(now())
-
-  realisasi x_realisasiAnggaran? @relation(fields: [realisasi_id], references: [id], onDelete: Cascade)
-}
-
-model x_capaianTriwulan {
-  id                  Int                    @id @default(autoincrement())
-  rincianIndikator_id Int
-  triwulan            Int
-  capaian             Float?
-  status              Boolean                @default(true)
-  created_at          DateTime               @default(now())
-  updated_at          DateTime               @updatedAt
-  logs                x_capaianTriwulanLog[]
-
-  rincian x_rincianIndikator @relation(fields: [rincianIndikator_id], references: [id], onDelete: Cascade)
-}
-
-model x_capaianTriwulanLog {
-  id         Int      @id @default(autoincrement())
-  capaian_id Int?
-  user_id    Int?
-  action     String
-  old_data   Json?
-  new_data   Json?
-  created_at DateTime @default(now())
-
-  capaian x_capaianTriwulan? @relation(fields: [capaian_id], references: [id], onDelete: Cascade)
 }

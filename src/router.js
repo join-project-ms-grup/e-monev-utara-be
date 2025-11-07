@@ -22,6 +22,18 @@ import realisasiRKPD from "./app/renja-rkpd/routes/_realisasi-routes.js";
 import hasilRKPD from "./app/renja-rkpd/routes/__rkpd-routes.js";
 import { seedPerencanaan } from "./app/renja-rkpd/seeder/perencanaan.js";
 
+// import router renstra-rpjmd
+import infoRENSTRA from "./app/renstra-rpjmd/routes/_info-routes.js";
+import skpdPeriodeRENSTRA from "./app/renstra-rpjmd/routes/skpd_periode_routes.js";
+import masterRENSTRA from "./app/renstra-rpjmd/routes/_master-routes.js";
+import renjaRENSTRA from "./app/renstra-rpjmd/routes/_renja-routes.js";
+import paguRENSTRA from "./app/renstra-rpjmd/routes/_pagu-routes.js";
+import indikatorRENSTRA from "./app/renstra-rpjmd/routes/_indikator-routes.js";
+import realisasiRENSTRA from "./app/renstra-rpjmd/routes/_realisasi-routes.js";
+import hasilRENSTRA from "./app/renstra-rpjmd/routes/__hasil-routes.js";
+import * as seedRENSTRA from "./app/renstra-rpjmd/seeder/perencanaan.js";
+
+
 
 //import router iku-ikd
 import { seedUraian } from "./app/iku-ikd/seeder/seeder-uraian.js";
@@ -49,6 +61,18 @@ router.use("/rkpd/indikator", cekToken, indikatorRKPD);
 router.use("/rkpd/realisasi", cekToken, realisasiRKPD);
 router.use("/rkpd/hasil", cekToken, hasilRKPD);
 router.get("/rkpd/seed-perencanaan/:mulai/:akhir/:tahun_ke/:ren", cekToken, seedPerencanaan);
+
+
+// Endpoint renstra-rpjmd
+router.use("/renstra/skpd-periode", cekToken, skpdPeriodeRENSTRA);
+router.use("/renstra/info", cekToken, infoRENSTRA);
+router.use("/renstra/master", cekToken, masterRENSTRA);
+router.use("/renstra/renja", cekToken, renjaRENSTRA);
+router.use("/renstra/pagu", cekToken, paguRENSTRA);
+router.use("/renstra/indikator", cekToken, indikatorRENSTRA);
+router.use("/renstra/realisasi", cekToken, realisasiRENSTRA);
+router.use("/renstra/hasil", cekToken, hasilRENSTRA);
+router.get("/renstra/seed-perencanaan/:mulai/:akhir/:tahun_ke/:ren", cekToken, seedRENSTRA.seedPerencanaan);
 
 //Endpoint iku-ikd
 router.use("/ik/skpd", cekToken, skpdIK);
