@@ -22,6 +22,12 @@ import realisasiRKPD from "./app/renja-rkpd/routes/_realisasi-routes.js";
 import hasilRKPD from "./app/renja-rkpd/routes/__rkpd-routes.js";
 import { seedPerencanaan } from "./app/renja-rkpd/seeder/perencanaan.js";
 
+
+//import router iku-ikd
+import { seedUraian } from "./app/iku-ikd/seeder/seeder-uraian.js";
+import skpdIK from "./app/iku-ikd/routes/skpd-routes.js"
+import targetRealisasiIK from "./app/iku-ikd/routes/target-realisasi-routes.js"
+
 const router = Router();
 
 // Endpoint config
@@ -43,6 +49,11 @@ router.use("/rkpd/indikator", cekToken, indikatorRKPD);
 router.use("/rkpd/realisasi", cekToken, realisasiRKPD);
 router.use("/rkpd/hasil", cekToken, hasilRKPD);
 router.get("/rkpd/seed-perencanaan/:mulai/:akhir/:tahun_ke/:ren", cekToken, seedPerencanaan);
+
+//Endpoint iku-ikd
+router.use("/ik/skpd", cekToken, skpdIK);
+router.use("/ik/target-realisasi", cekToken, targetRealisasiIK);
+router.get("/ik/seed-uraian", cekToken, seedUraian);
 
 
 router.use((req, res) => {
