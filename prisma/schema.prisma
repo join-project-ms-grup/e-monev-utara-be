@@ -763,8 +763,20 @@ model dak_master {
   updated_at DateTime   @updatedAt
 
   // Self relation (tree)
-  parent   dak_master?  @relation("MasterChildren", fields: [parent_id], references: [id])
-  children dak_master[] @relation("MasterChildren")
+  parent      dak_master?   @relation("MasterChildren", fields: [parent_id], references: [id])
+  children    dak_master[]  @relation("MasterChildren")
+  fisikIdents fisik_ident[]
+}
+
+model dak_opd {
+  id          Int           @id @default(autoincrement())
+  kode        String?
+  shortname   String?
+  fullname    String        @db.Text
+  status      Boolean       @default(true)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  fisikIdents fisik_ident[]
 }
 
 model dak_jenis {
@@ -775,19 +787,21 @@ model dak_jenis {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  subJenis dak_subJenis[]
-  bidang   dak_bidang[]
-  masalah  dak_masalah[]
+  subJenis  dak_subJenis[]
+  bidang    dak_bidang[]
+  masalah   dak_masalah[]
+  dakBerkas dak_berkas[]
 }
 
 model dak_subJenis {
-  id         Int      @id @default(autoincrement())
-  jenis_dak  Int?
-  nama       String
-  keterangan String?  @db.Text
-  status     Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id          Int           @id @default(autoincrement())
+  jenis_dak   Int?
+  nama        String
+  keterangan  String?       @db.Text
+  status      Boolean       @default(true)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  ident_fisik fisik_ident[]
 
   dakJenis dak_jenis? @relation(fields: [jenis_dak], references: [kode])
 }
@@ -806,13 +820,14 @@ model dak_bidang {
 }
 
 model dak_subBidang {
-  id           Int      @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   dak_bidangId Int?
   name         String
-  keterangan   String?  @db.Text
-  status       Boolean  @default(true)
-  created_at   DateTime @default(now())
-  update_at    DateTime @updatedAt
+  keterangan   String?       @db.Text
+  status       Boolean       @default(true)
+  created_at   DateTime      @default(now())
+  update_at    DateTime      @updatedAt
+  ident_fisik  fisik_ident[]
 
   dakBidang dak_bidang? @relation(fields: [dak_bidangId], references: [id])
 }
@@ -827,4 +842,142 @@ model dak_masalah {
   updated_at DateTime @updatedAt
 
   dakJenis dak_jenis? @relation(fields: [jenis_dak], references: [kode])
+}
+
+enum jenisBerkas {
+  PERENCANAAN
+  PELAKSANAAN
+}
+
+model dak_berkas {
+  id            Int             @id @default(autoincrement())
+  jenis_dak     Int
+  group         jenisBerkas
+  name          String          @db.Text
+  keterangan    String?         @db.Text
+  status        Boolean         @default(true)
+  jenis         dak_jenis       @relation(fields: [jenis_dak], references: [kode])
+  fisikDokumens fisik_dokumen[]
+  create_at     DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+}
+
+enum verifStatus {
+  di_periksa
+  cek_ulang
+  di_verifikasi
+  belum_sesuai
+}
+
+model fisik_ident {
+  id             Int         @id @default(autoincrement())
+  sub_jenis      Int
+  sub_bidang_dak Int
+  tahun          Int
+  opd_id         Int
+  bidangOpd      String
+  sub_kegiatan   Int
+  catatan        String?     @db.Text
+  verifikasi     verifStatus @default(di_periksa)
+  create_at      DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+
+  detail          fisik_detail?
+  mekanisme       fisik_mekanisme?
+  subJenis        dak_subJenis?     @relation(fields: [sub_jenis], references: [id])
+  subBidang       dak_subBidang?    @relation(fields: [sub_bidang_dak], references: [id])
+  opd             dak_opd?          @relation(fields: [opd_id], references: [id])
+  subKegiatan     dak_master?       @relation(fields: [sub_kegiatan], references: [id])
+  fisikDokumens   fisik_dokumen[]
+  fisikRealisasis fisik_realisasi[]
+}
+
+model fisik_detail {
+  id              Int      @id @default(autoincrement())
+  id_ident        Int      @unique
+  nama_paket      String   @db.Text
+  detail_paket    String   @db.Text
+  volume          Float
+  satuan          String
+  estimasi        String
+  jumlah_penerima String
+  anggaran        Decimal
+  des_kel         String
+  kec             String
+  bujur           Json     @default("[0,0,0]")
+  lintang         Json     @default("[0,0,0]")
+  foto            String?
+  create_at       DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  ident fisik_ident @relation(fields: [id_ident], references: [id])
+}
+
+enum methodMekanisme {
+  swakelola
+  kontrak
+  ekatalog
+}
+
+model fisik_mekanisme {
+  id         Int             @id @default(autoincrement())
+  id_ident   Int             @unique
+  mekanisme  methodMekanisme
+  uang       Decimal?
+  volume     Float?
+  metode     String
+  create_at  DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+
+  ident fisik_ident @relation(fields: [id_ident], references: [id])
+}
+
+model fisik_dokumen {
+  id         Int       @id @default(autoincrement())
+  id_berkas  Int
+  id_ident   Int
+  file       String?   @db.Text
+  Kesesuaian String?
+  Waktu      DateTime?
+  Keterangan String?   @db.Text
+  pesan      String?   @db.Text
+  create_at  DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  ident        fisik_ident @relation(fields: [id_ident], references: [id])
+  jenis_berkas dak_berkas? @relation(fields: [id_berkas], references: [id])
+
+  @@unique([id_berkas, id_ident])
+}
+
+model fisik_realisasi {
+  id                Int                      @id @default(autoincrement())
+  id_ident          Int
+  triwulan          Int
+  fisik             Float?                   @default(0)
+  anggaran          Decimal?                 @default(0)
+  sasaran_lokasi    Boolean?
+  kesesuaian_juknis Boolean?
+  kodefikasi        String?
+  masalah_lain      String?
+  catatan           String?                  @db.Text
+  kunci             Boolean                  @default(false)
+  disetujui         Boolean                  @default(false)
+  masalah           fisik_masalah_realisasi?
+  created_at        DateTime                 @default(now())
+  updated_at        DateTime                 @updatedAt
+
+  ident fisik_ident @relation(fields: [id_ident], references: [id])
+}
+
+model fisik_masalah_realisasi {
+  id           Int      @id @default(autoincrement())
+  id_realisasi Int      @unique
+  masalah      Json?
+  masalah_lain String?  @db.Text
+  file_masalah Json?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  realisasi fisik_realisasi @relation(fields: [id_realisasi], references: [id])
 }

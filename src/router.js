@@ -46,6 +46,9 @@ import tahunDAK from "./app/dak/routes/tahun-routes.js"
 import rekDAK from "./app/dak/routes/rek-router.js"
 import jenisDAK from "./app/dak/routes/jenis-routes.js";
 import bidangDAK from "./app/dak/routes/bidang-routes.js";
+import opdDAK from "./app/dak/routes/opd-routes.js";
+import masalahDAK from "./app/dak/routes/masalah-router.js"
+import fisikDAK from "./app/dak/routes/fisik-routes.js"
 import seedRekeningDAK from "./app/dak/seeder/seeder-rekening.js";
 
 const router = Router();
@@ -92,6 +95,9 @@ router.use("/dak/tahun", cekToken, tahunDAK);
 router.use("/dak/rek", cekToken, rekDAK);
 router.use("/dak/jenis", cekToken, jenisDAK);
 router.use("/dak/bidang", cekToken, bidangDAK);
+router.use("/dak/opd", cekToken, opdDAK)
+router.use("/dak/masalah", cekToken, masalahDAK);
+router.use("/dak/fisik", cekToken, fisikDAK);
 router.get("/dak/seed-rek", seedRekeningDAK);
 
 
