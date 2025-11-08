@@ -24,6 +24,8 @@ export const addIdent = async (req) => {
               foto,
               mekanisme,
               metode,
+              volume_mekanisme,
+              uang_mekanisme,
               dokumen
        } = req.body;
 
@@ -55,7 +57,9 @@ export const addIdent = async (req) => {
                      mekanisme: {
                             create: {
                                    mekanisme,
-                                   metode
+                                   metode,
+                                   volume: volume_mekanisme,
+                                   uang: uang_mekanisme
                             }
                      },
                      fisikRealisasis: {
@@ -232,7 +236,8 @@ export const updateIdent = async (req) => {
               foto,
               mekanisme,
               metode,
-              dokumen
+              volume_mekanisme,
+              uang_mekanisme
        } = req.body;
 
        const exist = await prisma.fisik_ident.findUnique({ where: { id: id_ident } });
@@ -267,7 +272,9 @@ export const updateIdent = async (req) => {
                      mekanisme: {
                             update: {
                                    mekanisme,
-                                   metode
+                                   metode,
+                                   volume: volume_mekanisme,
+                                   uang: uang_mekanisme
                             }
                      }
 
@@ -304,3 +311,167 @@ export const updateTindakan = async (req) => {
        });
        return patch
 }
+
+export const listMonit = async (req) => {
+       const { opd_id, sub_jenis, triwulan, tahun } = req.body;
+
+       const getIdent = await prisma.fisik_ident.findMany({
+              where: {
+                     tahun,
+                     ...(opd_id && { opd_id }),          // hanya masuk kalau opd_id ada
+                     ...(sub_jenis && { sub_jenis }),    // hanya masuk kalau sub_jenis ada
+              },
+              include: {
+                     detail: true,
+                     mekanisme: true,
+                     subBidang: { include: { dakBidang: true } },
+                     subJenis: true,
+                     fisikRealisasis: true
+              },
+       });
+       if (getIdent.length === 0) return [];
+
+       const result = [];
+
+       for (const ind of getIdent) {
+              const twNow = ind.fisikRealisasis.find(item => item.triwulan === triwulan);
+              console.log(twNow)
+              const totalNow = ind.fisikRealisasis.reduce((sum, item) => sum + (item.fisik), 0);
+              const totalUang = ind.fisikRealisasis.reduce((sum, item) => sum + (Number(item.anggaran)), 0)
+              result.push({
+                     id_realisasi: twNow.id,
+                     sub_jenis: ind.subJenis.nama,
+                     bidang_dak: ind.subBidang.dakBidang.name,
+                     sub_bidang_dak: ind.subBidang.name,
+                     nama_paket: ind.detail.nama_paket,
+                     perencanaan: {
+                            volume: `${ind.detail.volume} ${ind.detail.satuan}`,
+                            jumlah_penerima: ind.detail.jumlah_penerima,
+                            anggaran: ind.detail.anggaran
+                     },
+                     mekanisme: {
+                            kegiatan: ind.mekanisme.mekanisme,
+                            volume: `${ind.mekanisme.volume} ${ind.detail.satuan}`,
+                            uang: ind.mekanisme.uang
+                     },
+                     realisasi: {
+                            fisik: {
+                                   capaian: twNow.fisik,
+                                   totalSd: totalNow
+                            },
+                            keuangan: {
+                                   capaian: twNow.anggaran,
+                                   persen: Number(twNow.anggaran) > 0 ? (Number(twNow.anggaran) / Number(ind.detail.anggaran)) * 100 : 0
+                            }
+
+                     },
+                     sisa_anggaran: Number(ind.detail.anggaran) - totalUang,
+                     sasaran_lokasi: twNow.sasaran_lokasi,
+                     catatan: twNow.catatan
+              })
+       }
+
+       return groupData(result);
+}
+
+function groupData(data) {
+       const result = [];
+
+       for (const item of data) {
+              // --- Level 1: sub_jenis
+              let subJenis = result.find(s => s.nama === item.sub_jenis);
+              if (!subJenis) {
+                     subJenis = { nama: item.sub_jenis, bidang: [] };
+                     result.push(subJenis);
+              }
+
+              // --- Level 2: bidang_dak
+              let bidang = subJenis.bidang.find(b => b.nama === item.bidang_dak);
+              if (!bidang) {
+                     bidang = { nama: item.bidang_dak, sub_bidang: [] };
+                     subJenis.bidang.push(bidang);
+              }
+
+              // --- Level 3: sub_bidang_dak
+              let subBidang = bidang.sub_bidang.find(sb => sb.nama === item.sub_bidang_dak);
+              if (!subBidang) {
+                     subBidang = { nama: item.sub_bidang_dak, row: [] };
+                     bidang.sub_bidang.push(subBidang);
+              }
+
+              // --- Level 4: row (data selain key pengelompokan)
+              const { sub_jenis, bidang_dak, sub_bidang_dak, ...rowData } = item;
+              subBidang.row.push(rowData);
+       }
+
+       return result;
+}
+
+export const updateCapaian = async (req) => {
+       const { id_realisasi, fisik, anggaran, sasaran_lokasi, kesesuaian_juknis, catatan } = req.body;
+
+       const exist = await prisma.fisik_realisasi.findUnique({ where: { id: id_realisasi } });
+
+       if (!exist) throw new errorHandling(404, "Data realisasi tidak ditemukan");
+       const update = await prisma.fisik_realisasi.update({
+              where: { id: id_realisasi },
+              data: { fisik, anggaran, sasaran_lokasi, kesesuaian_juknis, catatan }
+       });
+       return update;
+}
+
+export const toggleKunci = async (req) => {
+       const { id_realisasi } = req.body;
+
+       const exist = await prisma.fisik_realisasi.findUnique({ where: { id: id_realisasi } });
+
+       if (!exist) throw new errorHandling(404, "Data realisasi tidak ditemukan");
+       const update = await prisma.fisik_realisasi.update({
+              where: { id: id_realisasi },
+              data: { kunci: !exist.kunci }
+       });
+       return update;
+}
+export const getMasalahCapaian = async (req) => {
+       const { id_realisasi } = req.body;
+
+       const exist = await prisma.fisik_realisasi.findUnique({
+              where: { id: id_realisasi },
+              select: {
+                     masalah: true
+              }
+       });
+
+       if (!exist) throw new errorHandling(404, "Data realisasi tidak ditemukan");
+       if (!exist.masalah) {
+              return {
+                     masalah: "[]",
+                     masalah_lain: null,
+                     file_masalah: "[]"
+              }
+       }
+       return exist.masalah;
+}
+
+export const updateMasalah = async (req) => {
+       const { id_realisasi, masalah, masalah_lain, file_masalah } = req.body;
+
+       const exist = await prisma.fisik_realisasi.findUnique({
+              where: { id: id_realisasi },
+              select: {
+                     masalah: true
+              }
+       });
+
+       if (!exist) throw new errorHandling(404, "Data realisasi tidak ditemukan");
+       if (!exist.masalah) {
+              await prisma.fisik_masalah_realisasi.create({
+                     data: { id_realisasi, masalah, masalah_lain, file_masalah }
+              })
+       }
+
+
+       return await getMasalahCapaian({ body: { id_realisasi } });
+}
+
+

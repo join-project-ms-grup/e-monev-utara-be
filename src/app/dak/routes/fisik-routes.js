@@ -15,5 +15,10 @@ router.get("/:id/detail-ident",
        requestValidator,
        controller.detailIdent
 );
+router.post("/list-monit", controller.listMonit);
+router.post("/realisasi", controller.updateCapaian);
+router.patch("/toggle-kunci", controller.toggleKunci);
+router.post("/masalah-realisasi", controller.getMasalahCapaian);
+router.put("/update-masalah-realisasi", controller.updateMasalah)
 
 export default router;

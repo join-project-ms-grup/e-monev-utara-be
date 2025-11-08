@@ -110,6 +110,8 @@ export const updateIdent = async (req, res, next) => {
                      foto: string.allow(null),
                      mekanisme: string.valid('swakelola', 'kontrak', 'ekatalog'),
                      metode: string,
+                     volume_mekanisme: number.allow(null),
+                     uang_mekanisme: number.allow(null)
               });
 
               const { error } = schema.validate(req.body);
@@ -167,6 +169,130 @@ export const updateTindakan = async (req, res, next) => {
                      return response(res, 400, false, "Parameter tidak valid", result);
               }
               return response(res, 200, true, "Berhasil mengubah tindakan...", await service.updateTindakan(req));
+       } catch (error) {
+              next(error)
+       }
+}
+
+export const listMonit = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     opd_id: Joi.number().required().allow(null),
+                     sub_jenis: Joi.number().required().allow(null),
+                     triwulan: Joi.number().required(),
+                     tahun: Joi.number().required()
+              })
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+              return response(res, 200, true, "Berhasil mengambil list monitoring", await service.listMonit(req))
+       } catch (error) {
+              next(error)
+       }
+}
+
+
+
+export const updateCapaian = async (req, res, next) => {
+       try {
+              const string = Joi.string().required();
+              const number = Joi.number().required();
+
+              const schema = Joi.object({
+                     id_realisasi: number,
+                     fisik: number,
+                     anggaran: number,
+                     sasaran_lokasi: Joi.boolean().allow(null),
+                     kesesuaian_juknis: Joi.boolean().allow(null),
+                     catatan: string.allow(null)
+              })
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+
+              return response(res, 200, true, "Berhasil mengubah realisasi", await service.updateCapaian(req));
+       } catch (error) {
+              next(error)
+       }
+}
+
+export const toggleKunci = async (req, res, next) => {
+       try {
+              const string = Joi.string().required();
+              const number = Joi.number().required();
+
+              const schema = Joi.object({
+                     id_realisasi: number,
+              })
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+
+              return response(res, 200, true, "Berhasil mengubah realisasi", await service.toggleKunci(req));
+       } catch (error) {
+              next(error)
+       }
+}
+
+export const getMasalahCapaian = async (req, res, next) => {
+       try {
+              const string = Joi.string().required();
+              const number = Joi.number().required();
+
+              const schema = Joi.object({
+                     id_realisasi: number,
+              })
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+
+              return response(res, 200, true, "Berhasil mengubah realisasi", await service.getMasalahCapaian(req));
+       } catch (error) {
+              next(error)
+       }
+}
+
+export const updateMasalah = async (req, res, next) => {
+       try {
+              const string = Joi.string().required();
+              const number = Joi.number().required();
+
+              const schema = Joi.object({
+                     id_realisasi: number,
+                     masalah: string,
+                     masalah_lain: string.allow(null),
+                     file_masalah: string
+              })
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+
+              return response(res, 200, true, "Berhasil mengubah realisasi", await service.updateMasalah(req));
        } catch (error) {
               next(error)
        }

@@ -70,6 +70,7 @@ router.use("/rkpd/renja", cekToken, renjaRKPD);
 router.use("/rkpd/pagu", cekToken, paguRKPD);
 router.use("/rkpd/indikator", cekToken, indikatorRKPD);
 router.use("/rkpd/realisasi", cekToken, realisasiRKPD);
+// router.use("/rkpd/hasil", hasilRKPD);
 router.use("/rkpd/hasil", cekToken, hasilRKPD);
 router.get("/rkpd/seed-perencanaan/:mulai/:akhir/:tahun_ke/:ren", cekToken, seedPerencanaan);
 

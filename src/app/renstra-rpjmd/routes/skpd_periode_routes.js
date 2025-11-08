@@ -13,7 +13,6 @@ router.get("/sinkron/:id",
        controller.sinkronisasiSKPD
 );
 router.get("/list/:id",
-       devAdminAccess,
        param("id").isNumeric().notEmpty(),
        requestValidator,
        controller.list
