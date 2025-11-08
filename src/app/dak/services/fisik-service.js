@@ -1,4 +1,5 @@
 import prisma from "../../../config/database.js";
+import { errorHandling } from "../../../middlewares/erros-handling.js";
 
 export const addSub = async (req) => {
        const {
@@ -129,6 +130,79 @@ function groupIdent(data) {
               // 🔹 Masukkan data selain opd & sub_jenis
               const { opd: _, sub_jenis: __, ...rowData } = item;
               sub.row.push(rowData);
+       }
+
+       return result;
+}
+
+export const detailIdent = async (req) => {
+       const id = parseInt(req.params.id);
+       const getIdent = await prisma.fisik_ident.findFirst({
+              where: { id },
+              include: {
+                     detail: true,
+                     mekanisme: true,
+                     subKegiatan: { include: { parent: { include: { parent: { include: { parent: { include: { parent: true } } } } } } } },
+                     subBidang: { include: { dakBidang: true } },
+                     subJenis: { include: { dakJenis: true } },
+                     opd: true,
+                     fisikDokumens: {
+                            include: { jenis_berkas: true }
+                     }
+              },
+       });
+
+       if (!getIdent) throw new errorHandling(404, "tidak menemukan data identifikasi");
+
+       const subKegiatan = getIdent.subKegiatan;
+       const kegiatan = subKegiatan.parent;
+       const program = kegiatan.parent;
+       const bidang = program.parent;
+       const urusan = bidang.parent
+
+       const result = {
+              jenis_dak_id: getIdent.subJenis.dakJenis.id,
+              jenis_dak: getIdent.subJenis.dakJenis.jenis,
+              sub_jenis_dak_id: getIdent.subJenis.id,
+              sub_jenis_dak: getIdent.subJenis.nama,
+              tahun: getIdent.tahun,
+              kab_kot: "Kabupaten Bengkulu Utara",
+              opd_id: getIdent.opd.id,
+              opd: getIdent.opd.fullname,
+              bidang_opd: getIdent.bidangOpd,
+              urusan_id: urusan.id,
+              urusan_kode: urusan.kode,
+              urusan: urusan.name,
+              bidang_id: bidang.id,
+              bidang_kode: bidang.kode,
+              bidang: bidang.name,
+              program_id: program.id,
+              program_kode: program.kode,
+              program: program.name,
+              kegiatan_id: kegiatan.id,
+              kegiatan_kode: kegiatan.kode,
+              kegiatan: kegiatan.name,
+              subKegiatan_id: subKegiatan.id,
+              subKegiatan_kode: subKegiatan.kode,
+              subKegiatan: subKegiatan.name,
+              catatan: getIdent.catatan,
+              nama_paket: getIdent.detail.nama_paket,
+              detail_paket: getIdent.detail.detail_paket,
+              volume: getIdent.detail.volume,
+              satuan: getIdent.detail.satuan,
+              estimasi_waktu: getIdent.detail.estimasi,
+              jumlah_penerima_manfaat: getIdent.detail.jumlah_penerima,
+              anggaran_dak: getIdent.detail.anggaran,
+              desa_kel: getIdent.detail.des_kel,
+              kec: getIdent.detail.kec,
+              bujur: JSON.parse(getIdent.detail.bujur),
+              lintang: JSON.parse(getIdent.detail.lintang),
+              foto_kegiatan: getIdent.detail.foto,
+              mekanisme: getIdent.mekanisme.mekanisme,
+              mekanisme_volume: getIdent.mekanisme.volume,
+              mekanisme_uang: getIdent.mekanisme.uang,
+              metode_pembayaran: getIdent.mekanisme.metode,
+              dokumen: getIdent.fisikDokumens
        }
 
        return result;

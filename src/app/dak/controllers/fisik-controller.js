@@ -73,3 +73,11 @@ export const listIdent = async (req, res, next) => {
 
        }
 }
+
+export const detailIdent = async (req, res, next) => {
+       try {
+              return response(res, 200, true, "Berhasil mengambil detail ident", await service.detailIdent(req));
+       } catch (error) {
+              next(error);
+       }
+}
