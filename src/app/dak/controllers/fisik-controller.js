@@ -45,7 +45,7 @@ export const addIdent = async (req, res, next) => {
                      return response(res, 400, false, "Parameter tidak valid", result);
               }
 
-              return response(res, 200, true, "Berhasil menambahkan identifikasi", await service.addSub(req));
+              return response(res, 200, true, "Berhasil menambahkan identifikasi", await service.addIdent(req));
        } catch (error) {
               next(error)
        }
@@ -79,5 +79,95 @@ export const detailIdent = async (req, res, next) => {
               return response(res, 200, true, "Berhasil mengambil detail ident", await service.detailIdent(req));
        } catch (error) {
               next(error);
+       }
+}
+
+export const updateIdent = async (req, res, next) => {
+       try {
+              const string = Joi.string().required();
+              const number = Joi.number().required();
+
+              const schema = Joi.object({
+                     id_ident: number,
+                     sub_jenis_id: number,
+                     sub_bidang_id: number,
+                     tahun: number,
+                     opd_id: number,
+                     bidang_opd: string,
+                     sub_kegiatan_id: number,
+                     catatan: string.allow(null),
+                     nama_paket: string,
+                     detail_paket: string,
+                     volume: number,
+                     satuan: string,
+                     estimasi: string,
+                     jumlah_penerima: string,
+                     anggaran: number,
+                     des_kel: string,
+                     kec: string,
+                     bujur: string,
+                     lintang: string,
+                     foto: string.allow(null),
+                     mekanisme: string.valid('swakelola', 'kontrak', 'ekatalog'),
+                     metode: string,
+              });
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+
+              return response(res, 200, true, "Berhasil menangubah identifikasi", await service.updateIdent(req));
+
+       } catch (error) {
+              next(error);
+       }
+}
+
+export const updateFile = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     id_dok: Joi.number().required(),
+                     file: Joi.number().required().allow(null),
+                     Kesesuaian: Joi.string().required().allow(null),
+                     Waktu: Joi.string().required().allow(null),
+                     Keterangan: Joi.string().required().allow(null),
+                     pesan: Joi.string().required().allow(null),
+              });
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+
+              return response(res, 200, true, "Berhasil mengambil identifikasi", await service.updateFile(req));
+       } catch (error) {
+              next(error)
+       }
+}
+
+export const updateTindakan = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     id_ident: Joi.number().required(),
+                     status: Joi.string().required()
+              })
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+              return response(res, 200, true, "Berhasil mengubah tindakan...", await service.updateTindakan(req));
+       } catch (error) {
+              next(error)
        }
 }

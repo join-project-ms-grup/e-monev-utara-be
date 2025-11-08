@@ -1,7 +1,7 @@
 import prisma from "../../../config/database.js";
 import { errorHandling } from "../../../middlewares/erros-handling.js";
 
-export const addSub = async (req) => {
+export const addIdent = async (req) => {
        const {
               sub_jenis_id,
               sub_bidang_id,
@@ -186,6 +186,7 @@ export const detailIdent = async (req) => {
               subKegiatan_kode: subKegiatan.kode,
               subKegiatan: subKegiatan.name,
               catatan: getIdent.catatan,
+              verif_status: getIdent.verifikasi,
               nama_paket: getIdent.detail.nama_paket,
               detail_paket: getIdent.detail.detail_paket,
               volume: getIdent.detail.volume,
@@ -204,6 +205,102 @@ export const detailIdent = async (req) => {
               metode_pembayaran: getIdent.mekanisme.metode,
               dokumen: getIdent.fisikDokumens
        }
-
        return result;
+}
+
+export const updateIdent = async (req) => {
+       const {
+              id_ident,
+              sub_jenis_id,
+              sub_bidang_id,
+              tahun,
+              opd_id,
+              bidang_opd,
+              sub_kegiatan_id,
+              catatan,
+              nama_paket,
+              detail_paket,
+              volume,
+              satuan,
+              estimasi,
+              jumlah_penerima,
+              anggaran,
+              des_kel,
+              kec,
+              bujur,
+              lintang,
+              foto,
+              mekanisme,
+              metode,
+              dokumen
+       } = req.body;
+
+       const exist = await prisma.fisik_ident.findUnique({ where: { id: id_ident } });
+       if (!exist) throw new errorHandling(404, "ident tidak ditemukan");
+
+       const setIndent = await prisma.fisik_ident.update({
+              where: { id: id_ident },
+              data: {
+                     sub_jenis: sub_jenis_id,
+                     sub_bidang_dak: sub_bidang_id,
+                     tahun,
+                     opd_id,
+                     bidangOpd: bidang_opd,
+                     sub_kegiatan: sub_kegiatan_id,
+                     catatan,
+                     detail: {
+                            update: {
+                                   nama_paket,
+                                   detail_paket,
+                                   volume,
+                                   satuan,
+                                   estimasi,
+                                   jumlah_penerima,
+                                   anggaran,
+                                   des_kel,
+                                   kec,
+                                   bujur,
+                                   lintang,
+                                   foto
+                            }
+                     },
+                     mekanisme: {
+                            update: {
+                                   mekanisme,
+                                   metode
+                            }
+                     }
+
+              }
+       });
+
+       return setIndent;
+}
+
+
+export const updateFile = async (req) => {
+       const { id_dok, file, Kesesuaian, Waktu, Keterangan, pesan } = req.body;
+       const exist = await prisma.fisik_dokumen.findUnique({ where: { id: id_dok } });
+
+       if (!exist) throw new errorHandling(404, "File tidak ditemukan");
+
+       const update = await prisma.fisik_dokumen.update({
+              where: { id: id_dok },
+              data: { file, Kesesuaian, Waktu, Keterangan, pesan }
+       });
+
+       return update
+}
+
+export const updateTindakan = async (req) => {
+       const { id_ident, status } = req.body;
+
+       const exist = await prisma.fisik_ident.findUnique({ where: { id: id_ident } });
+       if (!exist) throw new errorHandling(404, "Tidak menemukan data identifikasi");
+
+       const patch = await prisma.fisik_ident.update({
+              where: { id: id_ident },
+              data: { verifikasi: status }
+       });
+       return patch
 }
