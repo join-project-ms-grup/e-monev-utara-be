@@ -40,6 +40,14 @@ import { seedUraian } from "./app/iku-ikd/seeder/seeder-uraian.js";
 import skpdIK from "./app/iku-ikd/routes/skpd-routes.js"
 import targetRealisasiIK from "./app/iku-ikd/routes/target-realisasi-routes.js"
 
+
+// import router dak
+import tahunDAK from "./app/dak/routes/tahun-routes.js"
+import rekDAK from "./app/dak/routes/rek-router.js"
+import jenisDAK from "./app/dak/routes/jenis-routes.js";
+import bidangDAK from "./app/dak/routes/bidang-routes.js";
+import seedRekeningDAK from "./app/dak/seeder/seeder-rekening.js";
+
 const router = Router();
 
 // Endpoint config
@@ -78,6 +86,13 @@ router.get("/renstra/seed-perencanaan/:mulai/:akhir/:tahun_ke/:ren", cekToken, s
 router.use("/ik/skpd", cekToken, skpdIK);
 router.use("/ik/target-realisasi", cekToken, targetRealisasiIK);
 router.get("/ik/seed-uraian", cekToken, seedUraian);
+
+//Endpoint DAK
+router.use("/dak/tahun", cekToken, tahunDAK);
+router.use("/dak/rek", cekToken, rekDAK);
+router.use("/dak/jenis", cekToken, jenisDAK);
+router.use("/dak/bidang", cekToken, bidangDAK);
+router.get("/dak/seed-rek", seedRekeningDAK);
 
 
 router.use((req, res) => {

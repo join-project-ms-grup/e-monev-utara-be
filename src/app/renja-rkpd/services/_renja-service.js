@@ -132,7 +132,7 @@ function buildHierarchy(data) {
 export const detailSub = async (req) => {
        const { skpd_periode_id, sub_id, tahun_ke } = req.body;
        const exist = await prisma.master.findUnique({
-              where: { id: sub_id }
+              where: { id: sub_id, type: "subKegiatan" }
        });
        if (!exist) {
               throw new errorHandling(404, "Sub Kegiatan tidak ditemukan");
@@ -156,6 +156,7 @@ export const detailSub = async (req) => {
                      parent: { include: { parent: { include: { parent: { include: { parent: true } } } } } }
               }
        });
+       console.log(subKegiatan);
        const _kegiatan = subKegiatan.parent;
        const _program = _kegiatan.parent;
        const _bidang = _program.parent;

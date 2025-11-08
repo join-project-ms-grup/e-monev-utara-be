@@ -741,3 +741,90 @@ model x_paguIndikatifSumberDana {
 
   @@unique([pagu_indikatif_id, sumber_dana_id]) // supaya tidak duplikat
 }
+
+// DAK AREA ============================================================================================================================================
+model dak_tahun {
+  id         Int      @id @default(autoincrement())
+  tahun      Int      @unique
+  keterangan String?
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model dak_master {
+  id         Int        @id @default(autoincrement())
+  kode       String
+  parent_id  Int?
+  type       EntityType
+  name       String     @db.Text
+  status     Boolean    @default(true)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+
+  // Self relation (tree)
+  parent   dak_master?  @relation("MasterChildren", fields: [parent_id], references: [id])
+  children dak_master[] @relation("MasterChildren")
+}
+
+model dak_jenis {
+  id         Int      @id @default(autoincrement())
+  kode       Int      @unique
+  jenis      String
+  keterangan String?  @db.Text
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  subJenis dak_subJenis[]
+  bidang   dak_bidang[]
+  masalah  dak_masalah[]
+}
+
+model dak_subJenis {
+  id         Int      @id @default(autoincrement())
+  jenis_dak  Int?
+  nama       String
+  keterangan String?  @db.Text
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  dakJenis dak_jenis? @relation(fields: [jenis_dak], references: [kode])
+}
+
+model dak_bidang {
+  id         Int             @id @default(autoincrement())
+  jenis_dak  Int?
+  name       String
+  keterangan String?         @db.Text
+  status     Boolean         @default(true)
+  created_at DateTime        @default(now())
+  update_at  DateTime        @updatedAt
+  sub        dak_subBidang[]
+
+  dakJenis dak_jenis? @relation(fields: [jenis_dak], references: [kode])
+}
+
+model dak_subBidang {
+  id           Int      @id @default(autoincrement())
+  dak_bidangId Int?
+  name         String
+  keterangan   String?  @db.Text
+  status       Boolean  @default(true)
+  created_at   DateTime @default(now())
+  update_at    DateTime @updatedAt
+
+  dakBidang dak_bidang? @relation(fields: [dak_bidangId], references: [id])
+}
+
+model dak_masalah {
+  id         Int      @id @default(autoincrement())
+  jenis_dak  Int?
+  name       String
+  keterangan String?  @db.Text
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  dakJenis dak_jenis? @relation(fields: [jenis_dak], references: [kode])
+}
