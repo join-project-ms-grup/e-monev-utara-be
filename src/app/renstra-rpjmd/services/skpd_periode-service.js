@@ -9,7 +9,7 @@ export const sinkronisasiSKPD = async (req) => {
        for (const skpd_id of skpdCollectIds) {
               const exits = await prisma.x_skpd_periode.findFirst({ where: { skpd_id, periode_id } });
               if (exits) {
-                     const updateSKPD_periode = await prisma.skpd_periode.update({
+                     const updateSKPD_periode = await prisma.x_skpd_periode.update({
                             where: { id: exits.id },
                             data: { status: true },
                             include: {

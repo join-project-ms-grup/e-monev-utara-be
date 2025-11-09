@@ -757,40 +757,6 @@
                 "target": "7.06-7.11"
               }
             ]
-          },
-          {
-            "target": [
-              {
-                "tahun": 2025,
-                "tahun_ke": 1,
-                "target": null
-              },
-              {
-                "tahun": 2026,
-                "tahun_ke": 2,
-                "target": null
-              },
-              {
-                "tahun": 2027,
-                "tahun_ke": 3,
-                "target": null
-              },
-              {
-                "tahun": 2028,
-                "tahun_ke": 4,
-                "target": null
-              },
-              {
-                "tahun": 2029,
-                "tahun_ke": 5,
-                "target": null
-              },
-              {
-                "tahun": 2030,
-                "tahun_ke": 6,
-                "target": null
-              }
-            ]
           }
         ]
       }
@@ -13252,52 +13218,6 @@
                 "tahun": 2030,
                 "tahun_ke": 6,
                 "target": "5"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "kode_skpd": "3.27.0.00.0.00.02.0000",
-    "name": "Dinas Perkebunan",
-    "urusan": [
-      {
-        "kode": "3.27",
-        "name": "URUSAN PEMERINTAHAN BIDANG PERTANIAN",
-        "uraian": [
-          {
-            "target": [
-              {
-                "tahun": 2025,
-                "tahun_ke": 1,
-                "target": null
-              },
-              {
-                "tahun": 2026,
-                "tahun_ke": 2,
-                "target": null
-              },
-              {
-                "tahun": 2027,
-                "tahun_ke": 3,
-                "target": null
-              },
-              {
-                "tahun": 2028,
-                "tahun_ke": 4,
-                "target": null
-              },
-              {
-                "tahun": 2029,
-                "tahun_ke": 5,
-                "target": null
-              },
-              {
-                "tahun": 2030,
-                "tahun_ke": 6,
-                "target": null
               }
             ]
           }

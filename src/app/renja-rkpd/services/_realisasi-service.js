@@ -202,7 +202,7 @@ const mappingIndikator = (indikator) => {
                      }
               } else {
                      const capaianTotal = ind.rincian[0].capaian.reduce((sum, item) => sum + (item.capaian), 0);
-                     const persenCapaian = ((capaianTotal / target.target) * 100).toFixed(2);
+                     const persenCapaian = ((capaianTotal / ind.rincian[0].target) * 100).toFixed(2);
                      const capaianTriwulan = ind.rincian[0].capaian.map(item => ({ triwulan: item.triwulan, capaian: item.capaian }));
                      capaian = { capaianTotal, persenCapaian, capaianTriwulan }
               }
@@ -293,4 +293,15 @@ export const updateAnggaran = async (req) => {
        });
        const params = { skpd_periode_id: getPagu.skpd_periode_id, tahun_ke: getPagu.tahun_ke }
        return await list({ body: params });
+}
+
+export const togglePerhitungan = async (req) => {
+       const { id_indikator, type, perhitungan } = req.body
+       if (type === "program") {
+
+       } else {
+              const exist = await prisma.indikator.findUnique({ where: { id: id_indikator } });
+              if (!exist) throw new errorHandling(404, "Indikator tidak ditemukan");
+              const update = await prisma.indikator.update({})
+       }
 }

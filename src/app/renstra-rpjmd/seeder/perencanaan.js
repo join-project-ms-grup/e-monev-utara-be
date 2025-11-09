@@ -456,7 +456,7 @@ const prosesData = async (tahun_ke, skpd_periode_id, data) => {
        // Create or update pagu skpd
        const existPaguSkpd = await prisma.x_pagu_skpd.findFirst({ where: { skpd_periode_id, tahun_ke } });
        if (existPaguSkpd) {
-              await prisma.pagu_skpd.update({
+              await prisma.x_pagu_skpd.update({
                      where: { id: existPaguSkpd.id },
                      data: {
                             skpd_periode_id,
@@ -466,7 +466,7 @@ const prosesData = async (tahun_ke, skpd_periode_id, data) => {
                      }
               });
        } else {
-              await prisma.pagu_skpd.create({
+              await prisma.x_pagu_skpd.create({
                      data: {
                             skpd_periode_id,
                             tahun: 2026,
@@ -687,7 +687,7 @@ export const seedPerencanaan = async (req, res, next) => {
               const tahun_ke = parseInt(req.params.tahun_ke);
               const skpd = await prisma.skpd.findMany({
                      where: {
-                            skpd_periode: {
+                            x_skpd_periode: {
                                    some: {
                                           status: true,
                                           periode: { mulai, akhir }
@@ -695,7 +695,7 @@ export const seedPerencanaan = async (req, res, next) => {
                             }
                      },
                      include: {
-                            skpd_periode: {
+                            x_skpd_periode: {
                                    where: {
                                           status: true,
                                           periode: { mulai, akhir }
@@ -713,7 +713,7 @@ export const seedPerencanaan = async (req, res, next) => {
                      const hasil = strukturkanData(getFile);
                      // result.push(hasil);
 
-                     result.push(await prosesData(tahun_ke, s.skpd_periode[0].id, hasil));
+                     result.push(await prosesData(tahun_ke, s.x_skpd_periode[0].id, hasil));
               }
               console.log(result);
               return response(res, 200, true, "Berhasil", result);

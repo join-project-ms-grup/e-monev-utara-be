@@ -7,15 +7,18 @@ const mappingJSON = () => {
 
        const grouped = [];
        let lastSkpdName = null;
+       let lastSkpdKode = null;
        let lastUrusanFull = null;
 
        for (const row of data) {
               // Gunakan nilai terakhir jika baris ini kosong
               const skpdName = row.skpd?.trim() || lastSkpdName;
+              const skpdKode = row.kode_skpd?.trim() || lastSkpdKode;
               const urusanFull = row.urusan?.trim() || lastUrusanFull;
 
               // Update cache untuk baris berikutnya
               lastSkpdName = skpdName;
+              lastSkpdKode = skpdKode;
               lastUrusanFull = urusanFull;
 
               // Pisahkan kode dan nama urusan jika formatnya "4.01 - SEKRETARIAT DAERAH"
@@ -43,7 +46,7 @@ const mappingJSON = () => {
               let skpdObj = grouped.find(g => g.name === skpdName);
               if (!skpdObj) {
                      skpdObj = {
-                            kode_skpd: null, // bisa diisi nanti dari data master
+                            kode_skpd: skpdKode || null, // ✅ ambil dari row
                             name: skpdName,
                             urusan: [],
                      };
@@ -69,60 +72,150 @@ const mappingJSON = () => {
                      target,
               });
        }
-       return grouped
+
+       return grouped;
 };
 
+export default mappingJSON;
+
+
+
+const createOrGetSKPD = async (kode, name) => {
+       const exist = await prisma.skpd.findFirst({ where: { kode } });
+       if (exist) return exist;
+
+       const create = await prisma.skpd.create({
+              data: { kode, name }
+       });
+
+       return create;
+}
+
+const createOrGetSP = async (skpd, periode) => {
+       const exist = await prisma.w_skpd_periode.findFirst({ where: { skpd_id: skpd, periode_id: periode } });
+       if (exist) return exist;
+       const create = await prisma.w_skpd_periode.create({
+              data: {
+                     skpd_id: skpd,
+                     periode_id: periode
+              }
+       });
+       return create;
+}
 export const seedUraian = async (req, res, next) => {
        try {
-              const mapJson = mappingJSON();
-              // return response(res, 200, true, "Berhasil memasukan data iku-ikd ke databse", mapJson);
+              const getPeriode = await prisma.periode.findFirst({});
+              const mapJson = JSON.parse(fs.readFileSync('./src/app/iku-ikd/seeder/uraian_grouped.json', 'utf8'));
               const result = [];
+              const errors = []; // kumpulkan error di sini juga kalau mau dicek setelahnya
+
               for (const skpd of mapJson) {
-                     const setSkpd = await prisma.w_skpd.create({ data: { periodeId: 1, name: skpd.name } });
-                     const urusan = [];
-                     for (const u of skpd.urusan) {
-                            const setMaster = await prisma.w_master.create({
-                                   data: {
-                                          kode: u.kode,
-                                          name: u.name,
-                                          skpdId: setSkpd.id,
-                                          type: "urusan",
-                                   }
-                            });
+                     let setSkpd = null;
 
-                            const uraian = [];
-                            for (const ur of u.uraian) {
-                                   const setUraian = await prisma.w_uraian.create({
-                                          data: {
-                                                 master_id: setMaster.id,
-                                                 name: ur.nama,
-                                                 satuan: ur.satuan,
-                                                 base_line: ur.base_line,
-                                                 is_iku: false
-                                          }
-                                   });
-                                   const target = [];
-                                   for (const tr of ur.target) {
-                                          const setTarget = await prisma.w_targetRealisasiUraian.create({
+                     try {
+                            const CGSkpd = await createOrGetSKPD(skpd.kode_skpd, skpd.name);
+                            setSkpd = await createOrGetSP(CGSkpd.id, getPeriode.id);
+
+                            const urusan = [];
+                            for (const u of skpd.urusan) {
+                                   try {
+                                          const setMaster = await prisma.w_master.create({
                                                  data: {
-                                                        uraian_id: setUraian.id,
-                                                        tahun: tr.tahun,
-                                                        tahun_ke: tr.tahun_ke,
-                                                        target: tr?.target ?? "0"
-                                                 }
+                                                        kode: u.kode,
+                                                        name: u.name,
+                                                        skpdId: setSkpd.id,
+                                                        type: "urusan",
+                                                 },
                                           });
-                                          target.push({ ...setTarget })
-                                   }
-                                   uraian.push({ ...setUraian, target });
-                            }
-                            urusan.push({ ...setMaster, uraian });
-                     }
 
-                     result.push({ ...setSkpd, urusan })
+                                          const uraian = [];
+                                          for (const ur of u.uraian) {
+                                                 try {
+                                                        const setUraian = await prisma.w_uraian.create({
+                                                               data: {
+                                                                      master_id: setMaster.id,
+                                                                      name: ur.nama,
+                                                                      satuan: ur.satuan,
+                                                                      base_line: ur.base_line,
+                                                                      is_iku: false,
+                                                               },
+                                                        });
+
+                                                        const target = [];
+                                                        for (const tr of ur.target) {
+                                                               const setTarget = await prisma.w_targetRealisasiUraian.create({
+                                                                      data: {
+                                                                             uraian_id: setUraian.id,
+                                                                             tahun: tr.tahun,
+                                                                             tahun_ke: tr.tahun_ke,
+                                                                             target: tr?.target ?? "0",
+                                                                      },
+                                                               });
+                                                               target.push(setTarget);
+                                                        }
+
+                                                        uraian.push({ ...setUraian, target });
+                                                 } catch (errUraian) {
+                                                        console.error(
+                                                               `❌ Error di URAIAN\n` +
+                                                               `SKPD: ${skpd.name} (${skpd.kode_skpd})\n` +
+                                                               `Urusan: ${u.name} (${u.kode})\n` +
+                                                               `Uraian: ${ur.nama}\n` +
+                                                               `Pesan: ${errUraian.message}\n`
+                                                        );
+
+                                                        errors.push({
+                                                               skpd: skpd.name,
+                                                               kode_skpd: skpd.kode_skpd,
+                                                               urusan: u.name,
+                                                               kode_urusan: u.kode,
+                                                               uraian: ur.nama,
+                                                               error: errUraian.message,
+                                                        });
+                                                 }
+                                          }
+
+                                          urusan.push({ ...setMaster, uraian });
+                                   } catch (errUrusan) {
+                                          console.error(
+                                                 `❌ Error di URUSAN\n` +
+                                                 `SKPD: ${skpd.name} (${skpd.kode_skpd})\n` +
+                                                 `Urusan: ${u.name} (${u.kode})\n` +
+                                                 `Pesan: ${errUrusan.message}\n`
+                                          );
+
+                                          errors.push({
+                                                 skpd: skpd.name,
+                                                 kode_skpd: skpd.kode_skpd,
+                                                 urusan: u.name,
+                                                 kode_urusan: u.kode,
+                                                 error: errUrusan.message,
+                                          });
+                                   }
+                            }
+
+                            result.push({ ...setSkpd, urusan });
+                     } catch (errSkpd) {
+                            console.error(
+                                   `❌ Error di SKPD\n` +
+                                   `SKPD: ${skpd.name} (${skpd.kode_skpd})\n` +
+                                   `Pesan: ${errSkpd.message}\n`
+                            );
+
+                            errors.push({
+                                   skpd: skpd.name,
+                                   kode_skpd: skpd.kode_skpd,
+                                   error: errSkpd.message,
+                            });
+                     }
               }
 
-              return response(res, 200, true, "Berhasil memasukan data iku-ikd ke databse", result);
+              return response(res, 200, true, "Selesai seeding (cek console untuk detail error)", {
+                     total_skpd: mapJson.length,
+                     total_error: errors.length,
+                     errors,
+              });
        } catch (error) {
               next(error);
        }
-}
+};

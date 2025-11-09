@@ -49,7 +49,7 @@ import bidangDAK from "./app/dak/routes/bidang-routes.js";
 import opdDAK from "./app/dak/routes/opd-routes.js";
 import masalahDAK from "./app/dak/routes/masalah-router.js"
 import fisikDAK from "./app/dak/routes/fisik-routes.js"
-import seedRekeningDAK from "./app/dak/seeder/seeder-rekening.js";
+import seedDAK from "./app/dak/seeder/routes-seed.js";
 
 const router = Router();
 
@@ -83,7 +83,8 @@ router.use("/renstra/renja", cekToken, renjaRENSTRA);
 router.use("/renstra/pagu", cekToken, paguRENSTRA);
 router.use("/renstra/indikator", cekToken, indikatorRENSTRA);
 router.use("/renstra/realisasi", cekToken, realisasiRENSTRA);
-router.use("/renstra/hasil", cekToken, hasilRENSTRA);
+// router.use("/renstra/hasil", cekToken, hasilRENSTRA);
+router.use("/renstra/hasil", hasilRENSTRA);
 router.get("/renstra/seed-perencanaan/:mulai/:akhir/:tahun_ke/:ren", cekToken, seedRENSTRA.seedPerencanaan);
 
 //Endpoint iku-ikd
@@ -99,7 +100,7 @@ router.use("/dak/bidang", cekToken, bidangDAK);
 router.use("/dak/opd", cekToken, opdDAK)
 router.use("/dak/masalah", cekToken, masalahDAK);
 router.use("/dak/fisik", cekToken, fisikDAK);
-router.get("/dak/seed-rek", seedRekeningDAK);
+router.use("/dak/seed", seedDAK);
 
 
 router.use((req, res) => {

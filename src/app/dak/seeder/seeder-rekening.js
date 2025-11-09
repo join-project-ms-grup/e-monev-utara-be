@@ -125,11 +125,23 @@ const seeder = async (req, res, next) => {
 
               const result = [];
               for (const s of getskpd) {
-                     const getFile = JSON.parse(fs.readFileSync(`./src/app/renja-rkpd/seeder/renja-2026/${s.kode}.json`, 'utf8'));
-                     const hasil = strukturkanDataSederhana(getFile);
-                     result.push(await prosesData(hasil));
+                     const filePath = `./src/app/renja-rkpd/seeder/renja-2026/${s.kode}.json`;
 
-                     // result.push(await prosesData(tahun_ke, s.skpd_periode[0].id, hasil));
+                     try {
+                            if (!fs.existsSync(filePath)) {
+                                   console.log(`File tidak ditemukan: ${filePath}, skip...`);
+                                   continue; // lanjut ke iterasi berikutnya
+                            }
+
+                            const getFile = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                            const hasil = strukturkanDataSederhana(getFile);
+                            result.push(await prosesData(hasil));
+
+                            // result.push(await prosesData(tahun_ke, s.skpd_periode[0].id, hasil));
+                     } catch (err) {
+                            console.error(`Gagal memproses file ${filePath}:`, err.message);
+                            continue; // skip jika error parsing atau lainnya
+                     }
               }
               return response(res, 200, true, "Berhasil seed rekening", result);
        } catch (error) {

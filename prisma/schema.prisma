@@ -77,7 +77,7 @@ model periode {
   updated_at     DateTime         @updatedAt
   skpd_periode   skpd_periode[]
   x_skpd_periode x_skpd_periode[]
-  wSkpd          w_skpd[]
+  wSkpd          w_skpd_periode[]
 
   @@unique([mulai, akhir])
 }
@@ -95,7 +95,8 @@ model skpd {
   skpd_periode   skpd_periode[]
   x_skpd_periode x_skpd_periode[]
 
-  author users? @relation("AuthorSkpd", fields: [author_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  author        users?           @relation("AuthorSkpd", fields: [author_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  wSkpdPeriodes w_skpd_periode[]
 }
 
 model skpd_periode {
@@ -200,6 +201,7 @@ model indikatorOutcome {
   nama                   String                   @db.Text
   satuan                 String?
   status                 Boolean                  @default(true)
+  jenis_satuan           SatuanAkumulasi          @default(akumulatif)
   created_at             DateTime                 @default(now())
   updated_at             DateTime                 @updatedAt
   targetIndikatorOutcome targetIndikatorOutcome[]
@@ -423,13 +425,19 @@ model capaianTriwulanLog {
 }
 
 // IKU dan IKD
-model w_skpd {
-  id        Int    @id @default(autoincrement())
-  periodeId Int
-  name      String @db.Text
+model w_skpd_periode {
+  id         Int      @id @default(autoincrement())
+  skpd_id    Int
+  periode_id Int
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  periode  periode?   @relation(fields: [periodeId], references: [id])
+  skpd     skpd       @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  periode  periode    @relation(fields: [periode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   wMasters w_master[]
+
+  @@unique([skpd_id, periode_id])
 }
 
 model w_master {
@@ -442,7 +450,7 @@ model w_master {
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
 
-  skpd   w_skpd     @relation(fields: [skpdId], references: [id], onDelete: Cascade)
+  skpd   w_skpd_periode @relation(fields: [skpdId], references: [id], onDelete: Cascade)
   uraian w_uraian[]
 }
 
@@ -852,6 +860,7 @@ enum jenisBerkas {
 model dak_berkas {
   id            Int             @id @default(autoincrement())
   jenis_dak     Int
+  no            Int             @unique
   group         jenisBerkas
   name          String          @db.Text
   keterangan    String?         @db.Text

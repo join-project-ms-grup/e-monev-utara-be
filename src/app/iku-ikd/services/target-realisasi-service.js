@@ -3,73 +3,62 @@ import { errorHandling } from "../../../middlewares/erros-handling.js";
 
 export const listTarget = async (req) => {
        const { skpd_id, periodeId } = req.body;
-       if (skpd_id === "all") {
-              const getAllData = await prisma.w_skpd.findMany({
-                     where: { periodeId: parseInt(periodeId) },
-                     select: {
-                            name: true,
-                            wMasters: {
-                                   select: {
-                                          name: true,
-                                          kode: true,
-                                          uraian: {
-                                                 select: {
-                                                        id: true,
-                                                        name: true,
-                                                        satuan: true,
-                                                        base_line: true,
-                                                        perhitungan: true,
-                                                        is_iku: true,
-                                                        target: true
-                                                 }
 
-                                          }
-                                   }
-                            }
-                     }
-              });
-              return getAllData
-       } else {
-              const getAllData = await prisma.w_skpd.findMany({
-                     where: { periodeId: parseInt(periodeId), id: parseInt(skpd_id) },
-                     select: {
-                            name: true,
-                            wMasters: {
-                                   select: {
-                                          name: true,
-                                          kode: true,
-                                          uraian: {
-                                                 select: {
-                                                        id: true,
-                                                        name: true,
-                                                        satuan: true,
-                                                        base_line: true,
-                                                        perhitungan: true,
-                                                        is_iku: true,
-                                                        target: true
-                                                 }
+       const where = {
+              periode_id: parseInt(periodeId),
+              ...(skpd_id !== "all" && { skpd_id: parseInt(skpd_id) }), // hanya ditambahkan kalau bukan "all"
+       };
 
-                                          }
-                                   }
-                            }
-                     }
-              });
-              return getAllData;
-       }
-}
+       const getAllData = await prisma.w_skpd_periode.findMany({
+              where,
+              select: {
+                     skpd: {
+                            select: {
+                                   name: true,
+                            },
+                     },
+                     wMasters: {
+                            select: {
+                                   name: true,
+                                   kode: true,
+                                   uraian: {
+                                          select: {
+                                                 id: true,
+                                                 name: true,
+                                                 satuan: true,
+                                                 base_line: true,
+                                                 perhitungan: true,
+                                                 is_iku: true,
+                                                 target: true,
+                                          },
+                                   },
+                            },
+                     },
+              },
+       });
+
+       return mapName(getAllData);
+
+
+};
 
 export const listTargetIKU = async (req) => {
        const { skpd_id, periodeId } = req.body;
+
        if (skpd_id === "all") {
-              const getAllData = await prisma.w_skpd.findMany({
+              const getAllData = await prisma.w_skpd_periode.findMany({
                      where: {
-                            periodeId: parseInt(periodeId),
+                            periode_id: parseInt(periodeId),
                             wMasters: {
                                    some: { uraian: { some: { is_iku: true } } }
                             }
                      },
                      select: {
-                            name: true,
+                            skpd: {
+                                   select: {
+                                          name: true,
+                                   },
+                            },
                             wMasters: {
                                    where: { uraian: { some: { is_iku: true } } },
                                    select: {
@@ -92,18 +81,22 @@ export const listTargetIKU = async (req) => {
                             }
                      }
               });
-              return getAllData
+              return mapName(getAllData)
        } else {
-              const getAllData = await prisma.w_skpd.findMany({
+              const getAllData = await prisma.w_skpd_periode.findMany({
                      where: {
-                            periodeId: parseInt(periodeId),
-                            id: parseInt(skpd_id),
+                            periode_id: parseInt(periodeId),
+                            skpd_id: parseInt(skpd_id),
                             wMasters: {
                                    some: { uraian: { some: { is_iku: true } } }
                             }
                      },
                      select: {
-                            name: true,
+                            skpd: {
+                                   select: {
+                                          name: true,
+                                   },
+                            },
                             wMasters: {
                                    where: { uraian: { some: { is_iku: true } } },
                                    select: {
@@ -126,22 +119,26 @@ export const listTargetIKU = async (req) => {
                             }
                      }
               });
-              return getAllData;
+              return mapName(getAllData);
        }
 }
 
 export const listTargetIKD = async (req) => {
        const { skpd_id, periodeId } = req.body;
        if (skpd_id === "all") {
-              const getAllData = await prisma.w_skpd.findMany({
+              const getAllData = await prisma.w_skpd_periode.findMany({
                      where: {
-                            periodeId: parseInt(periodeId),
+                            periode_id: parseInt(periodeId),
                             wMasters: {
                                    some: { uraian: { some: { is_iku: false } } }
                             }
                      },
                      select: {
-                            name: true,
+                            skpd: {
+                                   select: {
+                                          name: true,
+                                   },
+                            },
                             wMasters: {
                                    where: { uraian: { some: { is_iku: false } } },
                                    select: {
@@ -164,18 +161,22 @@ export const listTargetIKD = async (req) => {
                             }
                      }
               });
-              return getAllData
+              return mapName(getAllData)
        } else {
-              const getAllData = await prisma.w_skpd.findMany({
+              const getAllData = await prisma.w_skpd_periode.findMany({
                      where: {
-                            periodeId: parseInt(periodeId),
-                            id: parseInt(skpd_id),
+                            periode_id: parseInt(periodeId),
+                            skpd_id: parseInt(skpd_id),
                             wMasters: {
                                    some: { uraian: { some: { is_iku: false } } }
                             }
                      },
                      select: {
-                            name: true,
+                            skpd: {
+                                   select: {
+                                          name: true,
+                                   },
+                            },
                             wMasters: {
                                    where: { uraian: { some: { is_iku: false } } },
                                    select: {
@@ -198,7 +199,7 @@ export const listTargetIKD = async (req) => {
                             }
                      }
               });
-              return getAllData;
+              return mapName(getAllData);
        }
 }
 
@@ -323,4 +324,17 @@ export function calculateAchievementPercentage(targetStr, capaian, perhitungan =
        }
 
        return Number(percentage.toFixed(2));
+}
+
+
+const mapName = (data) => {
+       const result = [];
+       for (const ik of data) {
+              result.push({
+                     name: ik.skpd.name,
+                     wMasters: ik.wMasters
+              })
+       }
+
+       return result;
 }
