@@ -3,7 +3,7 @@ import { errorHandling } from "../../../middlewares/erros-handling.js";
 
 export const listSub = async (req) => {
        const { skpd_periode_id, tahun_ke, bidang } = req.body;
-       const skpd_periode = await prisma.skpd_periode.findUnique({
+       const skpd_periode = await prisma.x_skpd_periode.findUnique({
               where: { id: skpd_periode_id },
               include: {
                      skpd: true,
@@ -12,11 +12,12 @@ export const listSub = async (req) => {
                      }
               }
        });
+       console.log(skpd_periode);
 
        let data_rekening = null;
        if (bidang) {
               // jika bidang dikirim, filter sub kegiatan berdasarkan bidang_id
-              const master = await prisma.master.findMany({
+              const master = await prisma.x_master.findMany({
                      where: {
                             type: "subKegiatan",
                             paguIndikatif: { some: { skpd_periode_id, tahun_ke } },
@@ -49,7 +50,7 @@ export const listSub = async (req) => {
 
               data_rekening = buildHierarchy(master);
        } else {
-              const master = await prisma.master.findMany({
+              const master = await prisma.x_master.findMany({
                      where: {
                             type: "subKegiatan",
                             paguIndikatif: { some: { skpd_periode_id, tahun_ke } }
@@ -131,14 +132,14 @@ function buildHierarchy(data) {
 
 export const detailSub = async (req) => {
        const { skpd_periode_id, sub_id, tahun_ke } = req.body;
-       const exist = await prisma.master.findUnique({
+       const exist = await prisma.x_master.findUnique({
               where: { id: sub_id }
        });
        if (!exist) {
               throw new errorHandling(404, "Sub Kegiatan tidak ditemukan");
        }
 
-       const subKegiatan = await prisma.master.findFirst({
+       const subKegiatan = await prisma.x_master.findFirst({
               where: { id: sub_id, paguIndikatif: { some: { skpd_periode_id, tahun_ke } } },
               include: {
                      paguIndikatif: {

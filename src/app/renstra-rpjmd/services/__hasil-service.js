@@ -69,6 +69,8 @@ export const listRpjmd = async (req) => {
        if (getProgram.length === 0) {
               throw new errorHandling(404, "Tidak menemukan program pada periode ini");
        }
+
+       // return getProgram;
        const result = [];
        for (const p of getProgram) {
               result.push({
@@ -89,10 +91,52 @@ export const listRpjmd = async (req) => {
                      }
               })
        }
-       return groupHierarchy(result);
-       return getProgram;
+       return strukturkanData(result)
 }
 
+function strukturkanData(data) {
+       const hasil = [];
+
+       for (const item of data) {
+              // cari urusan
+              let urusan = hasil.find(u => u.kode === item.kode);
+              if (!urusan) {
+                     urusan = {
+                            kode: item.kode,
+                            name: item.name,
+                            type: item.type,
+                            bidang: []
+                     };
+                     hasil.push(urusan);
+              }
+
+              const bidangData = item.bidang;
+              let bidang = urusan.bidang.find(b => b.kode === bidangData.kode);
+              if (!bidang) {
+                     bidang = {
+                            kode: bidangData.kode,
+                            name: bidangData.name,
+                            type: bidangData.type,
+                            program: []
+                     };
+                     urusan.bidang.push(bidang);
+              }
+
+              const programData = bidangData.program;
+              let program = bidang.program.find(p => p.kode === programData.kode);
+              if (!program) {
+                     program = {
+                            kode: programData.kode,
+                            name: programData.name,
+                            outcome: programData.outcome,
+                            pagu: programData.pagu
+                     };
+                     bidang.program.push(program);
+              }
+       }
+
+       return hasil;
+}
 
 // Helper untuk menambah tahun kosong
 const fillMissingYears = (records, totalYears = 5, startYear = 2025) => {
@@ -171,7 +215,6 @@ const calculatePaguRecursive = (node, totalYears = 5, startYear = 2025, keepChil
 
        return node;
 };
-
 
 const mapOutcome = (outcomes, startYear = 2026, totalYears = 5) => {
        return outcomes.map(out => {
@@ -267,6 +310,7 @@ export const listLaporan = async (req) => {
        })
        return await listHierarkiRenja(skpd_periode_id, getPeriode.periode.mulai);
 }
+
 export const listHierarkiRenja = async (skpd_periode_id, tahunAwal) => {
        const tahunList = Array.from({ length: 5 }, (_, i) => tahunAwal + i);
 
@@ -487,3 +531,40 @@ export const listHierarkiRenja = async (skpd_periode_id, tahunAwal) => {
 
        return result;
 };
+
+
+export const createUpdateCatatan = async (req) => {
+       const { skpd_periode_id, type, pendorong, penghambat, tl_1, tl_2 } = req.body;
+       const exist = await prisma.x_catatan_eval.findFirst({
+              where: {
+                     skpd_periode: skpd_periode_id,
+                     type: type
+              }
+       });
+
+       if (exist) {
+              return await prisma.x_catatan_eval.update({
+                     where: { id: exist.id },
+                     data: { pendorong, penghambat, tl_1, tl_2 }
+              });
+       } else {
+              return await prisma.x_catatan_eval.create({
+                     data: {
+                            skpd_periode: skpd_periode_id,
+                            type,
+                            pendorong,
+                            penghambat,
+                            tl_1,
+                            tl_2
+                     }
+              });
+       }
+}
+
+
+export const getCatatan = async (req) => {
+       const { skpd_periode_id, type } = req.body
+       return await prisma.x_catatan_eval.findFirst({
+              where: { skpd_periode: skpd_periode_id, type }
+       });
+}

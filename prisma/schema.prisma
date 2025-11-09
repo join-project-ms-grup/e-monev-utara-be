@@ -750,6 +750,25 @@ model x_paguIndikatifSumberDana {
   @@unique([pagu_indikatif_id, sumber_dana_id]) // supaya tidak duplikat
 }
 
+enum jenisEval {
+  rpjmd
+  renstra
+}
+
+model x_catatan_eval {
+  id           Int       @id @default(autoincrement())
+  skpd_periode Int
+  type         jenisEval
+  pendorong    String?   @db.Text
+  penghambat   String?   @db.Text
+  tl_1         String?   @db.Text
+  tl_2         String?   @db.Text
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  @@unique([skpd_periode, type])
+}
+
 // DAK AREA ============================================================================================================================================
 model dak_tahun {
   id         Int      @id @default(autoincrement())

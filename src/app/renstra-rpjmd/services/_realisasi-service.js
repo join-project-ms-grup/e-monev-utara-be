@@ -169,7 +169,6 @@ const mappingOutcome = (outcome) => {
        return result
 }
 
-
 const mappingIndikator = (indikator) => {
        const result = [];
 

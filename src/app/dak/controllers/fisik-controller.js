@@ -29,6 +29,8 @@ export const addIdent = async (req, res, next) => {
                      foto: string.allow(null),
                      mekanisme: string.valid('swakelola', 'kontrak', 'ekatalog'),
                      metode: string,
+                     volume_mekanisme: number,
+                     uang_mekanisme: number,
                      dokumen: Joi.array().items(Joi.object({
                             id_berkas: number,
                             file: string.allow(null),

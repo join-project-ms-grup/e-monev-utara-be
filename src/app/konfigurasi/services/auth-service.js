@@ -20,7 +20,7 @@ export const LoginCheck = async (req) => {
                      name: true,
                      userRole: true,
                      userSkpd: true
-              }
+              },
        });
 
        if (user == null || Object.keys(user).length === 0) {
