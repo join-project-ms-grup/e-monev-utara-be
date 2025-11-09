@@ -37,7 +37,7 @@ export const addIdent = async (req, res, next) => {
                             Waktu: string.allow(null),
                             Keterangan: string.allow(null)
 
-                     })).required()
+                     })).required().allow(null)
               });
               const { error } = schema.validate(req.body);
               if (error) {
