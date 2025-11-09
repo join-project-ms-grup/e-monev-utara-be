@@ -1,6 +1,6 @@
 [
   {
-    "kode_skpd": null,
+    "kode_skpd": "0.01.0.00.0.00.01.0000",
     "name": "BPS",
     "urusan": [
       {
@@ -797,7 +797,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "4.02.0.00.0.00.01.0000",
     "name": "Sekretariat DPRD",
     "urusan": [
       {
@@ -920,7 +920,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "6.01.0.00.0.00.01.0000",
     "name": "Inspektorat Daerah",
     "urusan": [
       {
@@ -1080,7 +1080,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "1.01.2.22.0.00.01.0000",
     "name": "Dinas Pendidikan",
     "urusan": [
       {
@@ -2658,7 +2658,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "1.02.0.00.0.00.01.0000",
     "name": "Dinas Kesehatan",
     "urusan": [
       {
@@ -4119,7 +4119,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "1.03.0.00.0.00.01.0000",
     "name": "Dinas Pekerjaan Umum dan Penataan",
     "urusan": [
       {
@@ -4957,7 +4957,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "1.04.2.10.1.03.01.0000",
     "name": "Dinas Perumahan Rakyat dan Kawasan Permukiman",
     "urusan": [
       {
@@ -5499,7 +5499,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "1.05.0.00.0.00.01.0000",
     "name": "Satuan Polisi Pamong Praja dan Pemadam Kebakaran",
     "urusan": [
       {
@@ -5813,7 +5813,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "1.06.0.00.0.00.01.0000",
     "name": "Dinas Sosial",
     "urusan": [
       {
@@ -6534,7 +6534,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.07.3.32.0.00.01.0000",
     "name": "Dinas Ketenagakerjaan dan Transmigrasi",
     "urusan": [
       {
@@ -7230,7 +7230,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.08.0.00.0.00.01.0000",
     "name": "Dinas Pemberdayaan Perempuan dan Perlindungan Anak",
     "urusan": [
       {
@@ -7649,7 +7649,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.09.0.00.0.00.01.0000",
     "name": "Dinas Ketahanan Pangan",
     "urusan": [
       {
@@ -7889,7 +7889,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.11.0.00.0.00.01.0000",
     "name": "Dinas Lingkungan Hidup",
     "urusan": [
       {
@@ -8647,7 +8647,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.12.0.00.0.00.01.0000",
     "name": "Dinas Kependudukan dan Pencatatan Sipil",
     "urusan": [
       {
@@ -9183,7 +9183,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.13.0.00.0.00.01.0000",
     "name": "Dinas Pemberdayaan Masyarakat dan Desa",
     "urusan": [
       {
@@ -9571,7 +9571,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.14.0.00.0.00.01.0000",
     "name": "Dinas Pengendalian Penduduk dan Keluarga Berencana",
     "urusan": [
       {
@@ -9848,7 +9848,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.15.0.00.0.00.01.0000",
     "name": "Dinas Perhubungan",
     "urusan": [
       {
@@ -10304,7 +10304,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.16.2.20.2.21.01.0000",
     "name": "Dinas Komunikasi dan Informatika",
     "urusan": [
       {
@@ -11154,7 +11154,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.17.0.00.0.00.01.0000",
     "name": "Dinas Koperasi, Usaha Kecil, dan Menengah",
     "urusan": [
       {
@@ -11394,7 +11394,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.18.0.00.0.00.01.0000",
     "name": "Dinas Penanaman Modal dan Pelayanan Terpadu Satu Pintu",
     "urusan": [
       {
@@ -11628,7 +11628,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.19.0.00.0.00.01.0000",
     "name": "Dinas Kepemudaan dan Olah Raga",
     "urusan": [
       {
@@ -12349,7 +12349,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "2.23.2.24.0.00.01.0000",
     "name": "Dinas Kearsipan dan Perpustakaan",
     "urusan": [
       {
@@ -12743,7 +12743,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "3.25.0.00.0.00.01.0000",
     "name": "Dinas Perikanan",
     "urusan": [
       {
@@ -12903,7 +12903,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "3.26.0.00.0.00.01.0000",
     "name": "Dinas Pariwisata",
     "urusan": [
       {
@@ -13063,7 +13063,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "3.27.0.00.0.00.01.0000",
     "name": "Dinas Tanaman Pangan, Hortikultura dan Peternakan",
     "urusan": [
       {
@@ -13260,7 +13260,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "3.27.0.00.0.00.02.0000",
     "name": "Dinas Perkebunan",
     "urusan": [
       {
@@ -13306,7 +13306,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "3.30.3.31.0.00.02.0000",
     "name": "Dinas Perdagangan",
     "urusan": [
       {
@@ -13429,7 +13429,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "5.01.5.05.0.00.01.0000",
     "name": "Badan Perencanaan Pembangunan, Riset dan Inovasi Daerah",
     "urusan": [
       {
@@ -13866,7 +13866,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "5.02.0.00.0.00.01.0000",
     "name": "Badan Keuangan dan Aset Daerah",
     "urusan": [
       {
@@ -14112,7 +14112,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "5.02.0.00.0.00.02.0000",
     "name": "Badan Pendapatan Daerah",
     "urusan": [
       {
@@ -14204,7 +14204,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "5.03.5.04.0.00.01.0000",
     "name": "Badan Kepegawaian dan Pengembangan Sumber Daya Manusia",
     "urusan": [
       {
@@ -14364,7 +14364,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "8.01.0.00.0.00.01.0000",
     "name": "Badan Kesatuan Bangsa dan Politik",
     "urusan": [
       {
@@ -14573,7 +14573,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "1.05.0.00.0.00.02.0000",
     "name": "Badan Penanggulangan Bencana Daerah",
     "urusan": [
       {
@@ -14961,7 +14961,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "4.01.0.00.0.00.01.0001",
     "name": "Bagian Hukum Sekretariat Daerah Kabupaten Bengkulu Utara",
     "urusan": [
       {
@@ -15084,7 +15084,7 @@
     ]
   },
   {
-    "kode_skpd": null,
+    "kode_skpd": "4.01.0.00.0.00.01.0002",
     "name": "Bagian Organisasi Sekretariat Daerah Kabupaten Bengkulu Utara",
     "urusan": [
       {
