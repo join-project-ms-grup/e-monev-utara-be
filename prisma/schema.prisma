@@ -925,13 +925,13 @@ model fisik_detail {
   id_ident        Int      @unique
   nama_paket      String   @db.Text
   detail_paket    String   @db.Text
-  volume          Float
-  satuan          String
-  estimasi        String
-  jumlah_penerima String
-  anggaran        Decimal
-  des_kel         String
-  kec             String
+  volume          Float?
+  satuan          String?
+  estimasi        String?
+  jumlah_penerima String?
+  anggaran        Decimal?
+  des_kel         String?
+  kec             String?
   bujur           Json     @default("[0,0,0]")
   lintang         Json     @default("[0,0,0]")
   foto            String?
@@ -948,14 +948,14 @@ enum methodMekanisme {
 }
 
 model fisik_mekanisme {
-  id         Int             @id @default(autoincrement())
-  id_ident   Int             @unique
-  mekanisme  methodMekanisme
+  id         Int              @id @default(autoincrement())
+  id_ident   Int              @unique
+  mekanisme  methodMekanisme?
   uang       Decimal?
   volume     Float?
-  metode     String
-  create_at  DateTime        @default(now())
-  updated_at DateTime        @updatedAt
+  metode     String?
+  create_at  DateTime         @default(now())
+  updated_at DateTime         @updatedAt
 
   ident fisik_ident @relation(fields: [id_ident], references: [id])
 }
