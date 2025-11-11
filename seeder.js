@@ -15,11 +15,11 @@ const createRole = async () => {
                      },
                      {
                             kode: 3,
-                            name: 'RKPD',
+                            name: 'SKPD-RKPD',
                      },
                      {
                             kode: 4,
-                            name: 'DAK',
+                            name: 'SKPD-DAK',
                      }
               ],
               skipDuplicates: true,
@@ -29,18 +29,27 @@ const createRole = async () => {
 
 
 const createMainUser = async () => {
-       const password = await bycrypt.hash('admin123', 10);
-       const createUser = await prisma.users.create({
-              data: {
-                     name: 'admin',
-                     fullname: 'Administrator',
-                     email: 'admin@mail.com',
+       const dataUser = [
+              {
+                     name: 'developer-ms',
+                     fullname: 'Developer',
+                     email: 'dev.rafin@gmail.com',
                      role_id: 1,
                      skpd_id: null,
-                     password: password,
-                     created_at: new Date(),
-                     updated_at: new Date(),
+                     password: await bycrypt.hash('@2025dev', 10)
+              },
+              {
+                     name: 'admin',
+                     fullname: 'Administrator',
+                     email: 'admin@gmail.com',
+                     role_id: 2,
+                     skpd_id: null,
+                     password: await bycrypt.hash('@2025admin', 10)
               }
+       ]
+       const createUser = await prisma.users.createMany({
+              data: dataUser,
+              skipDuplicates: true,
        });
        console.table(createUser);
 }
