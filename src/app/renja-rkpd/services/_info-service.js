@@ -19,3 +19,7 @@ export const dashboardCardData = async (req) => {
               totalSubKegiatan
        }
 }
+
+export const rangkingSKPD = (req) => {
+       const { periode, tahun_ke, triwulan } = req.body
+}
