@@ -25,7 +25,9 @@ export const rankingSKPD = async (req) => {
        const { periode_id, tahun_ke, triwulan } = req.body;
        const twsd = Array.from({ length: triwulan }).map((_, index) => index + 1);
 
-       const exist = await prisma.periode.findUnique({ where: { id: periode_id } });
+       const exist = await prisma.periode.findUnique({
+              where: { id: periode_id }
+       });
        if (!exist) throw new errorHandling(404, "gagal mendapatkan periode");
 
        const getSKPD = await prisma.skpd_periode.findMany({

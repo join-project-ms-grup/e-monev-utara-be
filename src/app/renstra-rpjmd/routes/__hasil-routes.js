@@ -7,5 +7,6 @@ router.get("/rpjmd/:skpdPeriodeId", controller.listRpjmd);
 router.get("/renstra/:skpdPeriodeId", controller.listRenstra);
 router.post("/cu-catatan", controller.createUpdateCatatan);
 router.post("/get-catatan", controller.getCatatan);
+router.post("/rpjmd-all", controller.listRpjmdAll);
 
 export default router;

@@ -71,3 +71,20 @@ export const getCatatan = async (req, res, next) => {
               next(error)
        }
 }
+
+export const listRpjmdAll = async (req, res, next) => {
+       try {
+              const schemaParams = Joi.object({
+                     periode_id: Joi.number().integer().required()
+              });
+
+              const { error: errorParams } = schemaParams.validate(req.body);
+              if (errorParams) {
+                     return response(res, 400, false, errorParams.details[0].message);
+              }
+              return response(res, 200, true, "Berhasil mengubah catatan", await service.listRpjmdAll(req));
+
+       } catch (error) {
+              next(error)
+       }
+}

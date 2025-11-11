@@ -145,6 +145,29 @@ export const listRpjmd = async (req) => {
        return { catatan: await getCatatan({ body: { skpd_periode_id, type: "rpjmd" } }), hasil: strukturkanData(result) }
 }
 
+export const listRpjmdAll = async (req) => {
+       const { periode_id } = req.body;
+       const listSKPD = await prisma.x_skpd_periode.findMany({
+              where: { status: true, periode_id },
+              select: {
+                     id: true,
+                     skpd: true
+              }
+       });
+
+       const result = [];
+
+       for (const skpd of listSKPD) {
+              result.push({
+                     kode: skpd.skpd.kode,
+                     name: skpd.skpd.name,
+                     rpjmd: (await listRpjmd({ params: { skpdPeriodeId: skpd.id } })).hasil
+              })
+       }
+
+       return result
+}
+
 function strukturkanData(data) {
        const hasil = [];
 
