@@ -1,5 +1,54 @@
 import prisma from "../../../config/database.js";
 
+export const createUpdateCatatan = async (req) => {
+       const { skpd_periode_id, type, pendorong, penghambat, tl_1, tl_2 } = req.body;
+       const exist = await prisma.catatan_eval.findFirst({
+              where: {
+                     skpd_periode: skpd_periode_id,
+                     type: type
+              }
+       });
+
+       if (exist) {
+              return await prisma.catatan_eval.update({
+                     where: { id: exist.id },
+                     data: { pendorong, penghambat, tl_1, tl_2 }
+              });
+       } else {
+              return await prisma.catatan_eval.create({
+                     data: {
+                            skpd_periode: skpd_periode_id,
+                            type,
+                            pendorong,
+                            penghambat,
+                            tl_1,
+                            tl_2
+                     }
+              });
+       }
+}
+
+
+export const getCatatan = async (req) => {
+       const { skpd_periode_id, type } = req.body
+       const exist = await prisma.catatan_eval.findFirst({
+              where: { skpd_periode: skpd_periode_id, type }
+       });
+
+       if (exist) return {
+              pendorong: exist.pendorong,
+              penghambat: exist.penghambat,
+              tl_1: exist.tl_1,
+              tl_2: exist.tl_2
+       };
+
+       return {
+              pendorong: "",
+              penghambat: "",
+              tl_1: "",
+              tl_2: ""
+       }
+}
 
 export const listLaporanTahunan = async (req) => {
        const skpd_periode_id = Number(req.params.skpdPeriodeId);
@@ -119,7 +168,7 @@ export const listLaporanTahunan = async (req) => {
               });
        }
 
-       return groupHierarchy(result);
+       return { catatan: await getCatatan({ body: { skpd_periode_id, type: "renja" } }), hasil: groupHierarchy(result) };
 }
 
 export function groupHierarchy(rows) {
@@ -441,7 +490,7 @@ export const listLaporan = async (req) => {
                      bidang
               });
        }
-       return groupHierarchy(result);
+       return { catatan: getCatatan({ body: { skpd_periode_id, type: "rkpd" } }), hasil: groupHierarchy(result) };
 }
 
 const mappingPagu = (pagu) => {

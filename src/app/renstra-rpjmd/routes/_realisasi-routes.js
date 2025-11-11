@@ -7,5 +7,6 @@ router.post("/list", controller.list);
 router.post("/capaian-outcome", controller.updateKinerjaOutcome);
 router.post("/capaian", controller.updateKinerja);
 router.post("/anggaran", controller.updateAnggaran);
+router.post("/perhitungan", controller.updatePerhitungan)
 
 export default router;

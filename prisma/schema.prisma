@@ -374,6 +374,25 @@ model paguIndikatifSumberDana {
   @@unique([pagu_indikatif_id, sumber_dana_id]) // supaya tidak duplikat
 }
 
+enum jenisEval {
+  rkpd
+  renja
+}
+
+model catatan_eval {
+  id           Int       @id @default(autoincrement())
+  skpd_periode Int
+  type         jenisEval
+  pendorong    String?   @db.Text
+  penghambat   String?   @db.Text
+  tl_1         String?   @db.Text
+  tl_2         String?   @db.Text
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  @@unique([skpd_periode, type])
+}
+
 model realisasiAnggaran {
   id               Int                    @id @default(autoincrement())
   paguIndikatif_id Int
@@ -750,21 +769,21 @@ model x_paguIndikatifSumberDana {
   @@unique([pagu_indikatif_id, sumber_dana_id]) // supaya tidak duplikat
 }
 
-enum jenisEval {
+enum x_jenisEval {
   rpjmd
   renstra
 }
 
 model x_catatan_eval {
-  id           Int       @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   skpd_periode Int
-  type         jenisEval
-  pendorong    String?   @db.Text
-  penghambat   String?   @db.Text
-  tl_1         String?   @db.Text
-  tl_2         String?   @db.Text
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
+  type         x_jenisEval
+  pendorong    String?     @db.Text
+  penghambat   String?     @db.Text
+  tl_1         String?     @db.Text
+  tl_2         String?     @db.Text
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @updatedAt
 
   @@unique([skpd_periode, type])
 }

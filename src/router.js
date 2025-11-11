@@ -83,8 +83,8 @@ router.use("/renstra/renja", cekToken, renjaRENSTRA);
 router.use("/renstra/pagu", cekToken, paguRENSTRA);
 router.use("/renstra/indikator", cekToken, indikatorRENSTRA);
 router.use("/renstra/realisasi", cekToken, realisasiRENSTRA);
-// router.use("/renstra/hasil", cekToken, hasilRENSTRA);
-router.use("/renstra/hasil", hasilRENSTRA);
+router.use("/renstra/hasil", cekToken, hasilRENSTRA);
+// router.use("/renstra/hasil", hasilRENSTRA);
 router.get("/renstra/seed-perencanaan/:mulai/:akhir/:tahun_ke/:ren", cekToken, seedRENSTRA.seedPerencanaan);
 
 //Endpoint iku-ikd

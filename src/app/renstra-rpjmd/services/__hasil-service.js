@@ -1,5 +1,56 @@
+import { body } from "express-validator";
 import prisma from "../../../config/database.js";
 import { errorHandling } from "../../../middlewares/erros-handling.js";
+
+export const createUpdateCatatan = async (req) => {
+       const { skpd_periode_id, type, pendorong, penghambat, tl_1, tl_2 } = req.body;
+       const exist = await prisma.x_catatan_eval.findFirst({
+              where: {
+                     skpd_periode: skpd_periode_id,
+                     type: type
+              }
+       });
+
+       if (exist) {
+              return await prisma.x_catatan_eval.update({
+                     where: { id: exist.id },
+                     data: { pendorong, penghambat, tl_1, tl_2 }
+              });
+       } else {
+              return await prisma.x_catatan_eval.create({
+                     data: {
+                            skpd_periode: skpd_periode_id,
+                            type,
+                            pendorong,
+                            penghambat,
+                            tl_1,
+                            tl_2
+                     }
+              });
+       }
+}
+
+
+export const getCatatan = async (req) => {
+       const { skpd_periode_id, type } = req.body
+       const exist = await prisma.x_catatan_eval.findFirst({
+              where: { skpd_periode: skpd_periode_id, type }
+       });
+
+       if (exist) return {
+              pendorong: exist.pendorong,
+              penghambat: exist.penghambat,
+              tl_1: exist.tl_1,
+              tl_2: exist.tl_2
+       };
+
+       return {
+              pendorong: "",
+              penghambat: "",
+              tl_1: "",
+              tl_2: ""
+       }
+}
 
 export const listRpjmd = async (req) => {
        const skpd_periode_id = parseInt(req.params.skpdPeriodeId);
@@ -91,7 +142,7 @@ export const listRpjmd = async (req) => {
                      }
               })
        }
-       return strukturkanData(result)
+       return { catatan: await getCatatan({ body: { skpd_periode_id, type: "rpjmd" } }), hasil: strukturkanData(result) }
 }
 
 function strukturkanData(data) {
@@ -300,271 +351,262 @@ export function groupHierarchy(rows) {
        return Array.from(urusanMap.values());
 }
 
+
 export const listLaporan = async (req) => {
        const skpd_periode_id = parseInt(req.params.skpdPeriodeId);
        const getPeriode = await prisma.x_skpd_periode.findFirst({
-              where: { id: skpd_periode_id },
+              where: { id: skpd_periode_id, status: true },
               select: {
                      periode: true
               }
-       })
-       return await listHierarkiRenja(skpd_periode_id, getPeriode.periode.mulai);
-}
+       });
 
-export const listHierarkiRenja = async (skpd_periode_id, tahunAwal) => {
-       const tahunList = Array.from({ length: 5 }, (_, i) => tahunAwal + i);
-
-       const data = await prisma.x_master.findMany({
+       const getHasil = await prisma.x_master.findMany({
               where: {
-                     type: "program",
-                     paguProgram: { some: { skpd_periode_id } },
+                     type: "urusan",
+                     children: { some: { children: { some: { paguProgram: { some: { skpd_periode_id } } } } } }
               },
               select: {
-                     id: true,
                      kode: true,
                      name: true,
-                     type: true,
-                     parent: {
-                            select: {
-                                   kode: true,
-                                   name: true,
-                                   type: true,
-                                   parent: {
-                                          select: {
-                                                 kode: true,
-                                                 name: true,
-                                                 type: true,
-                                          },
-                                   },
-                            },
-                     },
-                     paguProgram: {
-                            where: { skpd_periode_id },
-                            select: { tahun: true, tahun_ke: true, pagu: true },
-                     },
-                     outcome: {
-                            where: { skpd_periode_id },
-                            select: {
-                                   outcome: true,
-                                   indikatorOutcome: {
-                                          select: {
-                                                 nama: true,
-                                                 satuan: true,
-                                                 targetIndikatorOutcome: {
-                                                        select: {
-                                                               tahun: true,
-                                                               tahun_ke: true,
-                                                               target: true,
-                                                               capaian: true
-                                                        }
-                                                 }
-
-                                          }
-                                   }
-
-                            }
-                     },
                      children: {
+                            where: { children: { some: { paguProgram: { some: { skpd_periode_id } } } } },
                             select: {
-                                   id: true,
                                    kode: true,
                                    name: true,
-                                   type: true,
-                                   paguKegiatan: {
-                                          where: { skpd_periode_id },
-                                          select: { tahun: true, tahun_ke: true, pagu: true },
-                                   },
                                    children: {
+                                          where: { paguProgram: { some: { skpd_periode_id } } },
                                           select: {
-                                                 id: true,
                                                  kode: true,
                                                  name: true,
-                                                 type: true,
-                                                 paguIndikatif: {
+                                                 outcome: {
+                                                        where: { skpd_periode_id },
+                                                        select: {
+                                                               outcome: true,
+                                                               indikatorOutcome: {
+                                                                      select: {
+                                                                             nama: true,
+                                                                             satuan: true,
+                                                                             targetIndikatorOutcome: {
+                                                                                    select: {
+                                                                                           tahun: true,
+                                                                                           tahun_ke: true,
+                                                                                           target: true,
+                                                                                           capaian: true
+                                                                                    }
+                                                                             }
+                                                                      }
+                                                               }
+                                                        }
+                                                 },
+                                                 paguProgram: {
                                                         where: { skpd_periode_id },
                                                         select: {
                                                                tahun: true,
                                                                tahun_ke: true,
-                                                               pagu: true,
-                                                               realisasi: true,
-                                                        },
+                                                               pagu: true
+                                                        }
                                                  },
-                                                 indikator: {
+                                                 children: {
+                                                        where: { paguKegiatan: { some: { skpd_periode_id } } },
                                                         select: {
+                                                               kode: true,
                                                                name: true,
-                                                               satuan: true,
-                                                               rincian: {
+                                                               paguKegiatan: {
+                                                                      where: { skpd_periode_id },
                                                                       select: {
                                                                              tahun: true,
-                                                                             target: true,
-                                                                             capaian: true,
-                                                                      },
+                                                                             tahun_ke: true,
+                                                                             pagu: true
+                                                                      }
                                                                },
-                                                        },
-                                                 },
-                                          },
-                                   },
-                            },
-                     },
-              },
+                                                               children: {
+                                                                      where: { paguIndikatif: { some: { skpd_periode_id } } },
+                                                                      select: {
+                                                                             kode: true,
+                                                                             name: true,
+                                                                             paguIndikatif: {
+                                                                                    where: { skpd_periode_id },
+                                                                                    select: {
+                                                                                           tahun: true,
+                                                                                           tahun_ke: true,
+                                                                                           pagu: true,
+                                                                                           realisasi: true
+                                                                                    }
+                                                                             },
+                                                                             indikator: {
+                                                                                    where: { skpd_periode_id },
+                                                                                    select: {
+                                                                                           name: true,
+                                                                                           rincian: {
+                                                                                                  select: {
+                                                                                                         tahun: true,
+                                                                                                         tahun_ke: true,
+                                                                                                         target: true,
+                                                                                                         capaian: true
+                                                                                                  }
+                                                                                           }
+                                                                                    }
+                                                                             }
+                                                                      }
+                                                               }
+                                                        }
+                                                 }
+                                          }
+                                   }
+                            }
+                     }
+              }
        });
 
        const result = [];
 
-       for (const program of data) {
-              const urusan = program.parent?.parent;
-              const bidang = program.parent;
+       for (const u of getHasil) {
+              const bidang = [];
 
-              // Cari / buat urusan
-              let urusanNode = result.find((u) => u.kode === urusan?.kode);
-              if (!urusanNode) {
-                     urusanNode = {
-                            kode: urusan?.kode,
-                            name: urusan?.name,
-                            type: urusan?.type,
-                            bidang: [],
-                     };
-                     result.push(urusanNode);
-              }
+              for (const b of u.children) {
+                     const program = [];
 
-              // Cari / buat bidang
-              let bidangNode = urusanNode.bidang.find((b) => b.kode === bidang?.kode);
-              if (!bidangNode) {
-                     bidangNode = {
-                            kode: bidang?.kode,
-                            name: bidang?.name,
-                            type: bidang?.type,
-                            program: [],
-                     };
-                     urusanNode.bidang.push(bidangNode);
-              }
+                     for (const p of b.children) {
+                            const kegiatan = [];
 
-              // Subkegiatan → pagu langsung dari DB
-              const kegiatan = program.children.map((keg) => {
-                     const subKegiatan = keg.children.map((sub) => {
-                            const pagu = tahunList.map((tahun, i) => {
-                                   const item = sub.paguIndikatif.find((x) => x.tahun === tahun);
-                                   return {
-                                          tahun,
-                                          tahun_ke: i + 1,
-                                          pagu: Number(item?.pagu || 0),
-                                          realisasi: Number(item?.realisasi || 0),
-                                   };
-                            });
+                            for (const k of p.children) {
+                                   const subKegiatan = [];
 
-                            return {
-                                   id: sub.id,
-                                   kode: sub.kode,
-                                   name: sub.name,
-                                   type: sub.type,
-                                   indikator: sub.indikator.map((i) => ({
-                                          name: i.name,
-                                          satuan: i.satuan,
-                                          rincian: tahunList.map((tahun) => {
-                                                 const r = i.rincian.find((x) => x.tahun === tahun);
-                                                 return {
-                                                        tahun,
-                                                        target: Number(r?.target || 0),
-                                                        capaian: r?.capaian ? Number(r.capaian) : null,
-                                                 };
-                                          }),
-                                   })),
-                                   pagu,
-                            };
+                                   for (const sk of k.children) {
+                                          subKegiatan.push({
+                                                 kode: sk.kode,
+                                                 name: sk.name,
+                                                 indikator: mappingIndikator(sk.indikator, getPeriode.periode.mulai),
+                                                 pagu: fillMissingYearsPagu(sk.paguIndikatif, getPeriode.periode.mulai)
+                                          })
+                                   }
+                                   kegiatan.push({
+                                          kode: k.kode,
+                                          name: k.name,
+                                          pagu: agregatPaguFromChild(k.paguKegiatan, subKegiatan),
+                                          subKegiatan
+                                   })
+                            }
+                            program.push({
+                                   kode: p.kode,
+                                   name: p.name,
+                                   outcome: mapOutcome(p.outcome, getPeriode.periode.mulai),
+                                   kegiatan
+                            })
+                     }
+                     bidang.push({
+                            kode: b.kode,
+                            name: b.name,
+                            program
                      });
-
-                     // Kegiatan → total dari subKegiatan
-                     const paguKegiatan = tahunList.map((tahun, i) => {
-                            const totalPagu = subKegiatan.reduce(
-                                   (sum, s) => sum + (s.pagu.find((p) => p.tahun === tahun)?.pagu || 0),
-                                   0
-                            );
-                            const totalRealisasi = subKegiatan.reduce(
-                                   (sum, s) => sum + (s.pagu.find((p) => p.tahun === tahun)?.realisasi || 0),
-                                   0
-                            );
-                            return {
-                                   tahun,
-                                   tahun_ke: i + 1,
-                                   pagu: totalPagu,
-                                   realisasi: totalRealisasi,
-                            };
-                     });
-
-                     return {
-                            id: keg.id,
-                            kode: keg.kode,
-                            name: keg.name,
-                            type: keg.type,
-                            pagu: paguKegiatan,
-                            children: subKegiatan,
-                     };
+              }
+              result.push({
+                     kode: u.kode,
+                     name: u.kode,
+                     bidang
               });
+       }
 
-              // Program → total dari kegiatan
-              const paguProgram = tahunList.map((tahun, i) => {
-                     const totalPagu = kegiatan.reduce(
-                            (sum, k) => sum + (k.pagu.find((p) => p.tahun === tahun)?.pagu || 0),
-                            0
-                     );
-                     const totalRealisasi = kegiatan.reduce(
-                            (sum, k) => sum + (k.pagu.find((p) => p.tahun === tahun)?.realisasi || 0),
-                            0
-                     );
-                     return {
-                            tahun,
-                            tahun_ke: i + 1,
-                            pagu: totalPagu,
-                            realisasi: totalRealisasi,
-                     };
-              });
+       return { catatan: await getCatatan({ body: { skpd_periode_id, type: "renstra" } }), hasil: result }
+}
 
-              bidangNode.program.push({
-                     kode: program.kode,
-                     name: program.name,
-                     type: program.type,
-                     pagu: paguProgram,
-                     outcome: mapOutcome(program.outcome, tahunAwal, 5),
-                     children: kegiatan,
-              });
+const mappingIndikator = (indikator, start) => {
+       const result = [];
+
+       for (const ind of indikator) {
+              result.push({
+                     name: ind.name,
+                     target: fillMissingYearsIndikator(ind.rincian, start)
+              })
        }
 
        return result;
-};
+}
 
+const fillMissingYearsIndikator = (indikator, start) => {
+       const n = [1, 2, 3, 4, 5];
+       const s = Number(start) - 1
 
-export const createUpdateCatatan = async (req) => {
-       const { skpd_periode_id, type, pendorong, penghambat, tl_1, tl_2 } = req.body;
-       const exist = await prisma.x_catatan_eval.findFirst({
-              where: {
-                     skpd_periode: skpd_periode_id,
-                     type: type
+       return n.map(item => {
+              const f = indikator.find(i => i.tahun_ke === item);
+              if (f) {
+                     return {
+                            tahun: f.tahun,
+                            tahun_ke: f.tahun_ke,
+                            target: f.target,
+                            capaian: f.capaian,
+                            persen: (f.capaian / f.target) * 100
+                     }
+              }
+              else {
+                     return {
+                            tahun: s + item,
+                            tahun_ke: item,
+                            target: 0,
+                            capaian: 0,
+                            persen: 0
+                     }
               }
        });
 
-       if (exist) {
-              return await prisma.x_catatan_eval.update({
-                     where: { id: exist.id },
-                     data: { pendorong, penghambat, tl_1, tl_2 }
-              });
-       } else {
-              return await prisma.x_catatan_eval.create({
-                     data: {
-                            skpd_periode: skpd_periode_id,
-                            type,
-                            pendorong,
-                            penghambat,
-                            tl_1,
-                            tl_2
-                     }
-              });
-       }
 }
 
+const fillMissingYearsPagu = (pagu, start) => {
+       const n = [1, 2, 3, 4, 5];
+       const s = Number(start) - 1;
 
-export const getCatatan = async (req) => {
-       const { skpd_periode_id, type } = req.body
-       return await prisma.x_catatan_eval.findFirst({
-              where: { skpd_periode: skpd_periode_id, type }
+       return n.map(item => {
+              const f = pagu.find(i => i.tahun_ke === item);
+              if (f) {
+                     return {
+                            tahun: f.tahun,
+                            tahun_ke: f.tahun_ke,
+                            pagu: f.pagu,
+                            realisasi: f.realisasi,
+                            persen: (f.realisasi / f.pagu) * 100
+
+                     }
+              } else {
+                     return {
+                            tahun: s + item,
+                            tahun_ke: item,
+                            pagu: 0,
+                            realisasi: 0,
+                            persen: 0
+                     }
+              }
        });
 }
+
+const toNum = (v) => parseFloat(v || 0);
+
+const agregatPaguFromChild = (pagu, children, start) => {
+       const n = [1, 2, 3, 4, 5];
+       const s = Number(start) - 1;
+       const pp = fillMissingYears(pagu);
+       const paguC = children.map(item => (item.pagu))
+       const data = { pagu: pp, paguChildren: paguC };
+
+       return data.pagu.map((item) => {
+              const tahun_ke = item.tahun_ke;
+              const pagu = toNum(item.pagu);
+
+              const realisasiTotal = data.paguChildren.reduce((sum, arr) => {
+                     const c = arr.find((x) => x.tahun_ke === tahun_ke);
+                     return sum + toNum(c?.realisasi);
+              }, 0);
+
+              const persen = pagu ? (realisasiTotal / pagu) * 100 : 0;
+
+              return {
+                     ...item,
+                     pagu,
+                     realisasi: realisasiTotal,
+                     persen: Math.round(persen)
+              };
+       });
+
+
+}
+

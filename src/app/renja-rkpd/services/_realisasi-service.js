@@ -211,7 +211,9 @@ const mappingIndikator = (indikator) => {
                      id: ind.id,
                      name: ind.name,
                      satuan: ind.satuan,
+                     perhitungan: ind.jenis_satuan,
                      target_capaian: capaian
+
               })
        }
 
@@ -295,13 +297,23 @@ export const updateAnggaran = async (req) => {
        return await list({ body: params });
 }
 
-export const togglePerhitungan = async (req) => {
-       const { id_indikator, type, perhitungan } = req.body
-       if (type === "program") {
+export const updatePerhitungan = async (req) => {
+       const { id_indikator, type, perhitungan } = req.body;
 
-       } else {
-              const exist = await prisma.indikator.findUnique({ where: { id: id_indikator } });
-              if (!exist) throw new errorHandling(404, "Indikator tidak ditemukan");
-              const update = await prisma.indikator.update({})
+       if (type === "outcome") {
+              const exist = await prisma.indikatorOutcome.findUnique({ where: { id: id_indikator } });
+              if (!exist) throw new errorHandling(404, "Indikator Outcome tidak ditemukan");
+              return await prisma.indikatorOutcome.update({
+                     where: { id: id_indikator },
+                     data: { jenis_satuan: perhitungan }
+              });
        }
+
+       const exist = await prisma.indikator.findUnique({ where: { id: id_indikator } });
+       if (!exist) throw new errorHandling(404, "Indikator Outcome tidak ditemukan");
+       return await prisma.indikator.update({
+              where: { id: id_indikator },
+              data: { jenis_satuan: perhitungan }
+       });
+
 }

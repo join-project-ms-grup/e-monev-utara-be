@@ -12,14 +12,10 @@ export const listRpjmd = async (req, res, next) => {
                      return response(res, 400, false, errorParams.details[0].message);
               }
               const result = await service.listRpjmd(req);
-              return response(res, 200, true, "List Laporan RKPD berhasil diambil...", result);
+              return response(res, 200, true, "List Laporan RPJMD berhasil diambil...", result);
        } catch (error) {
               next(error)
        }
-}
-
-export const listFaktorRpjmd = async (req, res, next) => {
-
 }
 
 export const listRenstra = async (req, res, next) => {
@@ -32,7 +28,7 @@ export const listRenstra = async (req, res, next) => {
                      return response(res, 400, false, errorParams.details[0].message);
               }
               const result = await service.listLaporan(req);
-              return response(res, 200, true, "List Laporan RKPD berhasil diambil...", result);
+              return response(res, 200, true, "List Laporan RENSTRA berhasil diambil...", result);
        } catch (error) {
               next(error)
        }
