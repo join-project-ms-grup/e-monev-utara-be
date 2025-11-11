@@ -10,23 +10,13 @@ export const DashboardCardData = async (req, res, next) => {
        }
 }
 
-export const rangkingSKPD = async (req, res, next) => {
+export const rangkinSKPD = async (req, res, next) => {
        try {
               // 🧩 Validasi body
               const schema = Joi.object({
-                     skpd_periode_id: Joi.number().required(),
-                     master_id: Joi.number().required(),
-                     name: Joi.string().required(),
-                     satuan: Joi.string().required(),
-                     target: Joi.array()
-                            .items(
-                                   Joi.object({
-                                          tahun_ke: Joi.number().integer().min(1).required(),
-                                          target: Joi.number().required(),
-                                   })
-                            )
-                            .min(1)
-                            .required(),
+                     periode_id: Joi.number().required(),
+                     tahun_ke: Joi.number().required(),
+                     triwulan: Joi.number().required()
               });
 
               const { error } = schema.validate(req.body);
@@ -38,7 +28,7 @@ export const rangkingSKPD = async (req, res, next) => {
               }
 
               // ✅ Jalankan service
-              const result = await service.rangkingSKPD(req);
+              const result = await infoService.rankingSKPD(req);
               return response(res, 201, true, "Berhasil mengambil data perangkingan", result);
 
        } catch (error) {
