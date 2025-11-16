@@ -123,7 +123,7 @@ model pagu_skpd {
   skpd_periode_id Int
   tahun           Int
   tahun_ke        Int
-  pagu            Decimal?
+  pagu            Decimal? @db.Decimal(18, 2)
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
@@ -232,7 +232,7 @@ model paguProgram {
   id_master       Int
   tahun           Int
   tahun_ke        Int
-  pagu            Decimal?
+  pagu            Decimal? @db.Decimal(18, 2)
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
@@ -245,7 +245,7 @@ model paguKegiatan {
   id_master       Int
   tahun           Int
   tahun_ke        Int
-  pagu            Decimal?
+  pagu            Decimal? @db.Decimal(18, 2)
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
@@ -348,7 +348,7 @@ model paguIndikatif {
   id_master       Int
   tahun           Int
   tahun_ke        Int
-  pagu            Decimal?
+  pagu            Decimal? @db.Decimal(18, 2)
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
@@ -397,7 +397,7 @@ model realisasiAnggaran {
   id               Int                    @id @default(autoincrement())
   paguIndikatif_id Int
   triwulan         Int
-  realisasi        Decimal?
+  realisasi        Decimal?               @db.Decimal(18, 2)
   status           Boolean                @default(true)
   created_at       DateTime               @default(now())
   updated_at       DateTime               @updatedAt
@@ -519,7 +519,7 @@ model x_pagu_skpd {
   skpd_periode_id Int
   tahun           Int
   tahun_ke        Int
-  pagu            Decimal?
+  pagu            Decimal? @db.Decimal(18, 2)
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
@@ -628,7 +628,7 @@ model x_paguProgram {
   id_master       Int
   tahun           Int
   tahun_ke        Int
-  pagu            Decimal?
+  pagu            Decimal? @db.Decimal(18, 2)
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
@@ -641,7 +641,7 @@ model x_paguKegiatan {
   id_master       Int
   tahun           Int
   tahun_ke        Int
-  pagu            Decimal?
+  pagu            Decimal? @db.Decimal(18, 2)
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
@@ -743,8 +743,8 @@ model x_paguIndikatif {
   id_master       Int
   tahun           Int
   tahun_ke        Int
-  pagu            Decimal?
-  realisasi       Decimal?
+  pagu            Decimal? @db.Decimal(18, 2)
+  realisasi       Decimal? @db.Decimal(18, 2)
   status          Boolean  @default(true)
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
@@ -948,7 +948,7 @@ model fisik_detail {
   satuan          String?
   estimasi        String?
   jumlah_penerima String?
-  anggaran        Decimal?
+  anggaran        Decimal? @db.Decimal(18, 2)
   des_kel         String?
   kec             String?
   bujur           Json     @default("[0,0,0]")
@@ -970,7 +970,7 @@ model fisik_mekanisme {
   id         Int              @id @default(autoincrement())
   id_ident   Int              @unique
   mekanisme  methodMekanisme?
-  uang       Decimal?
+  uang       Decimal?         @db.Decimal(18, 2)
   volume     Float?
   metode     String?
   create_at  DateTime         @default(now())
@@ -1002,7 +1002,7 @@ model fisik_realisasi {
   id_ident          Int
   triwulan          Int
   fisik             Float?                   @default(0)
-  anggaran          Decimal?                 @default(0)
+  anggaran          Decimal?                 @default(0) @db.Decimal(18, 2)
   sasaran_lokasi    Boolean?
   kesesuaian_juknis Boolean?
   kodefikasi        String?
