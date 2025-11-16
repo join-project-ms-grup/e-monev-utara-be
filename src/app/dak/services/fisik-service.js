@@ -372,6 +372,7 @@ export const listMonit = async (req) => {
                      kunci: twNow.kunci,
                      sisa_anggaran: Number(ind.detail.anggaran) - totalUang,
                      sasaran_lokasi: twNow.sasaran_lokasi,
+                     kesesuaian_juknis: twNow.kesesuaian_juknis,
                      catatan: twNow.catatan
               })
        }
