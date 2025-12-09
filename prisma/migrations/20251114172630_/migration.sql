@@ -105,7 +105,7 @@ CREATE TABLE `pagu_skpd` (
     `skpd_periode_id` INTEGER NOT NULL,
     `tahun` INTEGER NOT NULL,
     `tahun_ke` INTEGER NOT NULL,
-    `pagu` DECIMAL(65, 30) NULL,
+    `pagu` DECIMAL(18, 2) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -162,6 +162,7 @@ CREATE TABLE `indikatorOutcome` (
     `nama` TEXT NOT NULL,
     `satuan` VARCHAR(191) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
+    `jenis_satuan` ENUM('akumulatif', 'negatif', 'tetap') NOT NULL DEFAULT 'akumulatif',
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -191,7 +192,7 @@ CREATE TABLE `paguProgram` (
     `id_master` INTEGER NOT NULL,
     `tahun` INTEGER NOT NULL,
     `tahun_ke` INTEGER NOT NULL,
-    `pagu` DECIMAL(65, 30) NULL,
+    `pagu` DECIMAL(18, 2) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -206,7 +207,7 @@ CREATE TABLE `paguKegiatan` (
     `id_master` INTEGER NOT NULL,
     `tahun` INTEGER NOT NULL,
     `tahun_ke` INTEGER NOT NULL,
-    `pagu` DECIMAL(65, 30) NULL,
+    `pagu` DECIMAL(18, 2) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -310,7 +311,7 @@ CREATE TABLE `paguIndikatif` (
     `id_master` INTEGER NOT NULL,
     `tahun` INTEGER NOT NULL,
     `tahun_ke` INTEGER NOT NULL,
-    `pagu` DECIMAL(65, 30) NULL,
+    `pagu` DECIMAL(18, 2) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -330,11 +331,27 @@ CREATE TABLE `paguIndikatifSumberDana` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `catatan_eval` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `skpd_periode` INTEGER NOT NULL,
+    `type` ENUM('rkpd', 'renja') NOT NULL,
+    `pendorong` TEXT NULL,
+    `penghambat` TEXT NULL,
+    `tl_1` TEXT NULL,
+    `tl_2` TEXT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `catatan_eval_skpd_periode_type_key`(`skpd_periode`, `type`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `realisasiAnggaran` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `paguIndikatif_id` INTEGER NOT NULL,
     `triwulan` INTEGER NOT NULL,
-    `realisasi` DECIMAL(65, 30) NULL,
+    `realisasi` DECIMAL(18, 2) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -382,11 +399,15 @@ CREATE TABLE `capaianTriwulanLog` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `w_skpd` (
+CREATE TABLE `w_skpd_periode` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `periodeId` INTEGER NOT NULL,
-    `name` TEXT NOT NULL,
+    `skpd_id` INTEGER NOT NULL,
+    `periode_id` INTEGER NOT NULL,
+    `status` BOOLEAN NOT NULL DEFAULT true,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `w_skpd_periode_skpd_id_periode_id_key`(`skpd_id`, `periode_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -448,7 +469,7 @@ CREATE TABLE `x_pagu_skpd` (
     `skpd_periode_id` INTEGER NOT NULL,
     `tahun` INTEGER NOT NULL,
     `tahun_ke` INTEGER NOT NULL,
-    `pagu` DECIMAL(65, 30) NULL,
+    `pagu` DECIMAL(18, 2) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -535,7 +556,7 @@ CREATE TABLE `x_paguProgram` (
     `id_master` INTEGER NOT NULL,
     `tahun` INTEGER NOT NULL,
     `tahun_ke` INTEGER NOT NULL,
-    `pagu` DECIMAL(65, 30) NULL,
+    `pagu` DECIMAL(18, 2) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -550,7 +571,7 @@ CREATE TABLE `x_paguKegiatan` (
     `id_master` INTEGER NOT NULL,
     `tahun` INTEGER NOT NULL,
     `tahun_ke` INTEGER NOT NULL,
-    `pagu` DECIMAL(65, 30) NULL,
+    `pagu` DECIMAL(18, 2) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -655,8 +676,8 @@ CREATE TABLE `x_paguIndikatif` (
     `id_master` INTEGER NOT NULL,
     `tahun` INTEGER NOT NULL,
     `tahun_ke` INTEGER NOT NULL,
-    `pagu` DECIMAL(65, 30) NULL,
-    `realisasi` DECIMAL(65, 30) NULL,
+    `pagu` DECIMAL(18, 2) NULL,
+    `realisasi` DECIMAL(18, 2) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -672,6 +693,22 @@ CREATE TABLE `x_paguIndikatifSumberDana` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `x_paguIndikatifSumberDana_pagu_indikatif_id_sumber_dana_id_key`(`pagu_indikatif_id`, `sumber_dana_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `x_catatan_eval` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `skpd_periode` INTEGER NOT NULL,
+    `type` ENUM('rpjmd', 'renstra') NOT NULL,
+    `pendorong` TEXT NULL,
+    `penghambat` TEXT NULL,
+    `tl_1` TEXT NULL,
+    `tl_2` TEXT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `x_catatan_eval_skpd_periode_type_key`(`skpd_periode`, `type`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -784,6 +821,7 @@ CREATE TABLE `dak_masalah` (
 CREATE TABLE `dak_berkas` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `jenis_dak` INTEGER NOT NULL,
+    `no` INTEGER NOT NULL,
     `group` ENUM('PERENCANAAN', 'PELAKSANAAN') NOT NULL,
     `name` TEXT NOT NULL,
     `keterangan` TEXT NULL,
@@ -791,6 +829,7 @@ CREATE TABLE `dak_berkas` (
     `create_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `dak_berkas_no_key`(`no`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -817,13 +856,13 @@ CREATE TABLE `fisik_detail` (
     `id_ident` INTEGER NOT NULL,
     `nama_paket` TEXT NOT NULL,
     `detail_paket` TEXT NOT NULL,
-    `volume` DOUBLE NOT NULL,
-    `satuan` VARCHAR(191) NOT NULL,
-    `estimasi` VARCHAR(191) NOT NULL,
-    `jumlah_penerima` VARCHAR(191) NOT NULL,
-    `anggaran` DECIMAL(65, 30) NOT NULL,
-    `des_kel` VARCHAR(191) NOT NULL,
-    `kec` VARCHAR(191) NOT NULL,
+    `volume` DOUBLE NULL,
+    `satuan` VARCHAR(191) NULL,
+    `estimasi` VARCHAR(191) NULL,
+    `jumlah_penerima` VARCHAR(191) NULL,
+    `anggaran` DECIMAL(18, 2) NULL,
+    `des_kel` VARCHAR(191) NULL,
+    `kec` VARCHAR(191) NULL,
     `bujur` JSON NOT NULL,
     `lintang` JSON NOT NULL,
     `foto` VARCHAR(191) NULL,
@@ -838,10 +877,10 @@ CREATE TABLE `fisik_detail` (
 CREATE TABLE `fisik_mekanisme` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `id_ident` INTEGER NOT NULL,
-    `mekanisme` ENUM('swakelola', 'kontrak', 'ekatalog') NOT NULL,
-    `uang` DECIMAL(65, 30) NULL,
+    `mekanisme` ENUM('swakelola', 'kontrak', 'ekatalog') NULL,
+    `uang` DECIMAL(18, 2) NULL,
     `volume` DOUBLE NULL,
-    `metode` VARCHAR(191) NOT NULL,
+    `metode` VARCHAR(191) NULL,
     `create_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -872,7 +911,7 @@ CREATE TABLE `fisik_realisasi` (
     `id_ident` INTEGER NOT NULL,
     `triwulan` INTEGER NOT NULL,
     `fisik` DOUBLE NULL DEFAULT 0,
-    `anggaran` DECIMAL(65, 30) NULL DEFAULT 0,
+    `anggaran` DECIMAL(18, 2) NULL DEFAULT 0,
     `sasaran_lokasi` BOOLEAN NULL,
     `kesesuaian_juknis` BOOLEAN NULL,
     `kodefikasi` VARCHAR(191) NULL,
@@ -991,10 +1030,13 @@ ALTER TABLE `capaianTriwulan` ADD CONSTRAINT `capaianTriwulan_rincianIndikator_i
 ALTER TABLE `capaianTriwulanLog` ADD CONSTRAINT `capaianTriwulanLog_capaian_id_fkey` FOREIGN KEY (`capaian_id`) REFERENCES `capaianTriwulan`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `w_skpd` ADD CONSTRAINT `w_skpd_periodeId_fkey` FOREIGN KEY (`periodeId`) REFERENCES `periode`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `w_skpd_periode` ADD CONSTRAINT `w_skpd_periode_skpd_id_fkey` FOREIGN KEY (`skpd_id`) REFERENCES `skpd`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE `w_master` ADD CONSTRAINT `w_master_skpdId_fkey` FOREIGN KEY (`skpdId`) REFERENCES `w_skpd`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `w_skpd_periode` ADD CONSTRAINT `w_skpd_periode_periode_id_fkey` FOREIGN KEY (`periode_id`) REFERENCES `periode`(`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE `w_master` ADD CONSTRAINT `w_master_skpdId_fkey` FOREIGN KEY (`skpdId`) REFERENCES `w_skpd_periode`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `w_uraian` ADD CONSTRAINT `w_uraian_master_id_fkey` FOREIGN KEY (`master_id`) REFERENCES `w_master`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

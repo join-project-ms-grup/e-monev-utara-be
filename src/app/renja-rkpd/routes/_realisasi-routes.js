@@ -6,5 +6,6 @@ const router = Router();
 router.post("/list", controller.list);
 router.post("/anggaran", controller.updateAnggaran);
 router.post("/kinerja", controller.updateKinerja);
+router.post("/perhitungan", controller.updatePerhitungan);
 
 export default router;

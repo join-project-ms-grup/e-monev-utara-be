@@ -156,7 +156,6 @@ export const detailSub = async (req) => {
                      parent: { include: { parent: { include: { parent: { include: { parent: true } } } } } }
               }
        });
-       console.log(subKegiatan);
        const _kegiatan = subKegiatan.parent;
        const _program = _kegiatan.parent;
        const _bidang = _program.parent;

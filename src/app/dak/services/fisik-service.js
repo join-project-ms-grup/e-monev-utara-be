@@ -169,6 +169,10 @@ export const detailIdent = async (req) => {
               jenis_dak: getIdent.subJenis.dakJenis.jenis,
               sub_jenis_dak_id: getIdent.subJenis.id,
               sub_jenis_dak: getIdent.subJenis.nama,
+              bidang_dak_id: getIdent.subBidang.dakBidang.id,
+              bidang_dak: getIdent.subBidang.dakBidang.name,
+              sub_bidang_dak_id: getIdent.subBidang.id,
+              sub_bidang_dak: getIdent.subBidang.name,
               tahun: getIdent.tahun,
               kab_kot: "Kabupaten Bengkulu Utara",
               opd_id: getIdent.opd.id,
@@ -365,8 +369,10 @@ export const listMonit = async (req) => {
                             }
 
                      },
+                     kunci: twNow.kunci,
                      sisa_anggaran: Number(ind.detail.anggaran) - totalUang,
                      sasaran_lokasi: twNow.sasaran_lokasi,
+                     kesesuaian_juknis: twNow.kesesuaian_juknis,
                      catatan: twNow.catatan
               })
        }
@@ -468,7 +474,13 @@ export const updateMasalah = async (req) => {
               await prisma.fisik_masalah_realisasi.create({
                      data: { id_realisasi, masalah, masalah_lain, file_masalah }
               })
+       } else {
+              await prisma.fisik_masalah_realisasi.update({
+                     where: { id_realisasi },
+                     data: { id_realisasi, masalah, masalah_lain, file_masalah }
+              })
        }
+
 
 
        return await getMasalahCapaian({ body: { id_realisasi } });

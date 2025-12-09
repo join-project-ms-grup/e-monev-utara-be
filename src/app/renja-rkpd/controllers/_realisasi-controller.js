@@ -73,3 +73,22 @@ export const updateAnggaran = async (req, res, next) => {
               next(error);
        }
 }
+
+export const updatePerhitungan = async (req, res, next) => {
+       try {
+              const schemaBody = Joi.object({
+                     id_indikator: Joi.number().required(),
+                     type: Joi.string().required().allow(null),
+                     perhitungan: Joi.string().required().valid("akumulatif", "negatif", "tetap")
+              });
+
+              const { error: errorBody } = schemaBody.validate(req.body);
+              if (errorBody) {
+                     return response(res, 400, false, errorBody.details[0].message);
+              }
+              const result = await service.updatePerhitungan(req);
+              return response(res, 200, true, "Berhasil mengubah data realisasi", result);
+       } catch (error) {
+              next(error)
+       }
+}
