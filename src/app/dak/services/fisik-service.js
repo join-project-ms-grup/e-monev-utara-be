@@ -204,8 +204,8 @@ export const detailIdent = async (req) => {
               anggaran_dak: getIdent.detail.anggaran,
               desa_kel: getIdent.detail.des_kel,
               kec: getIdent.detail.kec,
-              bujur: JSON.parse(getIdent.detail.bujur),
-              lintang: JSON.parse(getIdent.detail.lintang),
+              bujur: getIdent.detail.bujur,
+              lintang: getIdent.detail.lintang,
               foto_kegiatan: getIdent.detail.foto,
               mekanisme: getIdent.mekanisme.mekanisme,
               mekanisme_volume: getIdent.mekanisme.volume,
@@ -369,7 +369,7 @@ export const listMonit = async (req) => {
                             }
 
                      },
-                      kunci: twNow.kunci,
+                     kunci: twNow.kunci,
                      sisa_anggaran: Number(ind.detail.anggaran) - totalUang,
                      sasaran_lokasi: twNow.sasaran_lokasi,
                      kesesuaian_juknis: twNow.kesesuaian_juknis,

@@ -2,6 +2,8 @@ import prisma from "./src/config/database.js";
 import bycrypt from "bcrypt"
 
 
+
+
 const createRole = async () => {
        const createRole = await prisma.role.createMany({
               data: [
@@ -61,4 +63,9 @@ const seeder = async () => {
 
 }
 
-seeder();
+const test = () => {
+       let as = JSON.parse("");
+       console.log(as);
+}
+
+test();
