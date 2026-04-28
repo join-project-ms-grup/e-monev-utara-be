@@ -289,11 +289,11 @@ export const updateIdent = async (req) => {
 }
 
 export const deleteIdent = async (req) => {
-       const { id_ident } = req.body
+       const { id_ident } = req.params;
        const exist = await prisma.fisik_ident.findUnique({ where: { id: parseInt(id_ident) } });
        if (!exist) throw new errorHandling(404, "Data tidak ditemukan");
 
-       await prisma.fisik_ident.delete({ where: { id: id_ident } });
+       await prisma.fisik_ident.delete({ where: { id: parseInt(id_ident) } });
        return;
 }
 

@@ -137,7 +137,7 @@ export const deleteIdent = async (req, res, next) => {
                      id_ident: Joi.number().required(),
               });
 
-              const { error } = schema.validate(req.body);
+              const { error } = schema.validate(req.params);
               if (error) {
                      const result = error.details.map((item) => ({
                             [item.path]: item.message,
