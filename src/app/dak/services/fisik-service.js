@@ -288,6 +288,15 @@ export const updateIdent = async (req) => {
        return setIndent;
 }
 
+export const deleteIdent = async (req) => {
+       const { id_ident } = req.body
+       const exist = await prisma.fisik_ident.findUnique({ where: { id: parseInt(id_ident) } });
+       if (!exist) throw new errorHandling(404, "Data tidak ditemukan");
+
+       await prisma.fisik_ident.delete({ where: { id: id_ident } });
+       return;
+}
+
 
 export const updateFile = async (req) => {
        const { id_dok, file, Kesesuaian, Waktu, Keterangan, pesan } = req.body;

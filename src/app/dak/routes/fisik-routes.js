@@ -15,6 +15,7 @@ router.get("/:id/detail-ident",
        requestValidator,
        controller.detailIdent
 );
+router.delete("/delete-ident", controller.deleteIdent)
 router.post("/list-monit", controller.listMonit);
 router.post("/realisasi", controller.updateCapaian);
 router.patch("/toggle-kunci", controller.toggleKunci);

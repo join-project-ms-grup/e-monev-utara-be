@@ -131,6 +131,26 @@ export const updateIdent = async (req, res, next) => {
        }
 }
 
+export const deleteIdent = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     id_ident: Joi.number().required(),
+              });
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+
+              return response(res, 200, true, "Berhasil mengambil identifikasi", await service.deleteIdent(req));
+       } catch (error) {
+              next(error)
+       }
+}
+
 export const updateFile = async (req, res, next) => {
        try {
               const schema = Joi.object({
