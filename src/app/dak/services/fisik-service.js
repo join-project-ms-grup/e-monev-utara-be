@@ -300,16 +300,16 @@ export const deleteIdent = async (req) => {
 
        await prisma.$transaction([
               prisma.fisik_dokumen.deleteMany({
-                     where: { ident_id: identId }
+                     where: { id_ident: identId }
               }),
               prisma.fisik_detail.deleteMany({
-                     where: { ident_id: identId }
+                     where: { id_ident: identId }
               }),
               prisma.fisik_mekanisme.deleteMany({
-                     where: { ident_id: identId }
+                     where: { id_ident: identId }
               }),
               prisma.fisik_realisasi.deleteMany({
-                     where: { ident_id: identId }
+                     where: { id_ident: identId }
               }),
               prisma.fisik_ident.delete({
                      where: { id: identId }
