@@ -134,7 +134,7 @@ export const updateIdent = async (req, res, next) => {
 export const deleteIdent = async (req, res, next) => {
        try {
               const schema = Joi.object({
-                     id_ident: Joi.number().required(),
+                     id: Joi.number().required(),
               });
 
               const { error } = schema.validate(req.params);
