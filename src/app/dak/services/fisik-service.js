@@ -319,15 +319,15 @@ export const deleteIdent = async (req) => {
               });
 
               await tx.fisik_dokumen.deleteMany({
-                     where: { ident_id: identId }
+                     where: { id_ident: identId }
               });
 
               await tx.fisik_detail.deleteMany({
-                     where: { ident_id: identId }
+                     where: { id_ident: identId }
               });
 
               await tx.fisik_mekanisme.deleteMany({
-                     where: { ident_id: identId }
+                     where: { id_ident: identId }
               });
 
               await tx.fisik_ident.delete({
