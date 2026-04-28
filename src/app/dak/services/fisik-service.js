@@ -298,23 +298,42 @@ export const deleteIdent = async (req) => {
 
        if (!exist) throw new errorHandling(404, "Data tidak ditemukan");
 
-       await prisma.$transaction([
-              prisma.fisik_dokumen.deleteMany({
+       await prisma.$transaction(async (tx) => {
+              const realisasis = await tx.fisik_realisasi.findMany({
+                     where: { id_ident: identId },
+                     select: { id: true }
+              });
+
+              const realisasiIds = realisasis.map(r => r.id);
+
+              if (realisasiIds.length > 0) {
+                     await tx.fisik_masalah_realisasi.deleteMany({
+                            where: {
+                                   id_realisasi: { in: realisasiIds }
+                            }
+                     });
+              }
+
+              await tx.fisik_realisasi.deleteMany({
                      where: { id_ident: identId }
-              }),
-              prisma.fisik_detail.deleteMany({
-                     where: { id_ident: identId }
-              }),
-              prisma.fisik_mekanisme.deleteMany({
-                     where: { id_ident: identId }
-              }),
-              prisma.fisik_realisasi.deleteMany({
-                     where: { id_ident: identId }
-              }),
-              prisma.fisik_ident.delete({
+              });
+
+              await tx.fisik_dokumen.deleteMany({
+                     where: { ident_id: identId }
+              });
+
+              await tx.fisik_detail.deleteMany({
+                     where: { ident_id: identId }
+              });
+
+              await tx.fisik_mekanisme.deleteMany({
+                     where: { ident_id: identId }
+              });
+
+              await tx.fisik_ident.delete({
                      where: { id: identId }
-              })
-       ]);
+              });
+       });
 
        return;
 };
