@@ -290,12 +290,34 @@ export const updateIdent = async (req) => {
 
 export const deleteIdent = async (req) => {
        const { id } = req.params;
-       const exist = await prisma.fisik_ident.findUnique({ where: { id: parseInt(id) } });
+       const identId = parseInt(id);
+
+       const exist = await prisma.fisik_ident.findUnique({
+              where: { id: identId }
+       });
+
        if (!exist) throw new errorHandling(404, "Data tidak ditemukan");
 
-       await prisma.fisik_ident.delete({ where: { id: parseInt(id) } });
+       await prisma.$transaction([
+              prisma.fisik_dokumen.deleteMany({
+                     where: { ident_id: identId }
+              }),
+              prisma.fisik_detail.deleteMany({
+                     where: { ident_id: identId }
+              }),
+              prisma.fisik_mekanisme.deleteMany({
+                     where: { ident_id: identId }
+              }),
+              prisma.fisik_realisasi.deleteMany({
+                     where: { ident_id: identId }
+              }),
+              prisma.fisik_ident.delete({
+                     where: { id: identId }
+              })
+       ]);
+
        return;
-}
+};
 
 
 export const updateFile = async (req) => {
