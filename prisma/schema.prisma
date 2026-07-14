@@ -8,57 +8,29 @@ datasource db {
 }
 
 model users {
-  id            Int             @id @default(autoincrement())
-  name          String          @unique
-  fullname      String
-  avatar        String?
-  email         String          @unique
-  role_id       Int?
-  skpd_id       Int?
-  password      String
-  token         String?
-  session       DateTime?
-  status        Boolean         @default(true)
-  created_at    DateTime        @default(now())
-  updated_at    DateTime        @updatedAt
-  authoredRoles role[]          @relation("AuthorRole")
-  authoredSkpd  skpd[]          @relation("AuthorSkpd")
-  changeBy      userChangeLog[] @relation("UserChangedBy")
-  changeLogs    userChangeLog[] @relation("UserChanged")
-  loginLogs     userLoginLog[]
-  userRole      role?           @relation(fields: [role_id], references: [kode], onDelete: Restrict, onUpdate: Restrict)
-  userSkpd      skpd?           @relation(fields: [skpd_id], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  id                                            Int             @id @default(autoincrement())
+  name                                          String          @unique
+  fullname                                      String
+  avatar                                        String?
+  email                                         String          @unique
+  role_id                                       Int?
+  skpd_id                                       Int?
+  password                                      String
+  token                                         String?
+  session                                       DateTime?
+  status                                        Boolean         @default(true)
+  created_at                                    DateTime        @default(now())
+  updated_at                                    DateTime        @updatedAt
+  authoredRoles                                 role[]          @relation("AuthorRole")
+  authoredSkpd                                  skpd[]          @relation("AuthorSkpd")
+  userchangelog_userchangelog_changed_byTousers userchangelog[] @relation("userchangelog_changed_byTousers")
+  userchangelog_userchangelog_user_idTousers    userchangelog[] @relation("userchangelog_user_idTousers")
+  userloginlog                                  userloginlog[]
+  userRole                                      role?           @relation(fields: [role_id], references: [kode], onDelete: NoAction, onUpdate: NoAction)
+  userSkpd                                      skpd?           @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([role_id], map: "users_role_id_fkey")
   @@index([skpd_id], map: "users_skpd_id_fkey")
-}
-
-model userLoginLog {
-  id         Int      @id @default(autoincrement())
-  user_id    Int?
-  ip_address String?
-  user_agent String?
-  action     String
-  status     Boolean  @default(true)
-  created_at DateTime @default(now())
-  user       users?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([user_id], map: "userLoginLog_user_id_fkey")
-}
-
-model userChangeLog {
-  id         Int      @id @default(autoincrement())
-  user_id    Int?
-  changed_by Int?
-  action     String
-  old_data   String?  @db.LongText
-  new_data   String?  @db.LongText
-  created_at DateTime @default(now())
-  changedBy  users?   @relation("UserChangedBy", fields: [changed_by], references: [id])
-  user       users?   @relation("UserChanged", fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([changed_by], map: "userChangeLog_changed_by_fkey")
-  @@index([user_id], map: "userChangeLog_user_id_fkey")
 }
 
 model role {
@@ -115,10 +87,10 @@ model skpd_periode {
   updated_at    DateTime        @updatedAt
   indikator     indikator[]
   outcome       outcome[]
-  paguIndikatif paguIndikatif[]
   paguSkpd      pagu_skpd[]
-  periode       periode         @relation(fields: [periode_id], references: [id], onUpdate: Restrict)
-  skpd          skpd            @relation(fields: [skpd_id], references: [id], onUpdate: Restrict)
+  paguindikatif paguindikatif[]
+  periode       periode         @relation(fields: [periode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  skpd          skpd            @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([skpd_id, periode_id])
   @@index([periode_id], map: "skpd_periode_periode_id_fkey")
@@ -148,29 +120,15 @@ model master {
   created_at    DateTime        @default(now())
   updated_at    DateTime        @updatedAt
   indikator     indikator[]
-  logs          logMaster[]
+  logmaster     logmaster[]
   parent        master?         @relation("MasterChildren", fields: [parent_id], references: [id])
   children      master[]        @relation("MasterChildren")
   outcome       outcome[]
-  paguIndikatif paguIndikatif[]
-  paguKegiatan  paguKegiatan[]
-  paguProgram   paguProgram[]
+  paguindikatif paguindikatif[]
+  pagukegiatan  pagukegiatan[]
+  paguprogram   paguprogram[]
 
   @@unique([parent_id, kode, type])
-}
-
-model logMaster {
-  id        Int        @id @default(autoincrement())
-  userId    Int
-  action    String
-  entity    EntityType
-  entityId  Int
-  oldValue  String?    @db.LongText
-  newValue  String?    @db.LongText
-  createdAt DateTime   @default(now())
-  master    master     @relation(fields: [entityId], references: [id], onDelete: Cascade)
-
-  @@index([entityId], map: "logMaster_entityId_fkey")
 }
 
 model outcome {
@@ -181,100 +139,12 @@ model outcome {
   status           Boolean           @default(true)
   created_at       DateTime          @default(now())
   updated_at       DateTime          @updatedAt
-  indikatorOutcome indikatorOutcome?
+  indikatoroutcome indikatoroutcome?
   master           master            @relation(fields: [id_master], references: [id], onDelete: Cascade)
   skpdPeriode      skpd_periode      @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
 
   @@index([id_master], map: "outcome_id_master_fkey")
   @@index([skpd_periode_id], map: "outcome_skpd_periode_id_fkey")
-}
-
-model indikatorOutcome {
-  id                     Int                      @id @default(autoincrement())
-  outcome_id             Int                      @unique
-  nama                   String                   @db.Text
-  satuan                 String?
-  status                 Boolean                  @default(true)
-  jenis_satuan           SatuanAkumulasi          @default(akumulatif)
-  created_at             DateTime                 @default(now())
-  updated_at             DateTime                 @updatedAt
-  outcome                outcome                  @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
-  targetIndikatorOutcome targetIndikatorOutcome[]
-}
-
-model targetIndikatorOutcome {
-  id                   Int              @id @default(autoincrement())
-  indikator_outcome_id Int
-  tahun                Int
-  tahun_ke             Int
-  target               Float?
-  status               Boolean          @default(true)
-  created_at           DateTime         @default(now())
-  updated_at           DateTime         @updatedAt
-  indikatorOutcome     indikatorOutcome @relation(fields: [indikator_outcome_id], references: [id], onDelete: Cascade)
-
-  @@unique([indikator_outcome_id, tahun_ke], name: "indikator_outcome_id_tahun_ke_unique")
-}
-
-model paguProgram {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  id_master       Int
-  tahun           Int
-  tahun_ke        Int
-  pagu            Decimal? @db.Decimal(18, 2)
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-  master          master   @relation(fields: [id_master], references: [id], onDelete: Cascade)
-
-  @@index([id_master], map: "paguProgram_id_master_fkey")
-}
-
-model paguKegiatan {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  id_master       Int
-  tahun           Int
-  tahun_ke        Int
-  pagu            Decimal? @db.Decimal(18, 2)
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-  master          master   @relation(fields: [id_master], references: [id], onDelete: Cascade)
-
-  @@index([id_master], map: "paguKegiatan_id_master_fkey")
-}
-
-model labelNasional {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  poin            Int
-  nama            String   @db.Text
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-}
-
-model labelProv {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  poin            Int
-  nama            String   @db.Text
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-}
-
-model labelKab {
-  id              Int         @id @default(autoincrement())
-  skpd_periode_id Int
-  poin            Int
-  nama            String      @db.Text
-  status          Boolean     @default(true)
-  created_at      DateTime    @default(now())
-  updated_at      DateTime    @updatedAt
-  indikator       indikator[]
 }
 
 model indikator {
@@ -292,71 +162,14 @@ model indikator {
   created_at        DateTime           @default(now())
   updated_at        DateTime           @updatedAt
   labelKabId        Int?
-  labelKab          labelKab?          @relation(fields: [labelKabId], references: [id])
+  labelKab          labelkab?          @relation(fields: [labelKabId], references: [id])
   master            master             @relation(fields: [master_id], references: [id], onDelete: Cascade)
   skpdPeriode       skpd_periode       @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
-  rincian           rincianIndikator[]
+  rincianindikator  rincianindikator[]
 
   @@unique([skpd_periode_id, master_id])
   @@index([labelKabId], map: "indikator_labelKabId_fkey")
   @@index([master_id], map: "indikator_master_id_fkey")
-}
-
-model rincianIndikator {
-  id           Int               @id @default(autoincrement())
-  indikator_id Int
-  tahun        Int
-  tahun_ke     Int
-  target       Float?
-  status       Boolean           @default(true)
-  created_at   DateTime          @default(now())
-  updated_at   DateTime          @updatedAt
-  capaian      capaianTriwulan[]
-  indikator    indikator         @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
-
-  @@unique([indikator_id, tahun_ke], name: "indikator_id_tahun_ke")
-}
-
-model sumberDana {
-  id                      Int                       @id @default(autoincrement())
-  kode                    String                    @unique
-  nama                    String                    @db.Text
-  keterangan              String?
-  status                  Boolean                   @default(true)
-  created_at              DateTime                  @default(now())
-  updated_at              DateTime                  @updatedAt
-  paguIndikatifSumberDana paguIndikatifSumberDana[]
-}
-
-model paguIndikatif {
-  id               Int                       @id @default(autoincrement())
-  skpd_periode_id  Int
-  id_master        Int
-  tahun            Int
-  tahun_ke         Int
-  pagu             Decimal?                  @db.Decimal(18, 2)
-  status           Boolean                   @default(true)
-  created_at       DateTime                  @default(now())
-  updated_at       DateTime                  @updatedAt
-  master           master                    @relation(fields: [id_master], references: [id], onDelete: Cascade)
-  skpdPeriode      skpd_periode              @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
-  sumberDanaRelasi paguIndikatifSumberDana[]
-  realisasi        realisasiAnggaran[]
-
-  @@index([id_master], map: "paguIndikatif_id_master_fkey")
-  @@index([skpd_periode_id], map: "paguIndikatif_skpd_periode_id_fkey")
-}
-
-model paguIndikatifSumberDana {
-  id                Int           @id @default(autoincrement())
-  pagu_indikatif_id Int
-  sumber_dana_id    Int
-  created_at        DateTime      @default(now())
-  paguIndikatif     paguIndikatif @relation(fields: [pagu_indikatif_id], references: [id], onDelete: Cascade)
-  sumberDana        sumberDana    @relation(fields: [sumber_dana_id], references: [id], onDelete: Cascade)
-
-  @@unique([pagu_indikatif_id, sumber_dana_id])
-  @@index([sumber_dana_id], map: "paguIndikatifSumberDana_sumber_dana_id_fkey")
 }
 
 model catatan_eval {
@@ -373,60 +186,6 @@ model catatan_eval {
   @@unique([skpd_periode, type])
 }
 
-model realisasiAnggaran {
-  id               Int                    @id @default(autoincrement())
-  paguIndikatif_id Int
-  triwulan         Int
-  realisasi        Decimal?               @db.Decimal(18, 2)
-  status           Boolean                @default(true)
-  created_at       DateTime               @default(now())
-  updated_at       DateTime               @updatedAt
-  pagu             paguIndikatif          @relation(fields: [paguIndikatif_id], references: [id], onDelete: Cascade)
-  logs             realisasiAnggaranLog[]
-
-  @@index([paguIndikatif_id], map: "realisasiAnggaran_paguIndikatif_id_fkey")
-}
-
-model realisasiAnggaranLog {
-  id           Int                @id @default(autoincrement())
-  realisasi_id Int?
-  user_id      Int?
-  action       String
-  old_data     String?            @db.LongText
-  new_data     String?            @db.LongText
-  created_at   DateTime           @default(now())
-  realisasi    realisasiAnggaran? @relation(fields: [realisasi_id], references: [id], onDelete: Cascade)
-
-  @@index([realisasi_id], map: "realisasiAnggaranLog_realisasi_id_fkey")
-}
-
-model capaianTriwulan {
-  id                  Int                  @id @default(autoincrement())
-  rincianIndikator_id Int
-  triwulan            Int
-  capaian             Float?
-  status              Boolean              @default(true)
-  created_at          DateTime             @default(now())
-  updated_at          DateTime             @updatedAt
-  rincian             rincianIndikator     @relation(fields: [rincianIndikator_id], references: [id], onDelete: Cascade)
-  logs                capaianTriwulanLog[]
-
-  @@index([rincianIndikator_id], map: "capaianTriwulan_rincianIndikator_id_fkey")
-}
-
-model capaianTriwulanLog {
-  id         Int              @id @default(autoincrement())
-  capaian_id Int?
-  user_id    Int?
-  action     String
-  old_data   String?          @db.LongText
-  new_data   String?          @db.LongText
-  created_at DateTime         @default(now())
-  capaian    capaianTriwulan? @relation(fields: [capaian_id], references: [id], onDelete: Cascade)
-
-  @@index([capaian_id], map: "capaianTriwulanLog_capaian_id_fkey")
-}
-
 model w_skpd_periode {
   id         Int        @id @default(autoincrement())
   skpd_id    Int
@@ -435,8 +194,8 @@ model w_skpd_periode {
   created_at DateTime   @default(now())
   updated_at DateTime   @updatedAt
   wMasters   w_master[]
-  periode    periode    @relation(fields: [periode_id], references: [id], onUpdate: Restrict)
-  skpd       skpd       @relation(fields: [skpd_id], references: [id], onUpdate: Restrict)
+  periode    periode    @relation(fields: [periode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  skpd       skpd       @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([skpd_id, periode_id])
   @@index([periode_id], map: "w_skpd_periode_periode_id_fkey")
@@ -458,44 +217,32 @@ model w_master {
 }
 
 model w_uraian {
-  id          Int                       @id @default(autoincrement())
-  master_id   Int
-  name        String                    @db.Text
-  satuan      String
-  base_line   String
-  perhitungan String                    @default("akumulatif")
-  is_iku      Boolean
-  target      w_targetRealisasiUraian[]
-  master      w_master                  @relation(fields: [master_id], references: [id], onDelete: Cascade)
+  id                      Int                       @id @default(autoincrement())
+  master_id               Int
+  name                    String                    @db.Text
+  satuan                  String
+  base_line               String
+  perhitungan             String                    @default("akumulatif")
+  is_iku                  Boolean
+  w_targetrealisasiuraian w_targetrealisasiuraian[]
+  master                  w_master                  @relation(fields: [master_id], references: [id], onDelete: Cascade)
 
   @@index([master_id], map: "w_uraian_master_id_fkey")
 }
 
-model w_targetRealisasiUraian {
-  id        Int      @id @default(autoincrement())
-  uraian_id Int
-  tahun     Int
-  tahun_ke  Int
-  target    String
-  realisasi Float?
-  uraian    w_uraian @relation(fields: [uraian_id], references: [id], onDelete: Cascade)
-
-  @@index([uraian_id], map: "w_targetRealisasiUraian_uraian_id_fkey")
-}
-
 model x_skpd_periode {
-  id            Int               @id @default(autoincrement())
-  skpd_id       Int
-  periode_id    Int
-  status        Boolean           @default(true)
-  created_at    DateTime          @default(now())
-  updated_at    DateTime          @updatedAt
-  indikator     x_indikator[]
-  outcome       x_outcome[]
-  paguIndikatif x_paguIndikatif[]
-  paguSkpd      x_pagu_skpd[]
-  periode       periode           @relation(fields: [periode_id], references: [id], onUpdate: Restrict)
-  skpd          skpd              @relation(fields: [skpd_id], references: [id], onUpdate: Restrict)
+  id              Int               @id @default(autoincrement())
+  skpd_id         Int
+  periode_id      Int
+  status          Boolean           @default(true)
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  indikator       x_indikator[]
+  outcome         x_outcome[]
+  paguSkpd        x_pagu_skpd[]
+  x_paguindikatif x_paguindikatif[]
+  periode         periode           @relation(fields: [periode_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  skpd            skpd              @relation(fields: [skpd_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([skpd_id, periode_id])
   @@index([periode_id], map: "x_skpd_periode_periode_id_fkey")
@@ -516,224 +263,65 @@ model x_pagu_skpd {
 }
 
 model x_master {
-  id            Int               @id @default(autoincrement())
-  parent_id     Int?
-  type          String
-  kode          String
-  name          String            @db.Text
-  status        Boolean           @default(true)
-  created_at    DateTime          @default(now())
-  updated_at    DateTime          @updatedAt
-  indikator     x_indikator[]
-  logs          x_logMaster[]
-  parent        x_master?         @relation("MasterChildren", fields: [parent_id], references: [id])
-  children      x_master[]        @relation("MasterChildren")
-  outcome       x_outcome[]
-  paguIndikatif x_paguIndikatif[]
-  paguKegiatan  x_paguKegiatan[]
-  paguProgram   x_paguProgram[]
+  id              Int               @id @default(autoincrement())
+  parent_id       Int?
+  type            String
+  kode            String
+  name            String            @db.Text
+  status          Boolean           @default(true)
+  created_at      DateTime          @default(now())
+  updated_at      DateTime          @updatedAt
+  indikator       x_indikator[]
+  x_logmaster     x_logmaster[]
+  parent          x_master?         @relation("MasterChildren", fields: [parent_id], references: [id])
+  children        x_master[]        @relation("MasterChildren")
+  outcome         x_outcome[]
+  x_paguindikatif x_paguindikatif[]
+  x_pagukegiatan  x_pagukegiatan[]
+  x_paguprogram   x_paguprogram[]
 
   @@unique([parent_id, kode, type])
 }
 
-model x_logMaster {
-  id        Int        @id @default(autoincrement())
-  userId    Int
-  action    String
-  entity    EntityType
-  entityId  Int
-  oldValue  String?    @db.LongText
-  newValue  String?    @db.LongText
-  createdAt DateTime   @default(now())
-  master    x_master   @relation(fields: [entityId], references: [id], onDelete: Cascade)
-
-  @@index([entityId], map: "x_logMaster_entityId_fkey")
-}
-
 model x_outcome {
-  id               Int                 @id @default(autoincrement())
-  skpd_periode_id  Int
-  id_master        Int
-  outcome          String              @db.Text
-  status           Boolean             @default(true)
-  created_at       DateTime            @default(now())
-  updated_at       DateTime            @updatedAt
-  indikatorOutcome x_indikatorOutcome?
-  master           x_master            @relation(fields: [id_master], references: [id], onDelete: Cascade)
-  skpdPeriode      x_skpd_periode      @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
+  id                 Int                 @id @default(autoincrement())
+  skpd_periode_id    Int
+  id_master          Int
+  outcome            String              @db.Text
+  status             Boolean             @default(true)
+  created_at         DateTime            @default(now())
+  updated_at         DateTime            @updatedAt
+  x_indikatoroutcome x_indikatoroutcome?
+  master             x_master            @relation(fields: [id_master], references: [id], onDelete: Cascade)
+  skpdPeriode        x_skpd_periode      @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
 
   @@index([id_master], map: "x_outcome_id_master_fkey")
   @@index([skpd_periode_id], map: "x_outcome_skpd_periode_id_fkey")
 }
 
-model x_indikatorOutcome {
-  id                     Int                        @id @default(autoincrement())
-  outcome_id             Int                        @unique
-  nama                   String                     @db.Text
-  satuan                 String?
-  status                 Boolean                    @default(true)
-  created_at             DateTime                   @default(now())
-  updated_at             DateTime                   @updatedAt
-  outcome                x_outcome                  @relation(fields: [outcome_id], references: [id], onDelete: Cascade)
-  targetIndikatorOutcome x_targetIndikatorOutcome[]
-}
-
-model x_targetIndikatorOutcome {
-  id                   Int                @id @default(autoincrement())
-  indikator_outcome_id Int
-  tahun                Int
-  tahun_ke             Int
-  target               Float?
-  capaian              Float?
-  status               Boolean            @default(true)
-  created_at           DateTime           @default(now())
-  updated_at           DateTime           @updatedAt
-  indikatorOutcome     x_indikatorOutcome @relation(fields: [indikator_outcome_id], references: [id], onDelete: Cascade)
-
-  @@unique([indikator_outcome_id, tahun_ke], name: "x_indikator_outcome_id_tahun_ke_unique")
-}
-
-model x_paguProgram {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  id_master       Int
-  tahun           Int
-  tahun_ke        Int
-  pagu            Decimal? @db.Decimal(18, 2)
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-  master          x_master @relation(fields: [id_master], references: [id], onDelete: Cascade)
-
-  @@index([id_master], map: "x_paguProgram_id_master_fkey")
-}
-
-model x_paguKegiatan {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  id_master       Int
-  tahun           Int
-  tahun_ke        Int
-  pagu            Decimal? @db.Decimal(18, 2)
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-  master          x_master @relation(fields: [id_master], references: [id], onDelete: Cascade)
-
-  @@index([id_master], map: "x_paguKegiatan_id_master_fkey")
-}
-
-model x_labelNasional {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  poin            Int
-  nama            String   @db.Text
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-}
-
-model x_labelProv {
-  id              Int      @id @default(autoincrement())
-  skpd_periode_id Int
-  poin            Int
-  nama            String   @db.Text
-  status          Boolean  @default(true)
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-}
-
-model x_labelKab {
-  id              Int           @id @default(autoincrement())
-  skpd_periode_id Int
-  poin            Int
-  nama            String        @db.Text
-  status          Boolean       @default(true)
-  created_at      DateTime      @default(now())
-  updated_at      DateTime      @updatedAt
-  indikator       x_indikator[]
-}
-
 model x_indikator {
-  id                Int                  @id @default(autoincrement())
-  skpd_periode_id   Int
-  master_id         Int
-  label_nasional_id Int?
-  label_prov_id     Int?
-  label_kab_id      Int?
-  name              String               @db.Text
-  satuan            String
-  lokasi            String?
-  jenis_satuan      SatuanAkumulasi      @default(akumulatif)
-  status            Boolean              @default(true)
-  created_at        DateTime             @default(now())
-  updated_at        DateTime             @updatedAt
-  labelKabId        Int?
-  labelKab          x_labelKab?          @relation(fields: [labelKabId], references: [id])
-  master            x_master             @relation(fields: [master_id], references: [id], onDelete: Cascade)
-  skpdPeriode       x_skpd_periode       @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
-  rincian           x_rincianIndikator[]
+  id                 Int                  @id @default(autoincrement())
+  skpd_periode_id    Int
+  master_id          Int
+  label_nasional_id  Int?
+  label_prov_id      Int?
+  label_kab_id       Int?
+  name               String               @db.Text
+  satuan             String
+  lokasi             String?
+  jenis_satuan       SatuanAkumulasi      @default(akumulatif)
+  status             Boolean              @default(true)
+  created_at         DateTime             @default(now())
+  updated_at         DateTime             @updatedAt
+  labelKabId         Int?
+  labelKab           x_labelkab?          @relation(fields: [labelKabId], references: [id])
+  master             x_master             @relation(fields: [master_id], references: [id], onDelete: Cascade)
+  skpdPeriode        x_skpd_periode       @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
+  x_rincianindikator x_rincianindikator[]
 
   @@unique([skpd_periode_id, master_id])
   @@index([labelKabId], map: "x_indikator_labelKabId_fkey")
   @@index([master_id], map: "x_indikator_master_id_fkey")
-}
-
-model x_rincianIndikator {
-  id           Int         @id @default(autoincrement())
-  indikator_id Int
-  tahun        Int
-  tahun_ke     Int
-  target       Float?
-  capaian      Float?
-  status       Boolean     @default(true)
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt
-  indikator    x_indikator @relation(fields: [indikator_id], references: [id], onDelete: Cascade)
-
-  @@unique([indikator_id, tahun_ke], name: "indikator_id_tahun_ke")
-}
-
-model x_sumberDana {
-  id                      Int                         @id @default(autoincrement())
-  kode                    String                      @unique
-  nama                    String                      @db.Text
-  keterangan              String?
-  status                  Boolean                     @default(true)
-  created_at              DateTime                    @default(now())
-  updated_at              DateTime                    @updatedAt
-  paguIndikatifSumberDana x_paguIndikatifSumberDana[]
-}
-
-model x_paguIndikatif {
-  id               Int                         @id @default(autoincrement())
-  skpd_periode_id  Int
-  id_master        Int
-  tahun            Int
-  tahun_ke         Int
-  pagu             Decimal?                    @db.Decimal(18, 2)
-  realisasi        Decimal?                    @db.Decimal(18, 2)
-  status           Boolean                     @default(true)
-  created_at       DateTime                    @default(now())
-  updated_at       DateTime                    @updatedAt
-  master           x_master                    @relation(fields: [id_master], references: [id], onDelete: Cascade)
-  skpdPeriode      x_skpd_periode              @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade)
-  sumberDanaRelasi x_paguIndikatifSumberDana[]
-
-  @@index([id_master], map: "x_paguIndikatif_id_master_fkey")
-  @@index([skpd_periode_id], map: "x_paguIndikatif_skpd_periode_id_fkey")
-}
-
-model x_paguIndikatifSumberDana {
-  id                Int             @id @default(autoincrement())
-  pagu_indikatif_id Int
-  sumber_dana_id    Int
-  created_at        DateTime        @default(now())
-  paguIndikatif     x_paguIndikatif @relation(fields: [pagu_indikatif_id], references: [id], onDelete: Cascade)
-  sumberDana        x_sumberDana    @relation(fields: [sumber_dana_id], references: [id], onDelete: Cascade)
-
-  @@unique([pagu_indikatif_id, sumber_dana_id])
-  @@index([sumber_dana_id], map: "x_paguIndikatifSumberDana_sumber_dana_id_fkey")
 }
 
 model x_catatan_eval {
@@ -787,58 +375,30 @@ model dak_opd {
 }
 
 model dak_jenis {
-  id         Int            @id @default(autoincrement())
-  kode       Int            @unique
-  jenis      String
-  keterangan String?        @db.Text
-  created_at DateTime       @default(now())
-  updated_at DateTime       @updatedAt
-  dakBerkas  dak_berkas[]
-  bidang     dak_bidang[]
-  masalah    dak_masalah[]
-  subJenis   dak_subJenis[]
-}
-
-model dak_subJenis {
-  id          Int           @id @default(autoincrement())
-  jenis_dak   Int?
-  nama        String
-  keterangan  String?       @db.Text
-  status      Boolean       @default(true)
-  created_at  DateTime      @default(now())
-  updated_at  DateTime      @updatedAt
-  dakJenis    dak_jenis?    @relation(fields: [jenis_dak], references: [kode])
-  ident_fisik fisik_ident[]
-
-  @@index([jenis_dak], map: "dak_subJenis_jenis_dak_fkey")
+  id           Int            @id @default(autoincrement())
+  kode         Int            @unique
+  jenis        String
+  keterangan   String?        @db.Text
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  dakBerkas    dak_berkas[]
+  bidang       dak_bidang[]
+  masalah      dak_masalah[]
+  dak_subjenis dak_subjenis[]
 }
 
 model dak_bidang {
-  id         Int             @id @default(autoincrement())
-  jenis_dak  Int?
-  name       String
-  keterangan String?         @db.Text
-  status     Boolean         @default(true)
-  created_at DateTime        @default(now())
-  update_at  DateTime        @updatedAt
-  dakJenis   dak_jenis?      @relation(fields: [jenis_dak], references: [kode])
-  sub        dak_subBidang[]
+  id            Int             @id @default(autoincrement())
+  jenis_dak     Int?
+  name          String
+  keterangan    String?         @db.Text
+  status        Boolean         @default(true)
+  created_at    DateTime        @default(now())
+  update_at     DateTime        @updatedAt
+  dakJenis      dak_jenis?      @relation(fields: [jenis_dak], references: [kode])
+  dak_subbidang dak_subbidang[]
 
   @@index([jenis_dak], map: "dak_bidang_jenis_dak_fkey")
-}
-
-model dak_subBidang {
-  id           Int           @id @default(autoincrement())
-  dak_bidangId Int?
-  name         String
-  keterangan   String?       @db.Text
-  status       Boolean       @default(true)
-  created_at   DateTime      @default(now())
-  update_at    DateTime      @updatedAt
-  dakBidang    dak_bidang?   @relation(fields: [dak_bidangId], references: [id])
-  ident_fisik  fisik_ident[]
-
-  @@index([dak_bidangId], map: "dak_subBidang_dak_bidangId_fkey")
 }
 
 model dak_masalah {
@@ -864,7 +424,7 @@ model dak_berkas {
   status        Boolean         @default(true)
   create_at     DateTime        @default(now())
   updated_at    DateTime        @updatedAt
-  jenis         dak_jenis       @relation(fields: [jenis_dak], references: [kode])
+  jenis         dak_jenis       @relation(fields: [jenis_dak], references: [kode], onDelete: NoAction)
   fisikDokumens fisik_dokumen[]
 
   @@index([jenis_dak], map: "dak_berkas_jenis_dak_fkey")
@@ -884,10 +444,10 @@ model fisik_ident {
   updated_at      DateTime          @updatedAt
   detail          fisik_detail?
   fisikDokumens   fisik_dokumen[]
-  opd             dak_opd           @relation(fields: [opd_id], references: [id])
-  subBidang       dak_subBidang     @relation(fields: [sub_bidang_dak], references: [id])
-  subJenis        dak_subJenis      @relation(fields: [sub_jenis], references: [id])
-  subKegiatan     dak_master        @relation(fields: [sub_kegiatan], references: [id])
+  opd             dak_opd           @relation(fields: [opd_id], references: [id], onDelete: NoAction)
+  subBidang       dak_subbidang     @relation(fields: [sub_bidang_dak], references: [id], onDelete: NoAction)
+  subJenis        dak_subjenis      @relation(fields: [sub_jenis], references: [id], onDelete: NoAction)
+  subKegiatan     dak_master        @relation(fields: [sub_kegiatan], references: [id], onDelete: NoAction)
   mekanisme       fisik_mekanisme?
   fisikRealisasis fisik_realisasi[]
 
@@ -914,7 +474,7 @@ model fisik_detail {
   foto            String?
   create_at       DateTime    @default(now())
   updated_at      DateTime    @updatedAt
-  ident           fisik_ident @relation(fields: [id_ident], references: [id])
+  ident           fisik_ident @relation(fields: [id_ident], references: [id], onDelete: NoAction)
 }
 
 model fisik_mekanisme {
@@ -926,7 +486,7 @@ model fisik_mekanisme {
   metode     String?
   create_at  DateTime         @default(now())
   updated_at DateTime         @updatedAt
-  ident      fisik_ident      @relation(fields: [id_ident], references: [id])
+  ident      fisik_ident      @relation(fields: [id_ident], references: [id], onDelete: NoAction)
 }
 
 model fisik_dokumen {
@@ -940,8 +500,8 @@ model fisik_dokumen {
   pesan        String?     @db.Text
   create_at    DateTime    @default(now())
   updated_at   DateTime    @updatedAt
-  jenis_berkas dak_berkas  @relation(fields: [id_berkas], references: [id])
-  ident        fisik_ident @relation(fields: [id_ident], references: [id])
+  jenis_berkas dak_berkas  @relation(fields: [id_berkas], references: [id], onDelete: NoAction)
+  ident        fisik_ident @relation(fields: [id_ident], references: [id], onDelete: NoAction)
 
   @@unique([id_berkas, id_ident])
   @@index([id_ident], map: "fisik_dokumen_id_ident_fkey")
@@ -963,7 +523,7 @@ model fisik_realisasi {
   created_at        DateTime                 @default(now())
   updated_at        DateTime                 @updatedAt
   masalah           fisik_masalah_realisasi?
-  ident             fisik_ident              @relation(fields: [id_ident], references: [id])
+  ident             fisik_ident              @relation(fields: [id_ident], references: [id], onDelete: NoAction)
 
   @@index([id_ident], map: "fisik_realisasi_id_ident_fkey")
 }
@@ -976,7 +536,452 @@ model fisik_masalah_realisasi {
   file_masalah String?         @db.LongText
   created_at   DateTime        @default(now())
   updated_at   DateTime        @updatedAt
-  realisasi    fisik_realisasi @relation(fields: [id_realisasi], references: [id])
+  realisasi    fisik_realisasi @relation(fields: [id_realisasi], references: [id], onDelete: NoAction)
+}
+
+model capaiantriwulan {
+  id                  Int                  @id @default(autoincrement())
+  rincianIndikator_id Int
+  triwulan            Int
+  capaian             Float?
+  status              Boolean              @default(true)
+  created_at          DateTime             @default(now())
+  updated_at          DateTime
+  rincianindikator    rincianindikator     @relation(fields: [rincianIndikator_id], references: [id], onDelete: Cascade, map: "capaianTriwulan_rincianIndikator_id_fkey")
+  capaiantriwulanlog  capaiantriwulanlog[]
+
+  @@index([rincianIndikator_id], map: "capaianTriwulan_rincianIndikator_id_fkey")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model capaiantriwulanlog {
+  id              Int              @id @default(autoincrement())
+  capaian_id      Int?
+  user_id         Int?
+  action          String
+  old_data        String?          @db.LongText
+  new_data        String?          @db.LongText
+  created_at      DateTime         @default(now())
+  capaiantriwulan capaiantriwulan? @relation(fields: [capaian_id], references: [id], onDelete: Cascade, map: "capaianTriwulanLog_capaian_id_fkey")
+
+  @@index([capaian_id], map: "capaianTriwulanLog_capaian_id_fkey")
+}
+
+model dak_subbidang {
+  id           Int           @id @default(autoincrement())
+  dak_bidangId Int?
+  name         String
+  keterangan   String?       @db.Text
+  status       Boolean       @default(true)
+  created_at   DateTime      @default(now())
+  update_at    DateTime
+  dak_bidang   dak_bidang?   @relation(fields: [dak_bidangId], references: [id], map: "dak_subBidang_dak_bidangId_fkey")
+  ident_fisik  fisik_ident[]
+
+  @@index([dak_bidangId], map: "dak_subBidang_dak_bidangId_fkey")
+}
+
+model dak_subjenis {
+  id          Int           @id @default(autoincrement())
+  jenis_dak   Int?
+  nama        String
+  keterangan  String?       @db.Text
+  status      Boolean       @default(true)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime
+  dak_jenis   dak_jenis?    @relation(fields: [jenis_dak], references: [kode], map: "dak_subJenis_jenis_dak_fkey")
+  ident_fisik fisik_ident[]
+
+  @@index([jenis_dak], map: "dak_subJenis_jenis_dak_fkey")
+}
+
+model indikatoroutcome {
+  id                     Int                           @id @default(autoincrement())
+  outcome_id             Int                           @unique(map: "indikatorOutcome_outcome_id_key")
+  nama                   String                        @db.Text
+  satuan                 String?
+  status                 Boolean                       @default(true)
+  jenis_satuan           indikatoroutcome_jenis_satuan @default(akumulatif)
+  created_at             DateTime                      @default(now())
+  updated_at             DateTime
+  outcome                outcome                       @relation(fields: [outcome_id], references: [id], onDelete: Cascade, map: "indikatorOutcome_outcome_id_fkey")
+  targetindikatoroutcome targetindikatoroutcome[]
+}
+
+model labelkab {
+  id              Int         @id @default(autoincrement())
+  skpd_periode_id Int
+  poin            Int
+  nama            String      @db.Text
+  status          Boolean     @default(true)
+  created_at      DateTime    @default(now())
+  updated_at      DateTime
+  indikator       indikator[]
+}
+
+model labelnasional {
+  id              Int      @id @default(autoincrement())
+  skpd_periode_id Int
+  poin            Int
+  nama            String   @db.Text
+  status          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+}
+
+model labelprov {
+  id              Int      @id @default(autoincrement())
+  skpd_periode_id Int
+  poin            Int
+  nama            String   @db.Text
+  status          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model logmaster {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  action    String
+  entity    logmaster_entity
+  entityId  Int
+  oldValue  String?          @db.LongText
+  newValue  String?          @db.LongText
+  createdAt DateTime         @default(now())
+  master    master           @relation(fields: [entityId], references: [id], onDelete: Cascade, map: "logMaster_entityId_fkey")
+
+  @@index([entityId], map: "logMaster_entityId_fkey")
+}
+
+model paguindikatif {
+  id                      Int                       @id @default(autoincrement())
+  skpd_periode_id         Int
+  id_master               Int
+  tahun                   Int
+  tahun_ke                Int
+  pagu                    Decimal?                  @db.Decimal(18, 2)
+  status                  Boolean                   @default(true)
+  created_at              DateTime                  @default(now())
+  updated_at              DateTime
+  master                  master                    @relation(fields: [id_master], references: [id], onDelete: Cascade, map: "paguIndikatif_id_master_fkey")
+  skpd_periode            skpd_periode              @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade, map: "paguIndikatif_skpd_periode_id_fkey")
+  paguindikatifsumberdana paguindikatifsumberdana[]
+  realisasianggaran       realisasianggaran[]
+
+  @@index([id_master], map: "paguIndikatif_id_master_fkey")
+  @@index([skpd_periode_id], map: "paguIndikatif_skpd_periode_id_fkey")
+}
+
+model paguindikatifsumberdana {
+  id                Int           @id @default(autoincrement())
+  pagu_indikatif_id Int
+  sumber_dana_id    Int
+  created_at        DateTime      @default(now())
+  paguindikatif     paguindikatif @relation(fields: [pagu_indikatif_id], references: [id], onDelete: Cascade, map: "paguIndikatifSumberDana_pagu_indikatif_id_fkey")
+  sumberdana        sumberdana    @relation(fields: [sumber_dana_id], references: [id], onDelete: Cascade, map: "paguIndikatifSumberDana_sumber_dana_id_fkey")
+
+  @@unique([pagu_indikatif_id, sumber_dana_id], map: "paguIndikatifSumberDana_pagu_indikatif_id_sumber_dana_id_key")
+  @@index([sumber_dana_id], map: "paguIndikatifSumberDana_sumber_dana_id_fkey")
+}
+
+model pagukegiatan {
+  id              Int      @id @default(autoincrement())
+  skpd_periode_id Int
+  id_master       Int
+  tahun           Int
+  tahun_ke        Int
+  pagu            Decimal? @db.Decimal(18, 2)
+  status          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+  master          master   @relation(fields: [id_master], references: [id], onDelete: Cascade, map: "paguKegiatan_id_master_fkey")
+
+  @@index([id_master], map: "paguKegiatan_id_master_fkey")
+}
+
+model paguprogram {
+  id              Int      @id @default(autoincrement())
+  skpd_periode_id Int
+  id_master       Int
+  tahun           Int
+  tahun_ke        Int
+  pagu            Decimal? @db.Decimal(18, 2)
+  status          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+  master          master   @relation(fields: [id_master], references: [id], onDelete: Cascade, map: "paguProgram_id_master_fkey")
+
+  @@index([id_master], map: "paguProgram_id_master_fkey")
+}
+
+model realisasianggaran {
+  id                   Int                    @id @default(autoincrement())
+  paguIndikatif_id     Int
+  triwulan             Int
+  realisasi            Decimal?               @db.Decimal(18, 2)
+  status               Boolean                @default(true)
+  created_at           DateTime               @default(now())
+  updated_at           DateTime
+  paguindikatif        paguindikatif          @relation(fields: [paguIndikatif_id], references: [id], onDelete: Cascade, map: "realisasiAnggaran_paguIndikatif_id_fkey")
+  realisasianggaranlog realisasianggaranlog[]
+
+  @@index([paguIndikatif_id], map: "realisasiAnggaran_paguIndikatif_id_fkey")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model realisasianggaranlog {
+  id                Int                @id @default(autoincrement())
+  realisasi_id      Int?
+  user_id           Int?
+  action            String
+  old_data          String?            @db.LongText
+  new_data          String?            @db.LongText
+  created_at        DateTime           @default(now())
+  realisasianggaran realisasianggaran? @relation(fields: [realisasi_id], references: [id], onDelete: Cascade, map: "realisasiAnggaranLog_realisasi_id_fkey")
+
+  @@index([realisasi_id], map: "realisasiAnggaranLog_realisasi_id_fkey")
+}
+
+model rincianindikator {
+  id              Int               @id @default(autoincrement())
+  indikator_id    Int
+  tahun           Int
+  tahun_ke        Int
+  target          Float?
+  status          Boolean           @default(true)
+  created_at      DateTime          @default(now())
+  updated_at      DateTime
+  capaiantriwulan capaiantriwulan[]
+  indikator       indikator         @relation(fields: [indikator_id], references: [id], onDelete: Cascade, map: "rincianIndikator_indikator_id_fkey")
+
+  @@unique([indikator_id, tahun_ke], map: "rincianIndikator_indikator_id_tahun_ke_key")
+}
+
+model sumberdana {
+  id                      Int                       @id @default(autoincrement())
+  kode                    String                    @unique(map: "sumberDana_kode_key")
+  nama                    String                    @db.Text
+  keterangan              String?
+  status                  Boolean                   @default(true)
+  created_at              DateTime                  @default(now())
+  updated_at              DateTime
+  paguindikatifsumberdana paguindikatifsumberdana[]
+}
+
+model targetindikatoroutcome {
+  id                   Int              @id @default(autoincrement())
+  indikator_outcome_id Int
+  tahun                Int
+  tahun_ke             Int
+  target               Float?
+  status               Boolean          @default(true)
+  created_at           DateTime         @default(now())
+  updated_at           DateTime
+  indikatoroutcome     indikatoroutcome @relation(fields: [indikator_outcome_id], references: [id], onDelete: Cascade, map: "targetIndikatorOutcome_indikator_outcome_id_fkey")
+
+  @@unique([indikator_outcome_id, tahun_ke], map: "targetIndikatorOutcome_indikator_outcome_id_tahun_ke_key")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model userchangelog {
+  id                                    Int      @id @default(autoincrement())
+  user_id                               Int?
+  changed_by                            Int?
+  action                                String
+  old_data                              String?  @db.LongText
+  new_data                              String?  @db.LongText
+  created_at                            DateTime @default(now())
+  users_userchangelog_changed_byTousers users?   @relation("userchangelog_changed_byTousers", fields: [changed_by], references: [id], map: "userChangeLog_changed_by_fkey")
+  users_userchangelog_user_idTousers    users?   @relation("userchangelog_user_idTousers", fields: [user_id], references: [id], onDelete: Cascade, map: "userChangeLog_user_id_fkey")
+
+  @@index([changed_by], map: "userChangeLog_changed_by_fkey")
+  @@index([user_id], map: "userChangeLog_user_id_fkey")
+}
+
+model userloginlog {
+  id         Int      @id @default(autoincrement())
+  user_id    Int?
+  ip_address String?
+  user_agent String?
+  action     String
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  users      users?   @relation(fields: [user_id], references: [id], onDelete: Cascade, map: "userLoginLog_user_id_fkey")
+
+  @@index([user_id], map: "userLoginLog_user_id_fkey")
+}
+
+model w_targetrealisasiuraian {
+  id        Int      @id @default(autoincrement())
+  uraian_id Int
+  tahun     Int
+  tahun_ke  Int
+  target    String
+  realisasi Float?
+  w_uraian  w_uraian @relation(fields: [uraian_id], references: [id], onDelete: Cascade, map: "w_targetRealisasiUraian_uraian_id_fkey")
+
+  @@index([uraian_id], map: "w_targetRealisasiUraian_uraian_id_fkey")
+}
+
+model x_indikatoroutcome {
+  id                       Int                        @id @default(autoincrement())
+  outcome_id               Int                        @unique(map: "x_indikatorOutcome_outcome_id_key")
+  nama                     String                     @db.Text
+  satuan                   String?
+  status                   Boolean                    @default(true)
+  created_at               DateTime                   @default(now())
+  updated_at               DateTime
+  x_outcome                x_outcome                  @relation(fields: [outcome_id], references: [id], onDelete: Cascade, map: "x_indikatorOutcome_outcome_id_fkey")
+  x_targetindikatoroutcome x_targetindikatoroutcome[]
+}
+
+model x_labelkab {
+  id              Int           @id @default(autoincrement())
+  skpd_periode_id Int
+  poin            Int
+  nama            String        @db.Text
+  status          Boolean       @default(true)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime
+  indikator       x_indikator[]
+}
+
+model x_labelnasional {
+  id              Int      @id @default(autoincrement())
+  skpd_periode_id Int
+  poin            Int
+  nama            String   @db.Text
+  status          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+}
+
+model x_labelprov {
+  id              Int      @id @default(autoincrement())
+  skpd_periode_id Int
+  poin            Int
+  nama            String   @db.Text
+  status          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model x_logmaster {
+  id        Int                @id @default(autoincrement())
+  userId    Int
+  action    String
+  entity    x_logmaster_entity
+  entityId  Int
+  oldValue  String?            @db.LongText
+  newValue  String?            @db.LongText
+  createdAt DateTime           @default(now())
+  x_master  x_master           @relation(fields: [entityId], references: [id], onDelete: Cascade, map: "x_logMaster_entityId_fkey")
+
+  @@index([entityId], map: "x_logMaster_entityId_fkey")
+}
+
+model x_paguindikatif {
+  id                        Int                         @id @default(autoincrement())
+  skpd_periode_id           Int
+  id_master                 Int
+  tahun                     Int
+  tahun_ke                  Int
+  pagu                      Decimal?                    @db.Decimal(18, 2)
+  realisasi                 Decimal?                    @db.Decimal(18, 2)
+  status                    Boolean                     @default(true)
+  created_at                DateTime                    @default(now())
+  updated_at                DateTime
+  x_master                  x_master                    @relation(fields: [id_master], references: [id], onDelete: Cascade, map: "x_paguIndikatif_id_master_fkey")
+  x_skpd_periode            x_skpd_periode              @relation(fields: [skpd_periode_id], references: [id], onDelete: Cascade, map: "x_paguIndikatif_skpd_periode_id_fkey")
+  x_paguindikatifsumberdana x_paguindikatifsumberdana[]
+
+  @@index([id_master], map: "x_paguIndikatif_id_master_fkey")
+  @@index([skpd_periode_id], map: "x_paguIndikatif_skpd_periode_id_fkey")
+}
+
+model x_paguindikatifsumberdana {
+  id                Int             @id @default(autoincrement())
+  pagu_indikatif_id Int
+  sumber_dana_id    Int
+  created_at        DateTime        @default(now())
+  x_paguindikatif   x_paguindikatif @relation(fields: [pagu_indikatif_id], references: [id], onDelete: Cascade, map: "x_paguIndikatifSumberDana_pagu_indikatif_id_fkey")
+  x_sumberdana      x_sumberdana    @relation(fields: [sumber_dana_id], references: [id], onDelete: Cascade, map: "x_paguIndikatifSumberDana_sumber_dana_id_fkey")
+
+  @@unique([pagu_indikatif_id, sumber_dana_id], map: "x_paguIndikatifSumberDana_pagu_indikatif_id_sumber_dana_id_key")
+  @@index([sumber_dana_id], map: "x_paguIndikatifSumberDana_sumber_dana_id_fkey")
+}
+
+model x_pagukegiatan {
+  id              Int      @id @default(autoincrement())
+  skpd_periode_id Int
+  id_master       Int
+  tahun           Int
+  tahun_ke        Int
+  pagu            Decimal? @db.Decimal(18, 2)
+  status          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+  x_master        x_master @relation(fields: [id_master], references: [id], onDelete: Cascade, map: "x_paguKegiatan_id_master_fkey")
+
+  @@index([id_master], map: "x_paguKegiatan_id_master_fkey")
+}
+
+model x_paguprogram {
+  id              Int      @id @default(autoincrement())
+  skpd_periode_id Int
+  id_master       Int
+  tahun           Int
+  tahun_ke        Int
+  pagu            Decimal? @db.Decimal(18, 2)
+  status          Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime
+  x_master        x_master @relation(fields: [id_master], references: [id], onDelete: Cascade, map: "x_paguProgram_id_master_fkey")
+
+  @@index([id_master], map: "x_paguProgram_id_master_fkey")
+}
+
+model x_rincianindikator {
+  id           Int         @id @default(autoincrement())
+  indikator_id Int
+  tahun        Int
+  tahun_ke     Int
+  target       Float?
+  capaian      Float?
+  status       Boolean     @default(true)
+  created_at   DateTime    @default(now())
+  updated_at   DateTime
+  x_indikator  x_indikator @relation(fields: [indikator_id], references: [id], onDelete: Cascade, map: "x_rincianIndikator_indikator_id_fkey")
+
+  @@unique([indikator_id, tahun_ke], map: "x_rincianIndikator_indikator_id_tahun_ke_key")
+}
+
+model x_sumberdana {
+  id                        Int                         @id @default(autoincrement())
+  kode                      String                      @unique(map: "x_sumberDana_kode_key")
+  nama                      String                      @db.Text
+  keterangan                String?
+  status                    Boolean                     @default(true)
+  created_at                DateTime                    @default(now())
+  updated_at                DateTime
+  x_paguindikatifsumberdana x_paguindikatifsumberdana[]
+}
+
+model x_targetindikatoroutcome {
+  id                   Int                @id @default(autoincrement())
+  indikator_outcome_id Int
+  tahun                Int
+  tahun_ke             Int
+  target               Float?
+  capaian              Float?
+  status               Boolean            @default(true)
+  created_at           DateTime           @default(now())
+  updated_at           DateTime
+  x_indikatoroutcome   x_indikatoroutcome @relation(fields: [indikator_outcome_id], references: [id], onDelete: Cascade, map: "x_targetIndikatorOutcome_indikator_outcome_id_fkey")
+
+  @@unique([indikator_outcome_id, tahun_ke], map: "x_targetIndikatorOutcome_indikator_outcome_id_tahun_ke_key")
 }
 
 enum EntityType {
@@ -1019,4 +1024,26 @@ enum methodMekanisme {
   swakelola
   kontrak
   ekatalog
+}
+
+enum logmaster_entity {
+  urusan
+  bidang
+  program
+  kegiatan
+  subKegiatan
+}
+
+enum x_logmaster_entity {
+  urusan
+  bidang
+  program
+  kegiatan
+  subKegiatan
+}
+
+enum indikatoroutcome_jenis_satuan {
+  akumulatif
+  negatif
+  tetap
 }

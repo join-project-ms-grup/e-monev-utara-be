@@ -319,3 +319,25 @@ export const updateMasalah = async (req, res, next) => {
               next(error)
        }
 }
+
+export const rekapRealisasi = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     jenis: Joi.number().required(),
+                     tahun: Joi.number().required(),
+                     triwulan: Joi.number().required()
+              });
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+
+              return response(res, 200, true, "Berhasil mengubah realisasi", await service.rekapRealisasi(req));
+       } catch (error) {
+              next(error)
+       }
+}

@@ -1,5 +1,6 @@
 import prisma from "../../../config/database.js";
 import { errorHandling } from "../../../middlewares/erros-handling.js";
+import { formatCurrency, formatNumber } from "../../../utility/helper.js";
 
 export const addIdent = async (req) => {
        const {
@@ -533,6 +534,113 @@ export const updateMasalah = async (req) => {
 
 
        return await getMasalahCapaian({ body: { id_realisasi } });
+}
+
+export const rekapRealisasi = async (req) => {
+       const { jenis, tahun, triwulan } = req.body;
+
+       const exist = await prisma.fisik_ident.findMany({
+              where: {
+                     tahun: parseInt(tahun),
+                     subJenis: {
+                            dakJenis: { kode: jenis }
+                     }
+              },
+              select: {
+                     opd: true,
+                     detail: {
+                            select: {
+                                   volume: true,
+                                   anggaran: true,
+                            }
+                     },
+                     fisikRealisasis: true
+              }
+       });
+
+       const result = {};
+
+       for (const item of exist) {
+              const opdId = item.opd.id;
+
+              if (!result[opdId]) {
+                     result[opdId] = {
+                            nama_opd: item.opd.fullname,
+                            jumlah_paket: 0,
+                            jumlah_anggaran: 0,
+                            realisasi_volume: 0,
+                            realisasi_keuangan: 0,
+                     };
+              }
+
+              result[opdId].jumlah_paket += Number(item.detail.volume);
+              result[opdId].jumlah_anggaran += Number(item.detail.anggaran);
+
+              const realisasi = item.fisikRealisasis
+                     .filter(r => r.triwulan <= triwulan)
+                     .reduce((acc, r) => {
+                            acc.volume += Number(r.fisik);
+                            acc.keuangan += Number(r.anggaran);
+                            return acc;
+                     }, {
+                            volume: 0,
+                            keuangan: 0
+                     });
+
+              result[opdId].realisasi_volume += realisasi.volume;
+              result[opdId].realisasi_keuangan += realisasi.keuangan;
+       }
+
+       // const response = Object.values(result)
+       //        .map(item => {
+       //               const persentase = item.jumlah_anggaran
+       //                      ? (item.realisasi_keuangan / item.jumlah_anggaran) * 100
+       //                      : 0;
+
+       //               return {
+       //                      ...item,
+       //                      persentase,
+       //               };
+       //        })
+       //        .sort((a, b) => b.persentase - a.persentase)
+       //        .map((item, index) => ({
+       //               rangking: index + 1,
+       //               nama_opd: item.nama_opd,
+
+       //               jumlah_paket: formatNumber(item.jumlah_paket),
+       //               jumlah_anggaran: formatCurrency(item.jumlah_anggaran),
+
+       //               realisasi_volume: formatNumber(item.realisasi_volume),
+       //               realisasi_keuangan: formatCurrency(item.realisasi_keuangan),
+
+       //               persentase: `${formatNumber(item.persentase)} %`,
+       //        }));
+
+       const response = Object.values(result)
+              .map(item => {
+                     const realisasiKeuangan = item.jumlah_anggaran
+                            ? (item.realisasi_keuangan / item.jumlah_anggaran) * 100
+                            : 0;
+
+                     return {
+                            ...item,
+                            realisasi_keuangan: realisasiKeuangan
+                     };
+              })
+              .sort((a, b) => b.realisasi_keuangan - a.realisasi_keuangan)
+              .map((item, index) => ({
+                     rangking: index + 1,
+                     nama_opd: item.nama_opd,
+
+                     jumlah_paket: formatNumber(item.jumlah_paket),
+                     jumlah_anggaran: formatCurrency(item.jumlah_anggaran),
+
+                     realisasi_volume: `${formatNumber(item.realisasi_volume)} %`,
+                     realisasi_keuangan: `${formatNumber(item.realisasi_keuangan)} %`,
+                     persentase: `${formatNumber(item.realisasi_keuangan)} %`,
+              }));
+
+       return response;
 }
 
 
