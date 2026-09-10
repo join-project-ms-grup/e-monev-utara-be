@@ -49,6 +49,24 @@ export const updateOpd = async (req, res, next) => {
        }
 }
 
+export const listOpdHaveIdent = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     kode_sub: Joi.number().required(),
+              });
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+              return response(res, 200, true, "Berhasil mengambil list opd", await service.listOpdHaveIdent(req));
+       } catch (error) {
+              next(error);
+       }
+}
+
 export const listOpd = async (req, res, next) => {
        try {
               return response(res, 200, true, "Berhasil mengambil list opd", await service.listOpd(req));

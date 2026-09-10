@@ -24,6 +24,21 @@ export const updateOpd = async (req) => {
        return update
 }
 
+export const listOpdHaveIdent = async (req) => {
+       const { kode_sub } = req.body;
+       const list = await prisma.dak_opd.findMany({
+              where: {
+                     fisikIdents: {
+                            some: {
+                                   sub_jenis: Number(kode_sub)
+                            }
+                     }
+              },
+              select: { id: true, kode: true, shortname: true, fullname: true, status: true }
+       });
+       return list;
+}
+
 export const listOpd = async (req) => {
        const list = await prisma.dak_opd.findMany({
               select: { id: true, kode: true, shortname: true, fullname: true, status: true }

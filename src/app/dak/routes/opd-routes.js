@@ -7,5 +7,6 @@ const router = Router();
 router.post("/add", controller.addOpd);
 router.put("/update", controller.updateOpd);
 router.get("/list", controller.listOpd);
+router.post("/list-have-ident", controller.listOpdHaveIdent);
 
 export default router
