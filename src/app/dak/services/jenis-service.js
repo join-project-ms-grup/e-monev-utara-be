@@ -29,6 +29,24 @@ export const addSub = async (req) => {
        return add;
 }
 
+export const listExistIdentSub = async (req) => {
+       const { kode_jenis } = req.body;
+       const exist = await prisma.dak_jenis.findFirst({ where: { kode: kode_jenis } });
+       if (!exist) {
+              throw new errorHandling(404, "Jenis dak tidak ditemukan");
+       }
+
+       return await prisma.dak_subJenis.findMany({
+              where: {
+                     jenis_dak: kode_jenis,
+                     ident_fisik: {
+                            some: {}
+                     }
+              }
+       });
+
+}
+
 export const listSub = async (req) => {
        const { kode_jenis } = req.body;
        const exist = await prisma.dak_jenis.findFirst({ where: { kode: kode_jenis } });

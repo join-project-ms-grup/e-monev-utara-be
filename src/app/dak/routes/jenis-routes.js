@@ -6,6 +6,7 @@ const router = Router();
 router.get("/list", controller.jenisDak)
 router.post("/add-sub", controller.addSub);
 router.post("/list-sub", controller.listSub);
+router.post("/list-sub-ident-exist", controller.listExistIndentSub);
 router.put("/update-sub", controller.updateSub);
 
 

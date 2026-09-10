@@ -31,6 +31,25 @@ export const addSub = async (req, res, next) => {
        }
 }
 
+export const listExistIndentSub = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     kode_jenis: Joi.number().required(),
+
+              });
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+              return response(res, 200, true, "Berhasil menambahkan sub jenis dak", await service.listExistIdentSub(req));
+       } catch (error) {
+              next(error)
+       }
+}
+
 export const listSub = async (req, res, next) => {
        try {
               const schema = Joi.object({
