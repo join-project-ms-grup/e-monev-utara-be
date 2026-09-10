@@ -49,6 +49,7 @@ export const listSKPD = async () => {
 export const createSKPD = async (req) => {
        const author = req.user.id;
        const { kode, name, shortname } = req.body;
+       const periode = await prisma.periode.findFirst({ where: { status: true } })
        const skpdExist = await prisma.skpd.findUnique({
               where: { kode }
        });
@@ -57,12 +58,20 @@ export const createSKPD = async (req) => {
               throw new errorHandling(409, "Kode SKPD sudah terdaftar");
        }
 
-       await prisma.skpd.create({
+       const insert = await prisma.skpd.create({
               data: {
                      kode,
                      name,
                      shortname,
                      author_id: author
+              }
+       });
+
+       await prisma.skpd_periode.create({
+              data: {
+                     skpd_id: insert.id,
+                     periode_id: periode.id,
+                     status: true
               }
        });
 
@@ -96,6 +105,7 @@ export const updateSKPD = async (req) => {
 
 export const deleteSKPD = async (req) => {
        const { id } = req.params;
+       const periode = await prisma.periode.findFirst({ where: { status: true } })
 
        const skpd = await prisma.skpd.findUnique({
               where: { id: Number(id) }
@@ -105,9 +115,12 @@ export const deleteSKPD = async (req) => {
               throw new errorHandling(404, "SKPD tidak ditemukan");
        }
 
-       await prisma.skpd.delete({
-              where: { id: Number(id) }
-       });
+       await prisma.skpd_periode.deleteMany({
+              where: {
+                     skpd_id: skpd.id,
+                     periode_id: periode.id
+              }
+       })
 
        return await listSKPD();
 }
