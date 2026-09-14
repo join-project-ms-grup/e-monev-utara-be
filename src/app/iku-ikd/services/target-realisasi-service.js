@@ -1,6 +1,123 @@
 import prisma from "../../../config/database.js"
 import { errorHandling } from "../../../middlewares/erros-handling.js";
 
+export const listMaster = async () => {
+       const getMaster = await prisma.w_master.findMany({
+              where: {
+                     status: true
+              },
+              select: {
+                     id: true,
+                     name: true
+              }
+       });
+       const opt = getMaster.map((val) => {
+              return {
+                     value: val.id.toString(),
+                     label: val.name
+              }
+       });
+       return opt
+}
+export const addTarget = async (req) => {
+       const { master, name, satuan, base_line, perhitungan, is_iku, target } = req.body;
+
+       const existMaster = await prisma.w_master.findFirst({ where: { id: Number(master) } });
+       if (!existMaster) {
+              throw new errorHandling(404, 'Data master tidak ditemukan');
+       }
+
+       const addUraian = await prisma.w_uraian.create({
+              data: {
+                     master_id: master,
+                     name,
+                     satuan,
+                     base_line,
+                     perhitungan,
+                     is_iku: is_iku === 1 ? true : false
+              }
+       });
+
+       if (!addUraian) {
+              throw new errorHandling(500, 'Terjadi kesalahan pada server');
+       }
+       const newtarget = target.map((v) => {
+              return {
+                     uraian_id: addUraian.id,
+                     tahun: v.tahun,
+                     tahun_ke: v.tahun_ke,
+                     target: v.target
+              }
+       })
+
+       const createTarget = await prisma.w_targetRealisasiUraian.createMany({
+              data: newtarget
+       });
+
+       return { ...addUraian, target: createTarget }
+
+}
+
+export const updateTarget = async (req) => {
+       const { id, master, name, satuan, base_line, perhitungan, is_iku, target } = req.body;
+
+       const existMaster = await prisma.w_master.findFirst({ where: { id: Number(master) } });
+       if (!existMaster) {
+              throw new errorHandling(404, 'Data master tidak ditemukan');
+       }
+
+       const existUraian = await prisma.w_uraian.findFirst({ where: { id: Number(id) } });
+       if (!existUraian) {
+              throw new errorHandling(404, 'Data uraian tidak ditemukan');
+       }
+
+       const update = await prisma.w_uraian.update({
+              where: { id },
+              data: {
+                     master_id: master,
+                     name: name,
+                     satuan: satuan,
+                     base_line,
+                     perhitungan,
+                     is_iku: is_iku === 1 ? true : false,
+              }
+       });
+       if (!update) {
+              throw new errorHandling(500, 'Gagal mengubah data uraian');
+       }
+
+       const updatedTarget = [];
+
+       target.map(async (v) => {
+              await prisma.w_targetRealisasiUraian.update({
+                     where: {
+                            id: Number(v.id)
+                     },
+                     data: {
+                            target: v.target
+                     }
+              })
+       });
+
+       return { ...update, target: updatedTarget }
+}
+
+export const deleteTarget = async (req) => {
+       const id = Number(req.params.id);
+       const existUraian = await prisma.w_uraian.findFirst({ where: { id: Number(id) } });
+       if (!existUraian) {
+              throw new errorHandling(404, 'Data uraian tidak ditemukan');
+       }
+       await prisma.w_targetRealisasiUraian.deleteMany({
+              where: { uraian_id: id }
+       });
+
+       await prisma.w_uraian.delete({
+              where: { id }
+       })
+       return null
+}
+
 export const listTarget = async (req) => {
        const { skpd_id, periodeId } = req.body;
 
@@ -24,6 +141,7 @@ export const listTarget = async (req) => {
                                    uraian: {
                                           select: {
                                                  id: true,
+                                                 master_id: true,
                                                  name: true,
                                                  satuan: true,
                                                  base_line: true,
@@ -36,10 +154,7 @@ export const listTarget = async (req) => {
                      },
               },
        });
-
        return mapName(getAllData);
-
-
 };
 
 export const listTargetIKU = async (req) => {
@@ -306,18 +421,14 @@ export function calculateAchievementPercentage(targetStr, capaian, perhitungan =
 
        switch (perhitungan.toLowerCase()) {
               case 'akumulatif':
-              case 'naik':
                      // Makin tinggi capaian makin bagus
                      percentage = (capaianVal / targetValue) * 100;
                      break;
-
-              case 'turun':
               case 'menurun':
                      // Makin rendah capaian makin bagus (misal angka kemiskinan)
                      percentage = (targetValue / capaianVal) * 100;
                      break;
 
-              case 'standar':
               default:
                      percentage = (capaianVal / targetValue) * 100;
                      break;
