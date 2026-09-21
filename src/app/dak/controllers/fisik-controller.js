@@ -341,3 +341,22 @@ export const rekapRealisasi = async (req, res, next) => {
               next(error)
        }
 }
+export const rekapRealisasiForGrafik = async (req, res, next) => {
+       try {
+              const schema = Joi.object({
+                     tahun_ke: Joi.number().required(),
+              });
+
+              const { error } = schema.validate(req.body);
+              if (error) {
+                     const result = error.details.map((item) => ({
+                            [item.path]: item.message,
+                     }));
+                     return response(res, 400, false, "Parameter tidak valid", result);
+              }
+
+              return response(res, 200, true, "Berhasil mengubah realisasi", await service.rekapRealisasiForGrafik(req));
+       } catch (error) {
+              next(error)
+       }
+}

@@ -643,4 +643,123 @@ export const rekapRealisasi = async (req) => {
        return response;
 }
 
+const nullResponse = Array.from({ length: 4 }, (v, i) => {
+       return {
+              triwulan: i + 1,
+              fisikDAK: 0,
+              keuanganDAK: 0,
+              fisikNonDAK: 0,
+              keuanganNonDAK: 0,
+       }
+});
+
+export const rekapRealisasiForGrafik = async (req) => {
+       const { tahun_ke } = req.body;
+
+       const exist = await prisma.fisik_ident.findMany({
+              where: { tahun: tahun_ke }
+       });
+
+       if (exist.length === 0) {
+              return nullResponse;
+       }
+
+       const getData = await prisma.fisik_ident.findMany({
+              where: {
+                     tahun: tahun_ke,
+                     fisikRealisasis: {
+                            some: {}
+                     }
+              },
+              select: {
+                     subJenis: {
+                            select: {
+                                   jenis_dak: true
+                            }
+                     },
+                     fisikRealisasis: {
+                            select: {
+                                   triwulan: true,
+                                   fisik: true,
+                                   anggaran: true
+                            }
+                     },
+                     detail: {
+                            select: {
+                                   volume: true,
+                                   anggaran: true
+                            }
+                     }
+
+              },
+       });
+
+       const grafikDAK = [1, 2, 3, 4].map((triwulan) => {
+              let totalVolumeDAK = 0;
+              let totalRealisasiFisikDAK = 0;
+              let totalAnggaranDAK = 0;
+              let totalRealisasiAnggaranDAK = 0;
+
+              let totalVolumeNonDAK = 0;
+              let totalRealisasiFisikNonDAK = 0;
+              let totalAnggaranNonDAK = 0;
+              let totalRealisasiAnggaranNonDAK = 0;
+
+              getData.forEach((item) => {
+                     const realisasi = item.fisikRealisasis.find(
+                            (item) => item.triwulan === triwulan
+                     );
+
+                     if (!realisasi) return;
+
+                     const volume = Number(item.detail?.volume) || 0;
+                     const anggaran = Number(item.detail?.anggaran) || 0;
+
+                     const fisik = Number(realisasi.fisik) || 0;
+                     const realisasiAnggaran = Number(realisasi.anggaran) || 0;
+
+                     if (item.subJenis?.jenis_dak === 1) {
+                            // DAK Fisik
+                            totalVolumeDAK += volume;
+                            totalRealisasiFisikDAK += fisik;
+                            totalAnggaranDAK += anggaran;
+                            totalRealisasiAnggaranDAK += realisasiAnggaran;
+                     }
+
+                     if (item.subJenis?.jenis_dak === 2) {
+                            // DAK Non Fisik
+                            totalVolumeNonDAK += volume;
+                            totalRealisasiFisikNonDAK += fisik;
+                            totalAnggaranNonDAK += anggaran;
+                            totalRealisasiAnggaranNonDAK += realisasiAnggaran;
+                     }
+              });
+
+              return {
+                     triwulan: `TW ${triwulan}`,
+
+                     fisikDAK:
+                            (totalVolumeDAK > 0
+                                   ? (totalRealisasiFisikDAK / totalVolumeDAK) * 100
+                                   : 0).toFixed(2),
+
+                     keuanganDAK:
+                            (totalAnggaranDAK > 0
+                                   ? (totalRealisasiAnggaranDAK / totalAnggaranDAK) * 100 .toFixed(2)
+                                   : 0).toFixed(2),
+
+                     fisikNonDAK:
+                            (totalVolumeNonDAK > 0
+                                   ? (totalRealisasiFisikNonDAK / totalVolumeNonDAK) * 100 .toFixed(2)
+                                   : 0).toFixed(2),
+
+                     keuanganNonDAK:
+                            (totalAnggaranNonDAK > 0
+                                   ? (totalRealisasiAnggaranNonDAK / totalAnggaranNonDAK) * 100 .toFixed(2)
+                                   : 0).toFixed(2),
+              };
+       });
+       return grafikDAK
+}
+
 

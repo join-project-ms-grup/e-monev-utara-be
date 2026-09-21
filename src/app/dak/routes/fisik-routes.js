@@ -22,5 +22,6 @@ router.patch("/toggle-kunci", controller.toggleKunci);
 router.post("/masalah-realisasi", controller.getMasalahCapaian);
 router.put("/update-masalah-realisasi", controller.updateMasalah)
 router.post("/rekap-realisasi", controller.rekapRealisasi)
+router.post("/rekap-realisasi-for-grafik", controller.rekapRealisasiForGrafik)
 
 export default router;
