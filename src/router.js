@@ -104,6 +104,6 @@ router.use("/dak/seed", seedDAK);
 
 
 router.use((req, res) => {
-       response(res, 404, false, "path tidak ditemukan, coba lagi");
+       response(res, 404, false, "path tidak ditemukan, coba lagi. Versi 1.1.26");
 });
 export default router;
